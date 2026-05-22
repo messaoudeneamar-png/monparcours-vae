@@ -29,8 +29,8 @@ export const viewport: Viewport = {
 /* Anti-flash: apply saved theme before React hydrates */
 const themeScript = `try{var t=localStorage.getItem('vae_theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}`;
 
-/* PWA startup: always open on "/" when launched from home screen */
-const pwaStartScript = `try{var sa=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;if(sa){var s=sessionStorage.getItem('_vae_s');if(!s){sessionStorage.setItem('_vae_s','1');if(window.location.pathname!=='/')window.location.replace('/');}}}catch(e){}`;
+/* PWA startup: redirect to "/" on direct launch (no referrer = opened from home screen) */
+const pwaStartScript = `try{var sa=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;if(sa&&window.location.pathname!=='/'&&!document.referrer)window.location.replace('/');}catch(e){}`;
 
 export default function RootLayout({
   children,

@@ -32,8 +32,6 @@ export default function AccueilPage() {
   const [sits, setSits] = useState<Situation[]>([]);
   const [ecrits, setEcrits] = useState<Ecrit[]>([]);
   const [quizBest, setQuizBest] = useState(0);
-  const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
     try {
       const s = localStorage.getItem("vae_sits");
@@ -43,7 +41,6 @@ export default function AccueilPage() {
       const q = localStorage.getItem("vae_quiz_best_pct");
       if (q) setQuizBest(parseInt(q, 10));
     } catch {}
-    setMounted(true);
   }, []);
 
   const blocProgress = BLOCS.map((b) => ({
@@ -56,8 +53,6 @@ export default function AccueilPage() {
   const globalPct = Math.round((completedBlocs / 4) * 100);
   const totalDocs = sits.length + ecrits.length;
   const motivation = getMotivation(globalPct);
-
-  if (!mounted) return null;
 
   return (
     <div className="min-h-screen bg-background px-4 pt-8 pb-6">

@@ -1,4 +1,3 @@
-import { Mistral } from "@mistralai/mistralai";
 import { NextRequest } from "next/server";
 
 const TYPE_INSTRUCTIONS: Record<string, string> = {
@@ -199,7 +198,6 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const mistral = new Mistral({ apiKey });
     const typeInstruction = TYPE_INSTRUCTIONS[type] ?? TYPE_INSTRUCTIONS["situation_vae"];
     const userMessage = `TYPE D'ÉCRIT : ${type}
 ${context ? `CONTEXTE SUPPLÉMENTAIRE : ${context}\n` : ""}
@@ -209,27 +207,62 @@ ${input}
 ---
 ${typeInstruction}`;
 
-    const chatStream = await mistral.chat.stream({
-      model: "mistral-small-latest",
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: userMessage },
-      ],
+    const mistralRes = await fetch("https://api.mistral.ai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "mistral-small-latest",
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: userMessage },
+        ],
+        stream: true,
+      }),
     });
 
+    if (!mistralRes.ok) {
+      const errText = await mistralRes.text();
+      return new Response(
+        JSON.stringify({ error: `Erreur Mistral ${mistralRes.status}: ${errText}` }),
+        { status: 500, headers: { "Content-Type": "application/json" } },
+      );
+    }
+
     const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
 
     const stream = new ReadableStream({
       async start(controller) {
+        const reader = mistralRes.body!.getReader();
+        let buffer = "";
         try {
-          for await (const chunk of chatStream) {
-            const raw = chunk.data?.choices[0]?.delta?.content;
-            const delta = typeof raw === "string"
-              ? raw
-              : Array.isArray(raw)
-                ? raw.filter((c) => c.type === "text").map((c) => (c as { type: "text"; text: string }).text).join("")
-                : "";
-            if (delta) controller.enqueue(encoder.encode(delta));
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() ?? "";
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed.startsWith("data:")) continue;
+              const data = trimmed.slice(5).trim();
+              if (data === "[DONE]") {
+                controller.close();
+                return;
+              }
+              try {
+                const json = JSON.parse(data);
+                const delta = json.choices?.[0]?.delta?.content;
+                if (typeof delta === "string" && delta) {
+                  controller.enqueue(encoder.encode(delta));
+                }
+              } catch {
+                // chunk malformé, on ignore
+              }
+            }
           }
           controller.close();
         } catch (err) {

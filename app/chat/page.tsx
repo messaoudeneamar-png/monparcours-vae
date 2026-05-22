@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
-type Mode = "default" | "transmission" | "rapport" | "ppe" | "reflexive" | "oral" | "reformuler" | "situation";
+type Mode = "default" | "transmission" | "rapport" | "ppe" | "reflexive" | "oral" | "reformuler" | "synthese" | "reunion" | "mail" | "situation";
 
 type Message = {
   id: string;
@@ -51,6 +51,21 @@ const MODES: { key: Mode; label: string; desc: string }[] = [
     desc: "Écrivez en langage terrain — je reformule instantanément en vocabulaire professionnel éducatif.",
   },
   {
+    key: "synthese",
+    label: "📑 Note de synthèse",
+    desc: "Je rédige votre note de synthèse : contexte, évolution, points clés, recommandations.",
+  },
+  {
+    key: "reunion",
+    label: "🗒️ CR de réunion",
+    desc: "Je structure votre compte rendu : présents, ordre du jour, décisions, actions à mener.",
+  },
+  {
+    key: "mail",
+    label: "📧 Mail professionnel",
+    desc: "Je rédige votre mail institutionnel : objet, corps structuré, ton professionnel.",
+  },
+  {
     key: "situation",
     label: "📋 Situation VAE",
     desc: "Racontez votre vécu terrain — je le structure en situation VAE authentique Livret 2, calibrée jury DEES 2025.",
@@ -93,6 +108,21 @@ const SUGGESTIONS: Record<Mode, string[]> = {
     "Le gamin était énervé, j'ai essayé de le calmer mais ça a pas marché",
     "J'ai discuté avec la maman ce matin, elle est stressée par le foyer",
     "On a fait une activité cuisine aujourd'hui, ça s'est bien passé globalement",
+  ],
+  synthese: [
+    "Synthèse de fin de mesure pour Lina, 16 ans, MECS depuis 2 ans",
+    "Note de synthèse avant audience pour renouvellement d'OPP",
+    "Bilan de parcours avant passage en service autonomie",
+  ],
+  reunion: [
+    "Réunion d'équipe éducative ce matin, 5 présents, 3 situations abordées",
+    "Synthèse pluridisciplinaire pour Théo, décisions de suivi à formaliser",
+    "CVS du trimestre — restituer les échanges et décisions",
+  ],
+  mail: [
+    "Mail à l'ASE pour signaler une dégradation de situation",
+    "Demande de rendez-vous partenaire pour coordination de suivi",
+    "Information à la famille sur un changement d'organisation",
   ],
   situation: [
     "Un soir, Karim 17 ans a menacé un éducateur et refusé de rentrer — raconte et analyse",

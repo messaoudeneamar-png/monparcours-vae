@@ -128,7 +128,7 @@ function SituationsTab() {
         </div>
       ) : (
         sits.map((sit) => (
-          <div key={sit.id} className="bg-surface rounded-2xl p-5 border border-border shadow-sm">
+          <div key={sit.id} className="card-lift bg-surface rounded-2xl p-5 border border-border shadow-card">
             <div className="flex items-start justify-between gap-2 mb-2">
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-foreground leading-snug">{sit.titre}</p>
@@ -873,8 +873,8 @@ export default function PlusPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="bg-surface border-b border-border px-4 pt-6 pb-0">
-        <h1 className="text-2xl font-bold text-foreground mb-4">Outils VAE</h1>
+      <header className="bg-surface border-b border-border px-4 pt-8 pb-0">
+        <h1 className="text-2xl font-extrabold text-foreground tracking-tight mb-4">Outils VAE</h1>
         <div className="flex gap-1 overflow-x-auto scrollbar-hide">
           {TABS.map((t) => (
             <button

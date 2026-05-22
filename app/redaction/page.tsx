@@ -184,9 +184,9 @@ export default function RedactionPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="bg-surface border-b border-border px-4 pt-6 pb-4">
+      <header className="bg-surface border-b border-border px-4 pt-8 pb-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-foreground">Rédaction IA</h1>
+          <h1 className="text-2xl font-extrabold text-foreground tracking-tight">Rédaction IA</h1>
           {saved.length > 0 && (
             <button
               onClick={() => setShowSaved(!showSaved)}
@@ -199,7 +199,7 @@ export default function RedactionPage() {
         <p className="text-muted text-sm mt-1">{"Génération assistée par l'IA pour votre VAE DEES"}</p>
       </header>
 
-      <div className="px-4 pt-4 pb-4 space-y-4">
+      <div className="px-4 pt-5 pb-6 space-y-5">
         {/* Type selector */}
         <div>
           <label className="text-xs font-semibold text-muted uppercase tracking-wide mb-2 block">
@@ -373,7 +373,7 @@ export default function RedactionPage() {
             <h2 className="font-semibold text-foreground mb-3">Écrits sauvegardés</h2>
             <div className="space-y-3">
               {saved.map((ecrit) => (
-                <div key={ecrit.id} className="bg-surface rounded-2xl border border-border shadow-sm p-4">
+                <div key={ecrit.id} className="card-lift bg-surface rounded-2xl border border-border shadow-card p-5">
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div>
                       <p className="font-medium text-foreground text-sm">{ecrit.label}</p>

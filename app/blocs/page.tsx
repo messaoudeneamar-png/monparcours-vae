@@ -520,7 +520,7 @@ function BlocContent({ k }: { k: BlocKey }) {
       </div>
 
       {/* 1. Ce que le jury veut vraiment */}
-      <div className="bg-surface rounded-2xl p-5 border border-border shadow-sm">
+      <div className="card-lift bg-surface rounded-2xl p-5 border border-border shadow-card">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-base">🎯</span>
           <h3 className="font-semibold text-foreground text-sm">Ce que le jury veut vraiment</h3>
@@ -576,7 +576,7 @@ function BlocContent({ k }: { k: BlocKey }) {
         </div>
         <div className="space-y-2">
           {ped.lois.map((l, i) => (
-            <div key={i} className="bg-surface rounded-xl p-4 border border-border shadow-sm">
+            <div key={i} className="card-lift bg-surface rounded-xl p-4 border border-border shadow-card">
               <div className="flex items-start gap-3">
                 <span
                   className="flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-md text-white mt-0.5"
@@ -648,7 +648,7 @@ function BlocContent({ k }: { k: BlocKey }) {
       </Link>
 
       {/* Activités principales */}
-      <div className="bg-surface rounded-2xl p-5 border border-border shadow-sm">
+      <div className="card-lift bg-surface rounded-2xl p-5 border border-border shadow-card">
         <h3 className="font-semibold text-foreground mb-3 text-sm">Activités principales</h3>
         <ul className="space-y-2">
           {bloc.activites.map((a, i) => (
@@ -712,7 +712,7 @@ function EvalContent() {
         </p>
       </div>
       {EVAL_DATA.map((ev) => (
-        <div key={ev.bc} className="bg-surface rounded-2xl p-5 border border-border shadow-sm">
+        <div key={ev.bc} className="card-lift bg-surface rounded-2xl p-5 border border-border shadow-card">
           <div className="flex items-center gap-2 mb-3">
             <span
               className="text-xs font-bold text-white px-2.5 py-1 rounded-full"
@@ -747,7 +747,7 @@ function JuryContent() {
         </p>
       </div>
       {JURY_DATA.map((item, i) => (
-        <div key={i} className="bg-surface rounded-2xl p-5 border border-border shadow-sm">
+        <div key={i} className="card-lift bg-surface rounded-2xl p-5 border border-border shadow-card">
           <div className="flex items-start gap-3">
             <span className="text-2xl flex-shrink-0">{item.icon}</span>
             <div>
@@ -768,8 +768,8 @@ export default function BlocsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="bg-surface border-b border-border px-4 pt-6 pb-0">
-        <h1 className="text-2xl font-bold text-foreground mb-4">Blocs de compétences</h1>
+      <header className="bg-surface border-b border-border px-4 pt-8 pb-0">
+        <h1 className="text-2xl font-extrabold text-foreground tracking-tight mb-4">Blocs de compétences</h1>
         <div className="flex gap-1 overflow-x-auto scrollbar-hide pb-0">
           {TABS.map((t) => {
             const active = tab === t.key;

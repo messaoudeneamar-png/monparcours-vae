@@ -61,10 +61,10 @@ function GenericCard({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
+    <div className="card-lift bg-surface rounded-xl border border-border shadow-card overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-4 text-left active:bg-border/30 transition-colors"
+        className="w-full flex items-center justify-between p-4 text-left transition-colors"
       >
         <div className="flex-1 min-w-0 pr-3">
           <p className="font-semibold text-foreground text-sm leading-snug">{title}</p>
@@ -97,10 +97,10 @@ function GenericCard({
 function CustomVocabCard({ item, onDelete }: { item: CustomVocabItem; onDelete: () => void }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="bg-surface rounded-xl border border-accent/30 shadow-sm overflow-hidden">
+    <div className="card-lift bg-surface rounded-xl border border-accent/30 shadow-card overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-4 text-left active:bg-border/30 transition-colors"
+        className="w-full flex items-center justify-between p-4 text-left transition-colors"
       >
         <div className="flex-1 min-w-0 pr-3">
           <div className="flex items-center gap-2 flex-wrap">
@@ -290,8 +290,8 @@ export default function RessourcesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="bg-surface border-b border-border px-4 pt-6 pb-0">
-        <h1 className="text-2xl font-bold text-foreground mb-3">Ressources</h1>
+      <header className="bg-surface border-b border-border px-4 pt-8 pb-0">
+        <h1 className="text-2xl font-extrabold text-foreground tracking-tight mb-3">Ressources</h1>
         <div className="relative mb-3">
           <svg
             className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted"

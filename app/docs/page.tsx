@@ -63,8 +63,8 @@ export default function DocsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="bg-surface border-b border-border px-4 pt-6 pb-4">
-        <h1 className="text-2xl font-bold text-foreground mb-3">Mes documents</h1>
+      <header className="bg-surface border-b border-border px-4 pt-8 pb-4">
+        <h1 className="text-2xl font-extrabold text-foreground tracking-tight mb-3">Mes documents</h1>
         <div className="relative">
           <svg
             className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted"
@@ -89,7 +89,7 @@ export default function DocsPage() {
         </div>
       </header>
 
-      <div className="px-4 pt-4 pb-4 space-y-4">
+      <div className="px-4 pt-5 pb-6 space-y-5">
         <div className="flex gap-2">
           {FILTERS.map((f) => (
             <button
@@ -132,7 +132,7 @@ export default function DocsPage() {
               return (
                 <div
                   key={doc.data.id}
-                  className="bg-surface rounded-2xl p-4 border border-border shadow-sm"
+                  className="card-lift bg-surface rounded-2xl p-5 border border-border shadow-card"
                 >
                   <div className="flex items-start gap-3 mb-3">
                     <span className="text-2xl flex-shrink-0">{icon}</span>

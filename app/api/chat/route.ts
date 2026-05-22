@@ -124,26 +124,34 @@ export async function POST(req: NextRequest) {
       .filter((m) => m.role === "user" || m.role === "assistant")
       .map((m) => ({ role: m.role as "user" | "assistant", content: String(m.content) }));
 
-    const mistralRes = await fetch("https://api.mistral.ai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "mistral-small-latest",
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...validMessages,
-        ],
-        stream: true,
-      }),
+    const body = JSON.stringify({
+      model: "mistral-small-latest",
+      messages: [
+        { role: "system", content: systemPrompt },
+        ...validMessages,
+      ],
+      stream: true,
     });
 
-    if (!mistralRes.ok) {
-      const errText = await mistralRes.text();
+    let mistralRes: Response | null = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      mistralRes = await fetch("https://api.mistral.ai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+        },
+        body,
+      });
+      if (mistralRes.status !== 429) break;
+      if (attempt < 2) await new Promise((r) => setTimeout(r, 2000));
+    }
+
+    if (!mistralRes!.ok) {
+      const errText = await mistralRes!.text();
+      const isRateLimit = mistralRes!.status === 429;
       return new Response(
-        JSON.stringify({ error: `Erreur Mistral ${mistralRes.status}: ${errText}` }),
+        JSON.stringify({ error: isRateLimit ? "Trop de requêtes, veuillez réessayer dans quelques secondes." : `Erreur Mistral ${mistralRes!.status}: ${errText}` }),
         { status: 500, headers: { "Content-Type": "application/json" } },
       );
     }
@@ -153,7 +161,7 @@ export async function POST(req: NextRequest) {
 
     const stream = new ReadableStream({
       async start(controller) {
-        const reader = mistralRes.body!.getReader();
+        const reader = mistralRes!.body!.getReader();
         let buffer = "";
         try {
           while (true) {

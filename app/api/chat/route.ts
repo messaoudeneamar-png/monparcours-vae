@@ -94,7 +94,8 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const systemPrompt = MODE_PROMPTS[mode as string] ?? MODE_PROMPTS.default;
+    const today = new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const systemPrompt = `Nous sommes le ${today}.\n\n${MODE_PROMPTS[mode as string] ?? MODE_PROMPTS.default}`;
 
     const validMessages = messages
       .filter((m) => m.role === "user" || m.role === "assistant")

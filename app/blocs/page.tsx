@@ -15,11 +15,11 @@ const TABS: { key: Tab; label: string; color: string }[] = [
   { key: "jury", label: "Jury", color: "#6B7280" },
 ];
 
-// ── Données pédagogiques ───────────────────────────────────────────────────
-
 type Auteur = { nom: string; concept: string; phrase: string; terrain: string };
 type Loi = { date: string; nom: string; quoi: string };
 type Exemple = { contexte: string; action: string; analyse: string; lien: string; convaincu: string };
+
+// ── Données pédagogiques MECS — adolescents 13-21 ans ─────────────────────
 
 const BLOC_PEDAGOGY: Record<BlocKey, {
   jury: string[];
@@ -27,348 +27,353 @@ const BLOC_PEDAGOGY: Record<BlocKey, {
   lois: Loi[];
   exemples: Exemple[];
 }> = {
+
+  // BC1 — Crise au repas + projet de stage
   bc1: {
     jury: [
-      "Analyser la situation, pas la raconter — le jury veut votre lecture professionnelle, pas un récit chronologique",
-      "Citer des auteurs naturellement, en lien direct avec la situation, pas de manière récitée hors contexte",
-      "Montrer comment vous avez adapté votre posture éducative en cours d'action",
-      "Nommer ce que vous auriez fait différemment et pourquoi — la réflexivité compte autant que l'action",
-      "Relier chaque intervention à un besoin identifié de la personne et à un objectif du PPE",
+      "Analyser la crise au repas comme un signal, pas un incident disciplinaire — qu'exprimait ce jeune à ce moment ?",
+      "Montrer que le projet de stage a été co-construit avec le jeune, pas décidé à sa place par l'équipe",
+      "Décrire votre posture pendant la crise : mots, voix, distance — et expliquer pourquoi ces choix précis",
+      "Relier la crise au besoin de sécurité (Maslow) et à l'histoire du jeune — parcours ASE, troubles de l'attachement",
+      "Nommer ce que vous auriez fait différemment et ce que l'incident vous a appris sur votre pratique",
     ],
     auteurs: [
       {
         nom: "Donald Winnicott",
         concept: "Holding / contenance",
-        phrase: "Tenir l'enfant (au sens symbolique) pour lui permettre de se construire.",
-        terrain: "Gérer une crise en MECS en restant calme et prévisible face aux comportements violents.",
+        phrase: "Tenir l'adolescent émotionnellement, même quand il rejette tout — c'est la fonction contenante.",
+        terrain: "Face à la crise au repas : rester calme, voix basse, ne pas répondre à la provocation. La régularité de votre présence sécurisante, c'est du holding.",
       },
       {
         nom: "Anton Makarenko",
         concept: "Pédagogie collective / responsabilité",
-        phrase: "Le groupe éduque autant que l'éducateur — la vie collective est formatrice.",
-        terrain: "S'appuyer sur la dynamique de groupe en foyer pour responsabiliser les jeunes.",
+        phrase: "Le groupe éduque autant que l'éducateur — la vie collective est en elle-même formatrice.",
+        terrain: "Impliquer les jeunes de la MECS dans la préparation du repas pour créer un sens des responsabilités collectives — l'incident au repas devient un levier éducatif.",
       },
       {
         nom: "Lev Vygotski",
-        concept: "Zone proximale de développement (ZPD)",
-        phrase: "Travailler juste au-delà de ce que la personne sait faire seule, avec un étayage progressif.",
-        terrain: "Adapter les objectifs du PPE à ce que le jeune peut atteindre avec accompagnement.",
+        concept: "Zone Proximale de Développement (ZPD)",
+        phrase: "Accompagner là où le jeune ne peut pas encore aller seul, avec un étayage progressif et adapté.",
+        terrain: "Pour le projet de stage, partir des compétences réelles du jeune et construire des objectifs atteignables avec votre soutien — ni trop facile, ni écrasant.",
       },
       {
         nom: "Carl Rogers",
         concept: "Empathie, congruence, regard positif inconditionnel",
-        phrase: "Créer une relation d'aide authentique fondée sur l'acceptation inconditionnelle de la personne.",
-        terrain: "Maintenir une posture bienveillante face à un usager agressif ou en rupture.",
+        phrase: "Accepter l'adolescent tel qu'il est, même dans ses comportements les plus difficiles — sans jugement.",
+        terrain: "Après la crise au repas, ne pas étiqueter le jeune 'violent' ou 'ingérable' mais chercher à comprendre ce qu'il exprimait — et le lui dire.",
       },
       {
         nom: "Célestin Freinet",
-        concept: "Pédagogie active / expression libre",
-        phrase: "L'apprendre par le faire — l'expression de soi est un droit éducatif fondamental.",
-        terrain: "Utiliser les ateliers créatifs ou le journal de bord comme outils éducatifs en DITEP.",
+        concept: "Pédagogie active / apprendre par le faire",
+        phrase: "Toute activité concrète est un support éducatif — l'expérimentation précède la réflexion.",
+        terrain: "Le projet de stage est un levier d'apprentissage concret : permettre au jeune d'expérimenter un métier pour se projeter dans l'avenir sans passer par l'abstraction scolaire.",
       },
     ],
     lois: [
       {
         date: "2002",
-        nom: "Loi 2002-2 — Rénovation de l'action sociale",
-        quoi: "Crée 7 droits des usagers (PPE, CVS, charte, livret d'accueil…). Le PPE devient obligatoire — il structure votre accompagnement éducatif.",
+        nom: "Loi 2002-2 — PPE et droits des usagers",
+        quoi: "Le PPE co-construit avec le jeune est obligatoire. Il structure l'accompagnement éducatif et doit inclure le projet de stage comme objectif formalisé. En MECS, il est le cadre de référence de toute intervention.",
       },
       {
         date: "2007",
         nom: "Loi 2007-293 — Protection de l'enfance",
-        quoi: "Crée la CRIP, renforce l'obligation de signalement. L'éducateur devient acteur clé du repérage et de la transmission des IP.",
+        quoi: "Renforce l'obligation de signalement. En MECS, une crise au repas peut révéler un signal de danger — l'éducateur doit évaluer le risque et alerter si nécessaire la CRIP.",
       },
       {
         date: "2016",
-        nom: "Loi 2016-297 — Révision du PPE",
-        quoi: "Rend la révision annuelle du PPE obligatoire avec participation de l'enfant. Renforce la co-construction du projet éducatif.",
+        nom: "Loi 2016-297 — Révision annuelle du PPE",
+        quoi: "La révision du PPE est obligatoire chaque année avec la participation active du jeune. Le projet de stage peut figurer dans les objectifs CT (court terme) ou MT (moyen terme) du PPE.",
       },
       {
         date: "CASF",
-        nom: "Article L226-3 — Signalement",
-        quoi: "Encadre l'obligation de transmission d'IP à la CRIP. Tout professionnel ayant connaissance d'un enfant en danger est concerné.",
+        nom: "Article L226-3 — Obligation de signalement",
+        quoi: "Tout professionnel ayant connaissance d'un mineur en danger doit transmettre une Information Préoccupante à la CRIP. Une crise répétée peut être un indicateur à évaluer collectivement.",
       },
       {
         date: "1989",
-        nom: "Convention ONU — Droits de l'enfant",
-        quoi: "Principe d'intérêt supérieur de l'enfant, droit à l'expression et à la participation. Fonde l'approche droits-basée de l'accompagnement.",
+        nom: "Convention ONU — Droits de l'enfant (art. 12)",
+        quoi: "Tout enfant a le droit d'exprimer son opinion sur les décisions qui le concernent. Le projet de stage doit partir du projet du jeune, pas de celui de l'équipe pour lui.",
       },
     ],
     exemples: [
       {
-        contexte: "Adolescent de 15 ans en MECS présentant des comportements violents récurrents envers ses pairs et les adultes.",
-        action: "Mise en place d'un espace de parole hebdomadaire individuel, introduction de la médiation artistique (peinture), co-rédaction d'un contrat de comportement avec l'équipe.",
-        analyse: "Mobilisation du concept de holding (Winnicott) : la régularité de l'espace de parole crée la contenance nécessaire. La médiation artistique ouvre un canal d'expression non verbale.",
-        lien: "C1.1 — Observer, analyser et évaluer la situation de la personne ; C1.3 — Concevoir et conduire le PPE.",
-        convaincu: "Citation naturelle de Winnicott avec exemple précis tirée de la pratique, auto-analyse des ajustements de posture face aux comportements violents.",
+        contexte: "MECS, groupe de 7 adolescents (14-18 ans). M. K., 16 ans, entre en tension avec un pair lors du repas du soir sur une question de place à table. La situation dégénère : insultes, renversement d'assiettes, tentative de frapper l'autre jeune.",
+        action: "Demande immédiate aux autres jeunes de quitter la salle à manger calmement. Approche de M. K. : voix basse, posture ouverte, pas de contact physique. Nommer l'émotion : 'Je vois que tu es très en colère.' Attente de l'apaisement sans raisonner. Après 15 min : proposition d'un entretien individuel différé de 30 min. Transmission écrite factuelle et chronologique en fin de service.",
+        analyse: "La crise traduit une difficulté à gérer la frustration et une hypersensibilité aux interactions de groupe — fréquente chez des jeunes avec un parcours de ruptures (Winnicott : carences précoces, troubles de l'attachement). La place à table est devenue un enjeu de reconnaissance. Mon intervention a joué une fonction contenante (holding) : ma stabilité émotionnelle a permis l'apaisement.",
+        lien: "C1.1 — Observer et analyser une situation éducative complexe ; C1.2 — Gérer une situation de crise en préservant la sécurité de tous.",
+        convaincu: "Distinction entre l'incident (renversement) et ce qu'il signifie (besoin de reconnaissance non satisfait). Citation naturelle de Winnicott. Auto-analyse de la posture adoptée et de ses effets.",
       },
       {
-        contexte: "Fratrie de 3 enfants séparés suite à une mesure de placement en urgence, maintien des liens fraternels compromis.",
-        action: "Organisation de visites médiatisées hebdomadaires, rédaction d'un PPE spécifique pour chaque enfant intégrant la dimension fraternelle, coordination avec les familles d'accueil respectives.",
-        analyse: "Référence à Bowlby (théorie de l'attachement) : le maintien des liens fraternels est un facteur protecteur. Articulation avec la loi 2007-293 sur la protection de l'enfance.",
-        lien: "C1.3 — Concevoir et conduire le PPE ; C1.4 — Mobiliser les ressources de l'environnement familial.",
-        convaincu: "Capacité à articuler théorie de l'attachement et réalité terrain, connaissance précise de la loi 2007-293 et de ses implications pratiques.",
+        contexte: "MECS, M. T., 17 ans, sous mesure ASE, 3 structures en 4 ans. Fort intérêt pour la mécanique, refus de toute scolarité classique. Approche de la majorité à 18 ans, risque de rupture à la sortie.",
+        action: "Entretiens hebdomadaires pour explorer ses intérêts réels. Prise de contact avec un garagiste du territoire acceptant un jeune en stage. Mise en place d'un stage découverte de 2 semaines intégré au PPE. Co-rédaction des objectifs avec M. T. Réunion de synthèse avec l'ASE référente pour ajuster le parcours post-18 ans.",
+        analyse: "Le projet de stage comme outil éducatif (Freinet : apprendre par le faire) et comme support à la projection dans l'avenir. Vygotski : travailler dans la ZPD de M. T. — partir de son intérêt réel (mécanique) pour l'amener vers une insertion professionnelle. La co-construction du PPE renforce son sentiment d'être acteur de son propre projet.",
+        lien: "C1.3 — Concevoir et conduire le PPE ; C1.4 — Mobiliser les ressources de l'environnement familial et territorial.",
+        convaincu: "Co-construction du projet avec le jeune — pas décidé à sa place. Articulation entre compétences du jeune, objectifs du PPE et coordination partenariale avec l'ASE.",
       },
     ],
   },
 
+  // BC2 — Fugue
   bc2: {
     jury: [
-      "Distinguer clairement ce que VOUS vouliez pour la personne et ce qu'ELLE voulait — le jury traque le paternalisme",
-      "Montrer comment vous avez rendu le choix possible, même dans une situation contrainte ou risquée",
-      "Nommer les dilemmes éthiques rencontrés et expliquer comment vous les avez traités",
-      "Prouver que le PPE a été co-construit avec l'usager et non rédigé pour lui",
-      "Démontrer votre connaissance des droits des personnes (loi 2002-2, loi 2005-102) dans votre pratique quotidienne",
+      "Lire la fugue comme un acte de communication — qu'est-ce que ce jeune tentait de dire ou d'obtenir en partant ?",
+      "Distinguer votre réaction immédiate (sécurité, protocole) et votre analyse professionnelle (sens de l'acte)",
+      "Montrer ce qui s'est passé AU RETOUR : accueil, entretien sans jugement, révision du PPE — c'est là que l'éducation se joue",
+      "Nommer le dilemme éthique entre protection institutionnelle et droit à l'autodétermination du jeune",
+      "Prouver que votre réponse éducative a été co-construite avec le jeune après la fugue, pas imposée unilatéralement",
     ],
     auteurs: [
       {
         nom: "Charles Gardou",
         concept: "Société inclusive / vulnérabilité partagée",
-        phrase: "Le handicap n'est pas l'attribut d'une personne — c'est le produit de l'interaction entre une personne et son environnement.",
-        terrain: "Adapter l'environnement physique et social d'un ESAT plutôt que de contraindre la personne à s'y conformer.",
+        phrase: "L'institution ne doit pas aggraver la fragilité du jeune en le contraignant davantage — elle doit s'adapter à lui.",
+        terrain: "Face à une fugue répétée, s'interroger sur ce que la MECS peut changer dans son fonctionnement pour que le jeune s'y sente moins enfermé et plus sujet.",
       },
       {
         nom: "Michel Foucault",
-        concept: "Pouvoir / discipline / institution",
-        phrase: "Les institutions produisent des sujets assujettis — l'éducateur doit en être conscient pour ne pas reproduire la domination.",
-        terrain: "Analyser comment les règles institutionnelles d'un foyer peuvent entraver l'autodétermination des résidents.",
+        concept: "Institution / pouvoir / résistance",
+        phrase: "Les institutions produisent du pouvoir sur les corps — la fugue peut être une résistance à cette emprise.",
+        terrain: "Analyser les règles de la MECS qui génèrent de la résistance (horaires, téléphone, permissions) et proposer des ajustements pour réduire les tensions.",
       },
       {
         nom: "Amartya Sen",
-        concept: "Capabilités / pouvoir d'agir",
-        phrase: "Ce qui compte, c'est ce que la personne est réellement capable de faire et d'être — pas seulement ce qu'elle possède.",
-        terrain: "Évaluer les capacités réelles d'un usager au-delà de son diagnostic pour construire son projet personnalisé.",
+        concept: "Capabilités / pouvoir d'agir réel",
+        phrase: "Ce qui compte, c'est ce que le jeune est réellement capable de faire et de choisir — pas ce que l'institution décide pour lui.",
+        terrain: "Le retour de fugue est l'occasion de reconstruire le projet avec le jeune en partant de ses capacités réelles et de ce qu'il veut, pas de ce que l'adulte pense être bon pour lui.",
       },
       {
         nom: "Alain Touraine",
-        concept: "Subjectivation / acteur social",
-        phrase: "Devenir acteur de sa vie, c'est résister aux logiques sociales qui nous réduisent à un rôle.",
-        terrain: "Soutenir un usager dans un CHRS pour qu'il reprenne la parole sur son propre parcours de réinsertion.",
+        concept: "Subjectivation / être acteur de sa vie",
+        phrase: "Le jeune n'est pas seulement un objet des institutions — il est aussi l'auteur de sa propre vie, même maladroitement.",
+        terrain: "La fugue est peut-être un acte de subjectivation — le jeune affirme qu'il existe au-delà de ce que l'institution pense de lui. L'entretien de retour doit reconnaître cela.",
       },
       {
         nom: "François Dubet",
-        concept: "Expérience sociale / logiques d'action",
-        phrase: "Les individus combinent plusieurs logiques d'action pour donner sens à leur expérience — l'éducateur doit comprendre cette complexité.",
-        terrain: "Comprendre pourquoi un jeune adulte suivi par la PJJ refuse l'aide tout en demandant de la présence.",
+        concept: "Expérience sociale / logiques d'action multiples",
+        phrase: "Les individus combinent plusieurs logiques d'action pour donner sens à leur expérience — comprendre celle du jeune fugiteur.",
+        terrain: "Analyser POURQUOI le jeune a fugué : famille, pair, conflits internes, règlement ? La réponse éducative dépend de cette lecture — pas d'un protocole uniforme.",
       },
     ],
     lois: [
       {
         date: "2002",
-        nom: "Loi 2002-2 — 7 droits des usagers",
-        quoi: "Fonde le droit à l'information, à la participation, au respect de la dignité. Le document individuel de prise en charge (DIPC) formalise les droits de la personne dans sa relation avec la structure.",
+        nom: "Loi 2002-2 — Droits des usagers (art. L311-3)",
+        quoi: "Droit au respect de la dignité, à la confidentialité, à la participation. La fugue interroge la place du jeune dans son propre projet — l'entretien de retour doit lui redonner la parole.",
       },
       {
-        date: "2005",
-        nom: "Loi 2005-102 — Handicap",
-        quoi: "Principe de compensation du handicap, création des MDPH, obligation d'accessibilité. Fonde le droit à un projet de vie choisi par la personne handicapée.",
+        date: "1989",
+        nom: "Convention ONU — Droits de l'enfant (art. 12)",
+        quoi: "Tout enfant a le droit d'exprimer son opinion sur les décisions qui le concernent. Après une fugue, l'entretien de retour doit donner la parole au jeune sans jugement ni injonction immédiate.",
       },
       {
         date: "2007",
-        nom: "Loi 2007-308 — Tutelles et protection juridique",
-        quoi: "Réforme la protection des majeurs (tutelle, curatelle, sauvegarde). L'éducateur doit connaître la procédure pour ne pas agir à la place d'un mandataire judiciaire.",
+        nom: "Loi 2007-293 — Danger et obligation de signalement",
+        quoi: "La fugue déclenche une obligation d'évaluation du risque. Si elle met le jeune en danger (réseau, violence, fugue dans un contexte familial à risque), l'éducateur doit alerter la CRIP.",
       },
       {
-        date: "2022",
-        nom: "Loi 2022-140 — Inclusion du handicap",
-        quoi: "Renforce les droits à l'autodétermination des personnes handicapées, notamment en ESSMS. Intègre explicitement le consentement éclairé dans les pratiques.",
+        date: "2016",
+        nom: "Loi 2016-297 — Révision du PPE",
+        quoi: "La fugue est un signal de révision du PPE — elle indique que le projet actuel ne correspond plus aux besoins ou aux aspirations du jeune. Cette révision doit être faite avec lui.",
       },
       {
-        date: "2006",
-        nom: "Convention ONU — Droits des personnes handicapées",
-        quoi: "Article 19 : droit à vivre dans la société avec les mêmes choix. Fonde l'approche inclusiviste et l'exigence d'autodétermination dans tout projet personnalisé.",
+        date: "CASF",
+        nom: "Article L222-5 — Hébergement des mineurs",
+        quoi: "En cas de fugue, l'établissement doit informer sans délai l'autorité judiciaire ou administrative à l'origine de la mesure (ASE ou juge). Le protocole fugue de l'établissement s'y réfère.",
       },
     ],
     exemples: [
       {
-        contexte: "Adulte avec TDI (trouble du développement intellectuel) en ESAT exprimant le souhait de quitter sa famille d'accueil pour vivre seul — projet jugé irréaliste par l'équipe.",
-        action: "Organisation de trois réunions tripartites (usager/famille/équipe), utilisation d'outils FALC pour faciliter l'expression, expérimentation progressive d'appartement partagé.",
-        analyse: "Référence aux capabilités de Sen : ce n'est pas à l'équipe de définir ce qui est possible. Mobilisation du modèle anthropologique de Gardou : l'environnement doit s'adapter, pas seulement la personne.",
-        lien: "C2.1 — Favoriser l'expression de la personne ; C2.2 — Soutenir la construction du projet personnalisé.",
-        convaincu: "Prise de risque acceptée avec la personne dans le respect de son autodétermination, démarche documentée avec les outils FALC.",
+        contexte: "MECS, M. A., 15 ans, placé depuis 8 mois suite à négligence parentale. Première fugue un vendredi soir après un appel téléphonique avec sa mère. Retour spontané le dimanche matin.",
+        action: "Dès la fugue signalée : appel à l'ASE référente, signalement aux forces de l'ordre selon protocole. Accueil au retour sans jugement : 'Je suis soulagé que tu sois rentré.' Entretien individuel différé de 2 heures pour lui laisser le temps de décompresser. Écoute de ce qui s'était passé chez lui pendant la fugue. Transmission factuelle. Réunion d'équipe avec révision du PPE à la semaine suivante.",
+        analyse: "La fugue fait suite à un appel avec la mère — elle révèle le conflit de loyauté entre famille et institution (Bowlby : attachement, Foucault : résistance institutionnelle). M. A. a besoin que la MECS laisse une place à sa famille dans son projet. Analyse : la rigidité du planning des appels téléphoniques contribuait à la tension. Ajustement proposé en équipe : plage horaire élargie pour les appels familiaux.",
+        lien: "C2.1 — Favoriser l'expression et le projet du jeune ; C2.3 — Gérer une situation de crise dans le respect de la personne.",
+        convaincu: "Lecture de la fugue comme acte de communication (pas simple infraction au règlement). Remise en question d'une règle institutionnelle rigide. Entretien de retour mené sans jugement avec espace d'expression pour le jeune.",
       },
       {
-        contexte: "Jeune majeur sorti de l'ASE à 18 ans refusant tout suivi institutionnel malgré une situation précaire (sans logement stable, en rupture familiale).",
-        action: "Maintien d'un contact mensuel informel (café), sans enjeu de suivi officiel, jusqu'à ce que le jeune sollicite de l'aide trois mois plus tard.",
-        analyse: "Mobilisation du concept de subjectivation de Touraine : respecter le droit au refus tout en restant disponible. Référence à l'expérience sociale de Dubet pour comprendre la logique du jeune.",
-        lien: "C2.4 — Soutenir la participation et la citoyenneté ; C2.3 — Gérer les situations de crise.",
-        convaincu: "Respect du 'droit au refus' sans abandon, capacité à distinguer urgence ressentie par le professionnel et demande réelle de l'usager.",
+        contexte: "MECS, Mme B., 16 ans, refus catégorique de retourner au lycée après un incident avec un professeur. Absentéisme croissant, risque de décrochage scolaire et de rupture du placement.",
+        action: "Entretiens hebdomadaires pour comprendre sa vision de l'école et ce qu'elle voulait pour elle-même. Réunion de synthèse avec l'enseignant référent, le CPE et l'ASE. Exploration d'alternatives (CFA, stage de découverte, dispositif PPAD). Co-rédaction d'un avenant au PPE intégrant ses propres choix avec des objectifs SMART.",
+        analyse: "Référence à Sen (capabilités) : l'orientation scolaire imposée nie les capacités réelles et les aspirations de Mme B. Référence à Touraine : elle affirme son existence en résistant. Le travail éducatif consiste à restaurer son sentiment de compétence en l'aidant à trouver une voie qui lui correspond.",
+        lien: "C2.2 — Soutenir la construction du projet personnalisé ; C2.4 — Soutenir la participation et la citoyenneté.",
+        convaincu: "Respect du refus comme expression d'un besoin légitime. Recherche d'alternatives co-construites avec la jeune. Mobilisation des partenaires sans imposer la solution de l'adulte.",
       },
     ],
   },
 
+  // BC3 — Synthèses ASE / PJJ / école
   bc3: {
     jury: [
-      "Nommer des partenaires RÉELS (MDPH, CAF, conseil départemental, associations locales) en expliquant leur rôle précis",
-      "Montrer que vous avez INITIÉ une démarche partenariale, pas juste participé à une réunion existante",
-      "Démontrer votre connaissance du territoire : ses ressources, ses carences, ses enjeux politiques",
-      "Expliquer comment vous avez géré un désaccord ou une tension entre partenaires",
-      "Intégrer la transition écologique dans votre réflexion territoriale (attendu obligatoire en 2025)",
+      "Nommer précisément qui était présent à la synthèse, son rôle institutionnel et ce qu'il représentait — ASE, PJJ, EN, famille, jeune",
+      "Montrer que vous avez préparé et animé la réunion, pas juste participé — bilan éducatif, ordre du jour, compte-rendu",
+      "Décrire les tensions entre partenaires (logique sécuritaire PJJ vs socio-éducative MECS) et expliquer comment vous les avez régulées",
+      "Montrer que le jeune et/ou sa famille ont été associés à la synthèse — ou justifier pourquoi ils ne l'ont pas été",
+      "Expliquer comment les décisions de la synthèse ont été intégrées concrètement dans le PPE du jeune",
     ],
     auteurs: [
       {
         nom: "Jacques Donzelot",
-        concept: "Ville à trois vitesses / exclusion territoriale",
-        phrase: "Les villes se fragmentent : périurbanisation des classes moyennes, relégation des plus pauvres, gentrification des centres.",
-        terrain: "Analyser les inégalités d'accès aux services dans un quartier QPV pour justifier une action de proximité.",
+        concept: "Exclusion territoriale / ville à trois vitesses",
+        phrase: "Les parcours des jeunes en MECS sont souvent le produit d'inégalités territoriales cumulées — le territoire joue un rôle dans les difficultés.",
+        terrain: "En réunion de synthèse, situer le territoire du jeune (quartier, école, ressources locales) pour contextualiser ses difficultés et identifier les partenaires pertinents.",
       },
       {
         nom: "Robert Castel",
         concept: "Désaffiliation / vulnérabilité sociale",
-        phrase: "La désaffiliation n'est pas une chute brutale mais un processus progressif de délitement des liens sociaux et professionnels.",
-        terrain: "Comprendre le parcours d'une famille en errance résidentielle comme résultat d'une désaffiliation cumulée.",
+        phrase: "La désaffiliation n'est pas une chute brutale — c'est un processus progressif de délitement des liens sociaux, familiaux et scolaires.",
+        terrain: "Analyser le parcours du jeune en MECS comme accumulation de ruptures (famille, école, pairs, territoire) pour mieux cibler les réponses partenariales et recréer des liens.",
       },
       {
         nom: "Jacques Ion",
-        concept: "Travail social à l'épreuve / militantisme distancié",
-        phrase: "Le travail social contemporain est traversé par des tensions entre logique gestionnaire et engagement militant.",
-        terrain: "Analyser les résistances institutionnelles qui freinent la mise en place d'un partenariat innovant.",
+        concept: "Travail social à l'épreuve / tensions institutionnelles",
+        phrase: "Le travail social contemporain est traversé par des tensions entre logique gestionnaire et engagement professionnel — il faut les nommer.",
+        terrain: "En synthèse ASE/PJJ/école, nommer explicitement la tension entre la logique sécuritaire du magistrat et la logique socio-éducative de l'équipe MECS — et chercher un accord.",
       },
       {
         nom: "Philippe Warin",
         concept: "Non-recours aux droits",
         phrase: "Des millions de personnes n'accèdent pas aux droits auxquels elles ont droit — par méconnaissance, honte ou complexité administrative.",
-        terrain: "Mettre en place un dispositif d'aller-vers pour réduire le non-recours dans un quartier isolé.",
+        terrain: "En synthèse, vérifier si la famille du jeune a bien accès à ses droits (MDPH, CAF, CMU, aide juridictionnelle) et si des démarches sont à initier avec les partenaires.",
       },
       {
         nom: "Élisabeth Bourgeois",
-        concept: "Développement du pouvoir d'agir collectif",
-        phrase: "Le DPA collectif mobilise les compétences des personnes concernées pour transformer leur situation sociale.",
-        terrain: "Animer un groupe d'habitants dans le cadre d'un projet de rénovation urbaine pour qu'ils deviennent acteurs du projet.",
+        concept: "Développement du Pouvoir d'Agir collectif (DPA)",
+        phrase: "Le DPA mobilise les compétences des personnes concernées — le jeune et sa famille sont experts de leur propre situation.",
+        terrain: "Associer le jeune à la préparation de sa synthèse — lui donner la parole sur ce qu'il veut dire aux adultes réunis, ce qu'il a besoin qu'ils entendent.",
       },
     ],
     lois: [
       {
-        date: "2002",
-        nom: "Loi 2002-2 — Coordination territoriale",
-        quoi: "Impose un projet d'établissement incluant les partenariats. La coordination avec les acteurs du territoire devient une obligation institutionnelle.",
-      },
-      {
-        date: "2014",
-        nom: "Loi 2014-366 — ALUR (Accès au Logement)",
-        quoi: "Crée les Plans Locaux d'Urbanisme intercommunaux, renforce les SIAO. L'éducateur travaillant sur le logement doit connaître ces dispositifs.",
+        date: "2007",
+        nom: "Loi 2007-293 — Coordination autour du mineur protégé",
+        quoi: "Oblige la coordination entre ASE, PJJ, école et services de santé pour tout mineur sous mesure de protection. La réunion de synthèse est le lieu institutionnel de cette coordination.",
       },
       {
         date: "2016",
-        nom: "Loi 2016-41 — Modernisation du système de santé",
-        quoi: "Crée les Groupements Hospitaliers de Territoire (GHT) et renforce la coordination médico-sociale. Impose la notion de parcours de santé territorialisé.",
+        nom: "Loi 2016-297 — Synthèse annuelle obligatoire",
+        quoi: "La synthèse annuelle est obligatoire pour tout PPE. Elle doit associer le jeune et, quand c'est possible et pertinent, sa famille. Le compte-rendu est versé au dossier.",
       },
       {
-        date: "2005",
-        nom: "Loi 2005-32 — Cohésion sociale (Borloo)",
-        quoi: "Crée les Maisons de l'Emploi, renforce les CCAS et PLIE. Fonde les dispositifs d'insertion professionnelle territoriaux que l'éducateur mobilise.",
+        date: "CASF",
+        nom: "Article L226-2-1 — Secret professionnel partagé",
+        quoi: "Autorise le partage d'informations à caractère secret entre professionnels concourant à la protection de l'enfance, dans l'intérêt du mineur. Encadre la coordination ASE/PJJ/école.",
       },
       {
-        date: "2022",
-        nom: "Loi 3DS — Différenciation territoriale",
-        quoi: "Renforce les compétences des collectivités locales en matière sociale. L'éducateur doit connaître le rôle du département et de la commune dans son territoire.",
+        date: "2002",
+        nom: "Loi 2002-2 — Coordination et projet d'établissement",
+        quoi: "Impose la coordination avec les partenaires extérieurs comme partie intégrante du projet d'établissement de la MECS. Les partenariats ne sont pas optionnels.",
+      },
+      {
+        date: "2019",
+        nom: "CJPM — Code de la Justice Pénale des Mineurs",
+        quoi: "Clarifie le rôle de la PJJ et ses relations avec l'ASE. En cas de double mesure (placement ASE + suivi PJJ), la coordination entre les deux services est obligatoire et doit être tracée.",
       },
     ],
     exemples: [
       {
-        contexte: "Mise en place d'un CLAS (Contrat Local d'Accompagnement à la Scolarité) dans un quartier QPV suite à l'augmentation du décrochage scolaire identifiée en équipe.",
-        action: "Réalisation d'un diagnostic territorial avec les habitants, coordination de 5 partenaires (CAF, mairie, associations, école, CCAS), portage du projet sur 18 mois.",
-        analyse: "Référence aux travaux de Donzelot sur les inégalités territoriales et de Warin sur le non-recours : le CLAS réduit la distance entre les familles et le service public.",
-        lien: "C3.1 — Identifier et mobiliser les ressources du territoire ; C3.3 — Contribuer à un diagnostic territorial.",
-        convaincu: "Capacité à nommer les logiques institutionnelles de chaque partenaire et à expliquer comment les tensions entre eux ont été gérées.",
+        contexte: "MECS, M. D., 17 ans, double mesure : placement ASE et suivi PJJ (vol avec violence). Déscolarisé depuis 4 mois. Réunion de synthèse demandée par l'éducateur PJJ après un nouvel incident judiciaire.",
+        action: "Préparation en amont : bilan éducatif de M. D. (points d'appui, difficultés, projet), ordre du jour envoyé 5 jours avant. Animation de la réunion (ASE référente + éducateur PJJ + proviseur + équipe MECS). Gestion de la tension : l'éducateur PJJ souhaitait un placement plus sécurisé, l'équipe MECS défendait un maintien avec renforcement. Plan d'action à 3 mois avec indicateurs co-signé. M. D. associé à la 2e partie pour exprimer son projet. Compte-rendu rédigé et envoyé sous 48h.",
+        analyse: "Référence à Ion (tensions entre logiques) : la tension PJJ/MECS était réelle et liée à des mandats institutionnels différents, pas à des personnes. La nommer explicitement a permis de trouver un accord centré sur le jeune. Référence à Castel : M. D. est dans un processus de désaffiliation cumulée — la synthèse doit recréer des liens, pas seulement gérer l'urgence.",
+        lien: "C3.2 — S'inscrire dans une dynamique partenariale ; C3.4 — Rendre compte de son action aux partenaires institutionnels.",
+        convaincu: "Maîtrise des logiques institutionnelles de chaque partenaire. Gestion explicite et nommée de la tension. Association du jeune à la réunion avec préparation préalable.",
       },
       {
-        contexte: "Famille en situation d'errance résidentielle (6 déménagements en 18 mois) nécessitant une coordination urgente entre SIAO, CCAS, service tutelles et équipe éducative.",
-        action: "Organisation d'une réunion multi-partenaires avec accord écrit de la famille, mise en place d'un référent de parcours unique, utilisation du SIAO comme pivot.",
-        analyse: "Référence à Castel (désaffiliation cumulative) et à Ion (tensions entre logique gestionnaire et engagement). Analyse des résistances institutionnelles de chaque service.",
-        lien: "C3.2 — S'inscrire dans une dynamique partenariale et institutionnelle ; C3.4 — Rendre compte de son action.",
-        convaincu: "Analyse des limites du partenariat, des désaccords entre partenaires sur la notion de 'priorité' et de la manière dont ils ont été surmontés.",
+        contexte: "MECS, Mme C., 14 ans, absentéisme scolaire croissant (2-3 jours par semaine). L'établissement scolaire menace de signaler à la CRIP et d'engager une procédure de déscolarisation.",
+        action: "Initiative de contact avec le professeur principal et le CPE avant que le signalement soit fait. Réunion avec l'assistante sociale scolaire, l'ASE référente et l'équipe MECS. Analyse commune des causes (conflits avec pairs, difficultés scolaires non repérées, anxiété sociale). Plan d'action commun : tutorat scolaire + accompagnement éducatif renforcé matin + réunion de suivi mensuelle.",
+        analyse: "Référence à Warin (non-recours) : des dispositifs d'aide scolaire existaient (PPRE, aide personnalisée) mais n'avaient pas été mobilisés. Référence à Donzelot : l'école de secteur, éloignée de la MECS, renforçait l'isolement de Mme C. La coordination préventive a évité un signalement et une rupture scolaire.",
+        lien: "C3.1 — Identifier et mobiliser les ressources du territoire ; C3.3 — Contribuer à un diagnostic partagé avec les partenaires.",
+        convaincu: "Initiative de coordination prise par l'éducateur avant que la situation se détériore. Analyse des causes avant de proposer des solutions. Évitement du signalement par la prévention partenariale.",
       },
     ],
   },
 
+  // BC4 — Transmission mal faite + RDV médical loupé
   bc4: {
     jury: [
-      "Produire des écrits professionnels qui montrent la distinction entre faits observés et interprétations professionnelles",
-      "Démontrer une posture réflexive sur votre institution : vous en êtes partie prenante ET vous en êtes analyste",
-      "Expliquer comment vous avez géré un conflit d'équipe ou un désaccord professionnel de manière constructive",
-      "Montrer votre connaissance des obligations légales : RGPD, secret partagé, devoir de réserve",
-      "Décrire comment vous avez contribué à l'amélioration des pratiques ou au projet d'établissement",
+      "Assumer l'erreur sans l'esquiver — montrer que vous avez su identifier ce qui n'a pas fonctionné dans la transmission",
+      "Analyser les causes systémiques : format de transmission inadapté, surcharge en fin de service, manque de protocole — pas seulement la faute individuelle",
+      "Décrire les mesures correctives mises en place après l'incident : nouveau format, validation croisée, case obligatoire RDV",
+      "Montrer que le RDV médical a été rattrapé rapidement et que vous avez assuré la continuité des soins",
+      "Montrer votre posture réflexive : ce que cet incident vous a appris sur votre propre pratique et votre responsabilité professionnelle",
     ],
     auteurs: [
       {
         nom: "Erving Goffman",
-        concept: "Stigmate / institution totale",
-        phrase: "Le stigmate est une marque sociale qui réduit la personne à son écart à la norme — les institutions peuvent le produire.",
-        terrain: "Analyser comment un écrit professionnel (IP, rapport) peut stigmatiser une famille et prendre soin de la formulation.",
+        concept: "Institution totale / stigmate",
+        phrase: "L'institution totale peut réduire la personne à son écart à la norme — l'éducateur doit en être conscient dans ses écrits.",
+        terrain: "Dans les transmissions et rapports, décrire le jeune sans le réduire à ses 'comportements problèmes' — nommer aussi ses ressources et ses progrès.",
       },
       {
         nom: "Émile Durkheim",
-        concept: "Fait social / solidarité",
-        phrase: "Les faits sociaux ont une réalité propre qui s'impose aux individus — comprendre le contexte social est indispensable.",
-        terrain: "Contextualiser une situation de délinquance juvénile dans ses déterminants sociaux plutôt que de n'y voir qu'une défaillance individuelle.",
+        concept: "Fait social / solidarité organique",
+        phrase: "La transmission manquée est un fait social — elle dit quelque chose de l'organisation collective du travail, pas seulement de l'individu.",
+        terrain: "Analyser l'erreur de transmission comme le produit d'une organisation défaillante (format inadapté, manque de temps structurel) — et proposer une solution collective.",
       },
       {
         nom: "Christophe Dejours",
         concept: "Souffrance au travail / travail réel vs prescrit",
-        phrase: "Il y a toujours un écart entre le travail prescrit (les procédures) et le travail réel (ce qu'on fait pour que ça marche).",
-        terrain: "Analyser les tensions en équipe comme le produit d'un décalage entre les injonctions institutionnelles et la réalité du terrain.",
+        phrase: "Il y a toujours un écart entre le travail prescrit et le travail réel — les transmissions 'bâclées' révèlent cet écart.",
+        terrain: "En équipe, analyser pourquoi les transmissions sont souvent incomplètes en fin de service : surcharge, format inadapté, sentiment d'urgence qui fait sauter des étapes.",
       },
       {
         nom: "Philippe Zarifian",
-        concept: "Compétence / prise d'initiative",
-        phrase: "La compétence, c'est prendre l'initiative face à l'événement — pas appliquer une procédure.",
-        terrain: "Justifier une décision prise en urgence hors protocole en montrant qu'elle relevait d'une compétence professionnelle.",
+        concept: "Compétence / réponse à l'événement",
+        phrase: "La compétence, c'est savoir faire face à l'événement imprévu avec initiative et jugement — pas appliquer mécaniquement une procédure.",
+        terrain: "Face au RDV médical loupé : appeler le médecin immédiatement, obtenir un nouveau RDV en urgence, informer l'ASE. Réagir vite et bien — c'est de la compétence professionnelle en actes.",
       },
       {
         nom: "Michel Autès",
-        concept: "Travail social / lien social",
-        phrase: "Le travail social produit du lien social là où il est défait — c'est sa finalité fondamentale.",
-        terrain: "Positionner son rôle d'éducateur comme tisserand de liens dans une situation de rupture familiale ou sociale.",
+        concept: "Travail social / production de lien",
+        phrase: "Le travail social produit du lien social là où il est défait — la transmission est un acte de lien entre professionnels au service du jeune.",
+        terrain: "Une transmission soignée garantit la continuité du suivi éducatif et médical du jeune — c'est un acte éthique et professionnel, pas une formalité administrative.",
       },
     ],
     lois: [
       {
         date: "2002",
-        nom: "Loi 2002-2 — Projet d'établissement",
-        quoi: "Rend obligatoire le projet d'établissement et l'évaluation interne/externe. L'éducateur participe à la démarche qualité de sa structure.",
+        nom: "Loi 2002-2 — Continuité et qualité du service",
+        quoi: "Impose la continuité du service et la qualité de la prise en charge. Une transmission manquée ayant entraîné un RDV médical loupé peut constituer un manquement à ces obligations.",
       },
       {
         date: "2018",
-        nom: "RGPD — Règlement Général sur la Protection des Données",
-        quoi: "Encadre la collecte et l'usage des données personnelles des usagers. L'éducateur doit recueillir le consentement et limiter les données aux besoins réels.",
-      },
-      {
-        date: "2016",
-        nom: "Loi 2016-1088 — Travail (Loi El Khomri)",
-        quoi: "Introduit le droit à la déconnexion et renforce la négociation collective. L'éducateur peut mobiliser ce cadre pour analyser les conditions de travail en institution.",
-      },
-      {
-        date: "2014",
-        nom: "Loi 2014-288 — Formation professionnelle et VAE",
-        quoi: "Renforce le droit à la formation continue et à la VAE. Fonde le droit du candidat à faire reconnaître son expérience professionnelle par un diplôme d'État.",
+        nom: "RGPD — Protection des données médicales",
+        quoi: "Les données médicales des jeunes sont des données sensibles. Les transmissions médicales doivent rester dans le cercle des professionnels habilités et ne pas circuler par messagerie non sécurisée.",
       },
       {
         date: "CASF",
-        nom: "Secret professionnel partagé — L226-2-1",
-        quoi: "Autorise le partage d'informations entre professionnels concourant à la protection de l'enfance, dans l'intérêt du mineur. Encadre la coordination inter-institutionnelle.",
+        nom: "Article L311-4 — Droits du jeune hébergé",
+        quoi: "La continuité des soins est un droit du jeune hébergé en MECS. Un RDV médical loupé peut constituer une atteinte à ce droit — l'établissement en est responsable.",
+      },
+      {
+        date: "2014",
+        nom: "Loi 2014-288 — Formation professionnelle continue",
+        quoi: "Le droit à la formation continue inclut la formation aux écrits professionnels. Un éducateur peut solliciter une formation à la rédaction de transmissions et de rapports professionnels.",
+      },
+      {
+        date: "2002",
+        nom: "Loi 2002-73 — Responsabilité professionnelle",
+        quoi: "Encadre la responsabilité civile et pénale dans l'exercice professionnel. L'éducateur doit savoir que des manquements dans la transmission peuvent engager sa responsabilité.",
       },
     ],
     exemples: [
       {
-        contexte: "Rédaction d'une Information Préoccupante pour un enfant de 8 ans présentant des signes physiques et comportementaux évocateurs de maltraitance intrafamiliale.",
-        action: "Observation factuelle sur 3 semaines, concertation en réunion d'équipe, rédaction de l'IP en distinguant faits observés / hypothèses / éléments de contexte, suivi de la transmission à la CRIP.",
-        analyse: "Mobilisation de Goffman (stigmate) : veiller à ne pas stigmatiser la famille dans l'écrit tout en étant précis sur les faits. Référence à l'article L226-3 du CASF pour l'obligation de signalement.",
-        lien: "C4.2 — Produire des écrits professionnels adaptés ; C4.1 — Inscrire son action dans le cadre réglementaire.",
-        convaincu: "Maîtrise du cadre juridique (L226-3 CASF), posture éthique dans l'écrit (distinction faits/interprétations), analyse du positionnement institutionnel.",
+        contexte: "MECS, M. E., 15 ans, traitement médical quotidien pour épilepsie. Transmission de fin de service incomplète — la collègue prenant le relais ne sait pas qu'il a un RDV neurologique le lendemain matin. RDV manqué. Le médecin appelle l'établissement.",
+        action: "Dès l'appel du médecin : excuses, explication honnête, demande d'un nouveau RDV en urgence (obtenu 48h plus tard). Information immédiate à l'ASE référente et au chef de service. Rédaction d'une fiche d'incident selon le protocole. En réunion d'équipe : présentation de l'incident, analyse collective des causes (transmission orale + écrite mais sans case dédiée aux RDV médicaux urgents). Proposition acceptée : nouveau format de transmission avec case obligatoire 'RDV dans les 48h à venir' et validation croisée par la personne prenant le relais.",
+        analyse: "Référence à Dejours : l'incident révèle un écart entre le travail prescrit (transmettre toutes les informations importantes) et le travail réel (transmissions faites dans la précipitation en fin de service). Ce n'est pas une faute individuelle isolée — c'est un problème organisationnel. Référence à Zarifian : ma réaction rapide après l'incident (appel médecin, nouveau RDV, information hiérarchie) relève d'une compétence professionnelle.",
+        lien: "C4.2 — Produire des écrits professionnels adaptés ; C4.4 — Coopérer au sein de l'équipe et s'investir dans l'amélioration continue des pratiques.",
+        convaincu: "Assumer l'erreur sans l'esquiver ni la décharger sur la collègue. Analyse systémique (organisation) et non seulement individuelle. Mise en place d'une solution collective concrète et tracée.",
       },
       {
-        contexte: "Conflit ouvert en équipe autour de la prise en charge d'un usager 'difficile' — deux courants s'opposent sur l'attitude à adopter, créant une rupture dans la cohérence éducative.",
-        action: "Demande d'un temps d'analyse de pratiques en réunion d'équipe, facilitation du débat avec un superviseur externe, co-rédaction d'un protocole d'intervention partagé.",
-        analyse: "Référence à Dejours (souffrance au travail, travail réel vs prescrit) : le conflit révèle un décalage entre ce que l'institution prescrit et ce que l'équipe vit réellement. Zarifian sur la compétence collective.",
-        lien: "C4.4 — Coopérer au sein d'une équipe pluridisciplinaire ; C4.3 — Analyser sa pratique en posture réflexive.",
-        convaincu: "Posture réflexive courageuse sur sa propre place dans le conflit, capacité à nommer sa part de responsabilité sans auto-accusation.",
+        contexte: "MECS, Mme F., 17 ans, mesure judiciaire en cours de renouvellement. Le juge des enfants demande un rapport éducatif avant l'audience fixée dans 3 semaines.",
+        action: "Recueil de données sur les 6 derniers mois : observations quotidiennes, bilans scolaires, RDV santé, appels familiaux. Rédaction du rapport en distinguant faits observés / analyse professionnelle / préconisations. Présentation du rapport à Mme F. avant envoi au tribunal — elle a pu corriger un point factuel. Envoi au chef de service pour validation. Transmission dans les délais.",
+        analyse: "Référence à Goffman (stigmate) : veiller à ne pas réduire Mme F. à ses difficultés dans le rapport — équilibrer les éléments positifs (progrès scolaires, stabilisation) et les points de vigilance. Référence à Autès : le rapport est un acte de lien entre l'éducateur, le magistrat et la jeune — il doit lui rendre justice dans les deux sens du terme.",
+        lien: "C4.2 — Produire des écrits professionnels adaptés aux destinataires ; C4.1 — Inscrire son action dans le cadre réglementaire et judiciaire.",
+        convaincu: "Présentation du rapport à la jeune avant envoi (transparence et respect de la personne). Distinction claire faits/analyse dans l'écrit. Connaissance du calendrier judiciaire et respect des délais.",
       },
     ],
   },
 };
 
-// ── Données existantes ─────────────────────────────────────────────────────
+// ── Données évaluation et jury ─────────────────────────────────────────────
 
 const EVAL_DATA = [
   {
@@ -502,7 +507,7 @@ function BlocContent({ k }: { k: BlocKey }) {
 
   return (
     <div className="space-y-4">
-      {/* En-tête bloc */}
+      {/* En-tête */}
       <div className="rounded-2xl p-5 border border-border shadow-sm" style={{ backgroundColor: color + "12" }}>
         <div className="flex items-start gap-3 mb-3">
           <span className="text-3xl">{bloc.e}</span>
@@ -520,7 +525,7 @@ function BlocContent({ k }: { k: BlocKey }) {
           <span className="text-base">🎯</span>
           <h3 className="font-semibold text-foreground text-sm">Ce que le jury veut vraiment</h3>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {ped.jury.map((point, i) => (
             <div key={i} className="flex gap-3">
               <span
@@ -555,7 +560,7 @@ function BlocContent({ k }: { k: BlocKey }) {
                 <p className="text-sm text-foreground leading-relaxed italic">&ldquo;{a.phrase}&rdquo;</p>
               </div>
               <div className="bg-orange/5 rounded-xl p-3">
-                <p className="text-xs font-semibold text-orange uppercase tracking-wide mb-1">Sur le terrain</p>
+                <p className="text-xs font-semibold text-orange uppercase tracking-wide mb-1">Sur le terrain MECS</p>
                 <p className="text-sm text-foreground leading-relaxed">{a.terrain}</p>
               </div>
             </Accordion>
@@ -589,7 +594,7 @@ function BlocContent({ k }: { k: BlocKey }) {
         </div>
       </div>
 
-      {/* 4. Exemples de situations VAE validées */}
+      {/* 4. Exemples VAE validées */}
       <div>
         <div className="flex items-center gap-2 mb-3 px-1">
           <span className="text-base">✅</span>
@@ -597,7 +602,7 @@ function BlocContent({ k }: { k: BlocKey }) {
         </div>
         <div className="space-y-2">
           {ped.exemples.map((ex, i) => (
-            <Accordion key={i} title={`Exemple ${i + 1} — ${ex.contexte.slice(0, 55)}…`}>
+            <Accordion key={i} title={`Exemple ${i + 1} — ${ex.contexte.slice(0, 52)}…`}>
               <div>
                 <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-1">Contexte</p>
                 <p className="text-sm text-foreground leading-relaxed">{ex.contexte}</p>
@@ -610,14 +615,11 @@ function BlocContent({ k }: { k: BlocKey }) {
                 <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-1">Analyse réflexive</p>
                 <p className="text-sm text-foreground leading-relaxed">{ex.analyse}</p>
               </div>
-              <div
-                className="rounded-xl px-3 py-2"
-                style={{ backgroundColor: color + "12" }}
-              >
+              <div className="rounded-xl px-3 py-2" style={{ backgroundColor: color + "12" }}>
                 <p className="text-xs font-semibold mb-1" style={{ color }}>Lien référentiel</p>
                 <p className="text-xs text-foreground">{ex.lien}</p>
               </div>
-              <div className="bg-accent/8 rounded-xl px-3 py-2 border border-accent/15">
+              <div className="bg-accent/10 rounded-xl px-3 py-2 border border-accent/20">
                 <p className="text-xs font-semibold text-accent mb-1">Ce qui a convaincu le jury</p>
                 <p className="text-xs text-foreground leading-relaxed">{ex.convaincu}</p>
               </div>

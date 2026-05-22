@@ -780,6 +780,12 @@ function LivretsTab() {
 function SettingsTab() {
   const { theme, toggle } = useTheme();
   const [counts, setCounts] = useState({ sits: 0, ecrits: 0 });
+  const [repaired, setRepaired] = useState(false);
+  const [bugOpen, setBugOpen] = useState(false);
+  const [bugDesc, setBugDesc] = useState("");
+  const [bugSent, setBugSent] = useState(false);
+  const [bugLoading, setBugLoading] = useState(false);
+  const [bugError, setBugError] = useState("");
 
   useEffect(() => {
     try {
@@ -792,8 +798,43 @@ function SettingsTab() {
     } catch {}
   }, []);
 
+  const repairApp = () => {
+    try {
+      // Clear preferences and cache — keep user data (sits, ecrits, vocab, quiz)
+      localStorage.removeItem("vae_theme");
+      localStorage.removeItem("vae_onboarding_done");
+      sessionStorage.removeItem("_vae_s");
+      sessionStorage.removeItem("_vae_started");
+      document.documentElement.removeAttribute("data-theme");
+    } catch {}
+    setRepaired(true);
+    setTimeout(() => window.location.reload(), 1500);
+  };
+
+  const sendBug = async () => {
+    if (!bugDesc.trim()) return;
+    setBugLoading(true);
+    setBugError("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ description: bugDesc.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Erreur lors de l'envoi.");
+      setBugSent(true);
+      setBugDesc("");
+    } catch (e) {
+      setBugError(e instanceof Error ? e.message : "Erreur lors de l'envoi.");
+    } finally {
+      setBugLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
+      {/* Dark mode */}
       <div className="bg-surface rounded-2xl p-5 border border-border shadow-card">
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1">
@@ -818,6 +859,75 @@ function SettingsTab() {
         </div>
       </div>
 
+      {/* Repair */}
+      <div className="bg-surface rounded-2xl p-5 border border-border shadow-card">
+        <p className="font-semibold text-foreground text-sm mb-1">🔧 Réparer l&apos;app</p>
+        <p className="text-xs text-muted leading-relaxed mb-4">
+          Vide le cache, réinitialise les préférences et recharge l&apos;app proprement. Vos données sont conservées.
+        </p>
+        {repaired ? (
+          <div className="flex items-center gap-2 bg-accent/10 rounded-xl px-4 py-3">
+            <span className="text-accent font-semibold text-sm">✅ App réparée — rechargement en cours…</span>
+          </div>
+        ) : (
+          <button
+            onClick={repairApp}
+            className="w-full py-3 rounded-xl bg-orange/10 text-orange font-semibold text-sm active:opacity-80 transition-opacity"
+          >
+            🔧 Réparer l&apos;app
+          </button>
+        )}
+      </div>
+
+      {/* Bug report */}
+      <div className="bg-surface rounded-2xl p-5 border border-border shadow-card">
+        <p className="font-semibold text-foreground text-sm mb-1">🐛 Signaler un bug</p>
+        <p className="text-xs text-muted leading-relaxed mb-4">
+          Un problème ? Décrivez-le et nous le corrigerons rapidement.
+        </p>
+        {bugSent ? (
+          <div className="bg-accent/10 rounded-xl px-4 py-3">
+            <p className="text-accent font-semibold text-sm">✅ Signalement envoyé, merci !</p>
+          </div>
+        ) : bugOpen ? (
+          <div className="space-y-3">
+            <textarea
+              value={bugDesc}
+              onChange={(e) => setBugDesc(e.target.value)}
+              placeholder="Décrivez le problème rencontré : que s'est-il passé, sur quelle page, qu'attendiez-vous ?"
+              rows={4}
+              className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-accent resize-none"
+            />
+            {bugError && (
+              <p className="text-xs text-orange">{bugError}</p>
+            )}
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setBugOpen(false); setBugDesc(""); setBugError(""); }}
+                className="flex-1 py-3 rounded-xl border border-border text-sm font-medium text-muted"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={sendBug}
+                disabled={!bugDesc.trim() || bugLoading}
+                className="flex-1 py-3 rounded-xl bg-accent text-white text-sm font-medium disabled:opacity-50"
+              >
+                {bugLoading ? "Envoi…" : "Envoyer"}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setBugOpen(true)}
+            className="w-full py-3 rounded-xl bg-blue/10 text-blue font-semibold text-sm active:opacity-80 transition-opacity"
+          >
+            🐛 Signaler un bug
+          </button>
+        )}
+      </div>
+
+      {/* Stats */}
       <div className="bg-surface rounded-2xl p-5 border border-border shadow-card">
         <p className="text-xs font-bold text-muted uppercase tracking-wider mb-4">Votre progression</p>
         <div className="space-y-2.5">
@@ -833,6 +943,7 @@ function SettingsTab() {
         </div>
       </div>
 
+      {/* About */}
       <div className="bg-surface rounded-2xl p-5 border border-border shadow-card">
         <p className="text-xs font-bold text-muted uppercase tracking-wider mb-4">À propos</p>
         <div className="space-y-2.5">

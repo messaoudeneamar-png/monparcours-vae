@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { QUIZ, ORAL, PLANNING } from "@/lib/data";
 import type { QuizItem, PlanningItem } from "@/lib/data";
 
@@ -280,6 +280,11 @@ function QuizTab() {
   const next = () => {
     const nextIdx = state.idx + 1;
     if (nextIdx >= state.questions.length) {
+      const pct = Math.round((state.score / state.questions.length) * 100);
+      try {
+        const best = parseInt(localStorage.getItem("vae_quiz_best_pct") ?? "0", 10);
+        if (pct > best) localStorage.setItem("vae_quiz_best_pct", pct.toString());
+      } catch {}
       setState((s) => ({ ...s, phase: "done" }));
     } else {
       setState((s) => ({ ...s, idx: nextIdx, selected: null, showResult: false }));
@@ -407,14 +412,184 @@ function QuizTab() {
   );
 }
 
+// ── JurySimulation ────────────────────────────────────────────────────────
+
+type JuryMsg = { role: "assistant" | "user"; content: string };
+
+function JurySimulation({ onClose }: { onClose: () => void }) {
+  const [msgs, setMsgs] = useState<JuryMsg[]>([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const exchangeCount = msgs.filter((m) => m.role === "user").length;
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [msgs]);
+
+  const doStream = async (history: JuryMsg[]) => {
+    setLoading(true);
+    setMsgs([...history, { role: "assistant", content: "" }]);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: history, mode: "oral" }),
+      });
+      if (!res.ok || !res.body) throw new Error();
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let text = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        text += decoder.decode(value, { stream: true });
+        setMsgs([...history, { role: "assistant", content: text }]);
+      }
+    } catch {
+      setMsgs([...history, { role: "assistant", content: "Erreur de connexion. Veuillez réessayer." }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    doStream([{ role: "user", content: "Bonjour, je suis prêt pour la simulation jury DEES." }]);
+  }, []);
+
+  const send = async () => {
+    if (!input.trim() || loading) return;
+    const userMsg: JuryMsg = { role: "user", content: input.trim() };
+    const next = [...msgs, userMsg];
+    setInput("");
+    await doStream(next);
+  };
+
+  const finishAndScore = async () => {
+    if (loading) return;
+    const req: JuryMsg = {
+      role: "user",
+      content:
+        "La simulation est terminée. Donnez-moi une évaluation détaillée avec une note sur 20, les points forts, les axes d'amélioration et des conseils précis pour la soutenance réelle.",
+    };
+    await doStream([...msgs, req]);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-background flex flex-col">
+      <header className="bg-surface border-b border-border px-4 py-3 flex items-center justify-between flex-shrink-0">
+        <div>
+          <p className="font-semibold text-foreground text-sm">Simulation jury DEES</p>
+          <p className="text-xs text-muted">
+            {exchangeCount} échange{exchangeCount !== 1 ? "s" : ""}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {exchangeCount >= 2 && !loading && (
+            <button
+              onClick={finishAndScore}
+              className="text-xs bg-accent text-white px-3 py-1.5 rounded-lg font-medium active:opacity-80"
+            >
+              Noter /20
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            className="w-8 h-8 flex items-center justify-center text-muted"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+        {msgs.map((msg, i) => (
+          <div
+            key={i}
+            className={`flex items-end gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+          >
+            {msg.role === "assistant" && (
+              <div className="w-7 h-7 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0 mb-0.5">
+                <span className="text-xs">🎓</span>
+              </div>
+            )}
+            <div
+              className={`max-w-[82%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
+                msg.role === "user"
+                  ? "bg-accent text-white"
+                  : "bg-surface border border-border text-foreground"
+              }`}
+            >
+              {msg.content || (loading && i === msgs.length - 1 ? "…" : "")}
+            </div>
+          </div>
+        ))}
+        <div ref={bottomRef} />
+      </div>
+
+      <div className="bg-surface border-t border-border px-4 py-3 flex gap-2 items-end flex-shrink-0">
+        <textarea
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Votre réponse au jury..."
+          rows={2}
+          className="flex-1 bg-background border border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-accent resize-none"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              send();
+            }
+          }}
+        />
+        <button
+          onClick={send}
+          disabled={!input.trim() || loading}
+          className="w-10 h-10 bg-accent text-white rounded-xl flex items-center justify-center flex-shrink-0 disabled:opacity-50 active:opacity-80"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12zm0 0h7.5"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── OralTab ────────────────────────────────────────────────────────────────
 
 function OralTab() {
   const cats = Array.from(new Set(ORAL.map((o) => o.cat)));
   const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const [juryOpen, setJuryOpen] = useState(false);
 
   return (
     <div className="space-y-3">
+      <button
+        onClick={() => setJuryOpen(true)}
+        className="w-full bg-accent/10 rounded-2xl p-4 border border-accent/20 active:bg-accent/20 transition-colors text-left"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center flex-shrink-0">
+            <span className="text-lg">🎤</span>
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold text-foreground text-sm">Simulation jury IA</p>
+            <p className="text-xs text-muted mt-0.5">Entraînez-vous avec un jury DEES virtuel</p>
+          </div>
+          <svg className="w-4 h-4 text-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m9 18 6-6-6-6" />
+          </svg>
+        </div>
+      </button>
+
       <div className="bg-surface rounded-2xl p-4 border border-border shadow-sm">
         <p className="text-sm text-foreground leading-relaxed">
           {ORAL.length} questions types du jury. Entraînez-vous à répondre à voix haute.
@@ -453,6 +628,7 @@ function OralTab() {
           </div>
         </div>
       ))}
+      {juryOpen && <JurySimulation onClose={() => setJuryOpen(false)} />}
     </div>
   );
 }

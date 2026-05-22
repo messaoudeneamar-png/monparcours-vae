@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
+import Onboarding from "@/components/Onboarding";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={`${inter.className} bg-background min-h-screen`}>
+        <Onboarding />
         <main className="pb-20">{children}</main>
         <BottomNav />
       </body>

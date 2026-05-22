@@ -22,6 +22,14 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-slide {
+  animation: fadeSlide 0.35s ease both;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

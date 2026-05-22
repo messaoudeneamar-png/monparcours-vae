@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
-type Mode = "default" | "transmission" | "rapport" | "ppe" | "reflexive" | "oral" | "reformuler";
+type Mode = "default" | "transmission" | "rapport" | "ppe" | "reflexive" | "oral" | "reformuler" | "situation";
 
 type Message = {
   id: string;
@@ -50,6 +50,11 @@ const MODES: { key: Mode; label: string; desc: string }[] = [
     label: "✏️ Reformuler",
     desc: "Écrivez en langage terrain — je reformule instantanément en vocabulaire professionnel éducatif.",
   },
+  {
+    key: "situation",
+    label: "📋 Situation VAE",
+    desc: "Racontez votre vécu terrain — je le structure en situation VAE authentique Livret 2, calibrée jury DEES 2025.",
+  },
 ];
 
 const SUGGESTIONS: Record<Mode, string[]> = {
@@ -88,6 +93,11 @@ const SUGGESTIONS: Record<Mode, string[]> = {
     "Le gamin était énervé, j'ai essayé de le calmer mais ça a pas marché",
     "J'ai discuté avec la maman ce matin, elle est stressée par le foyer",
     "On a fait une activité cuisine aujourd'hui, ça s'est bien passé globalement",
+  ],
+  situation: [
+    "Un soir, Karim 17 ans a menacé un éducateur et refusé de rentrer — raconte et analyse",
+    "J'ai accompagné Sofia 19 ans vers son contrat jeune majeur, c'était compliqué avec la famille",
+    "J'ai géré une fugue de 3 jours d'un jeune en MECS, comment structurer cette situation ?",
   ],
 };
 

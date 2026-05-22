@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { BLOCS } from "@/lib/data";
 
 type BlocKey = "bc1" | "bc2" | "bc3" | "bc4";
@@ -492,12 +493,6 @@ function Accordion({ title, children }: { title: string; children: React.ReactNo
   );
 }
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <h3 className="font-semibold text-foreground text-sm px-1 mb-3">{children}</h3>
-  );
-}
-
 // ── BlocContent ────────────────────────────────────────────────────────────
 
 function BlocContent({ k }: { k: BlocKey }) {
@@ -522,8 +517,8 @@ function BlocContent({ k }: { k: BlocKey }) {
       {/* 1. Ce que le jury veut vraiment */}
       <div className="bg-surface rounded-2xl p-5 border border-border shadow-sm">
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-lg">🎯</span>
-          <SectionTitle>Ce que le jury veut vraiment</SectionTitle>
+          <span className="text-base">🎯</span>
+          <h3 className="font-semibold text-foreground text-sm">Ce que le jury veut vraiment</h3>
         </div>
         <div className="space-y-2">
           {ped.jury.map((point, i) => (
@@ -543,8 +538,8 @@ function BlocContent({ k }: { k: BlocKey }) {
       {/* 2. Auteurs incontournables */}
       <div>
         <div className="flex items-center gap-2 mb-3 px-1">
-          <span className="text-lg">📚</span>
-          <SectionTitle>Les auteurs incontournables</SectionTitle>
+          <span className="text-base">📚</span>
+          <h3 className="font-semibold text-foreground text-sm">Les auteurs incontournables</h3>
         </div>
         <div className="space-y-2">
           {ped.auteurs.map((a, i) => (
@@ -571,8 +566,8 @@ function BlocContent({ k }: { k: BlocKey }) {
       {/* 3. Lois à connaître */}
       <div>
         <div className="flex items-center gap-2 mb-3 px-1">
-          <span className="text-lg">⚖️</span>
-          <SectionTitle>Les lois à connaître</SectionTitle>
+          <span className="text-base">⚖️</span>
+          <h3 className="font-semibold text-foreground text-sm">Les lois à connaître</h3>
         </div>
         <div className="space-y-2">
           {ped.lois.map((l, i) => (
@@ -597,8 +592,8 @@ function BlocContent({ k }: { k: BlocKey }) {
       {/* 4. Exemples de situations VAE validées */}
       <div>
         <div className="flex items-center gap-2 mb-3 px-1">
-          <span className="text-lg">✅</span>
-          <SectionTitle>Exemples de situations VAE validées</SectionTitle>
+          <span className="text-base">✅</span>
+          <h3 className="font-semibold text-foreground text-sm">Exemples de situations VAE validées</h3>
         </div>
         <div className="space-y-2">
           {ped.exemples.map((ex, i) => (
@@ -630,6 +625,25 @@ function BlocContent({ k }: { k: BlocKey }) {
           ))}
         </div>
       </div>
+
+      {/* Lien Ressources */}
+      <Link
+        href="/ressources"
+        className="flex items-center justify-between bg-surface rounded-2xl p-4 border border-border shadow-sm active:bg-border/30 transition-colors"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: color + "15" }}>
+            <span className="text-base">📖</span>
+          </div>
+          <div>
+            <p className="font-medium text-foreground text-sm">Ressources complètes</p>
+            <p className="text-xs text-muted mt-0.5">Auteurs · Lois · Exemples · Vocabulaire</p>
+          </div>
+        </div>
+        <svg className="w-4 h-4 text-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m9 18 6-6-6-6" />
+        </svg>
+      </Link>
 
       {/* Activités principales */}
       <div className="bg-surface rounded-2xl p-5 border border-border shadow-sm">

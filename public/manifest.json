@@ -1,22 +1,27 @@
 {
+  "id": "/",
   "name": "MonParcours VAE",
   "short_name": "MonParcours",
   "description": "Votre accompagnement VAE DEES personnalisé",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#F7F5F0",
+  "background_color": "#0D1C13",
   "theme_color": "#2D6A4F",
   "orientation": "portrait",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

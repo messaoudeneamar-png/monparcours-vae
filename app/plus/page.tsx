@@ -416,12 +416,15 @@ function QuizTab() {
 
 type JuryMsg = { role: "assistant" | "user"; content: string };
 
+const MAX_QUESTIONS = 5;
+
 function JurySimulation({ onClose }: { onClose: () => void }) {
   const [msgs, setMsgs] = useState<JuryMsg[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [scored, setScored] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const exchangeCount = msgs.filter((m) => m.role === "user").length;
+  const answerCount = msgs.filter((m) => m.role === "user" && !m.content.includes("évaluation finale")).length;
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -455,26 +458,40 @@ function JurySimulation({ onClose }: { onClose: () => void }) {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    doStream([{ role: "user", content: "Bonjour, je suis prêt pour la simulation jury DEES." }]);
+    doStream([{ role: "user", content: "Démarrez la simulation : posez-moi votre première question de jury DEES." }]);
   }, []);
 
   const send = async () => {
     if (!input.trim() || loading) return;
     const userMsg: JuryMsg = { role: "user", content: input.trim() };
-    const next = [...msgs, userMsg];
+    const withUser = [...msgs, userMsg];
     setInput("");
-    await doStream(next);
+    const newAnswerCount = withUser.filter((m) => m.role === "user").length;
+    if (newAnswerCount >= MAX_QUESTIONS) {
+      setScored(true);
+      const scoreReq: JuryMsg = {
+        role: "user",
+        content:
+          "C'était ma dernière réponse. Donnez-moi maintenant l'évaluation finale détaillée avec une note sur 20, les points forts, les axes d'amélioration et vos conseils pour la soutenance réelle.",
+      };
+      await doStream([...withUser, scoreReq]);
+    } else {
+      await doStream(withUser);
+    }
   };
 
-  const finishAndScore = async () => {
-    if (loading) return;
+  const earlyScore = async () => {
+    if (loading || scored) return;
+    setScored(true);
     const req: JuryMsg = {
       role: "user",
       content:
-        "La simulation est terminée. Donnez-moi une évaluation détaillée avec une note sur 20, les points forts, les axes d'amélioration et des conseils précis pour la soutenance réelle.",
+        "Je souhaite terminer la simulation maintenant. Donnez-moi l'évaluation finale avec une note sur 20, les points forts, les axes d'amélioration et vos conseils pour la soutenance réelle.",
     };
     await doStream([...msgs, req]);
   };
+
+  const questionsLeft = MAX_QUESTIONS - answerCount;
 
   return (
     <div className="fixed inset-0 z-[100] bg-background flex flex-col">
@@ -482,13 +499,17 @@ function JurySimulation({ onClose }: { onClose: () => void }) {
         <div>
           <p className="font-semibold text-foreground text-sm">Simulation jury DEES</p>
           <p className="text-xs text-muted">
-            {exchangeCount} échange{exchangeCount !== 1 ? "s" : ""}
+            {scored
+              ? "Évaluation en cours…"
+              : answerCount === 0
+              ? "Question 1 / 5"
+              : `Question ${Math.min(answerCount + 1, MAX_QUESTIONS)} / ${MAX_QUESTIONS}`}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {exchangeCount >= 2 && !loading && (
+          {answerCount >= 1 && !scored && !loading && (
             <button
-              onClick={finishAndScore}
+              onClick={earlyScore}
               className="text-xs bg-accent text-white px-3 py-1.5 rounded-lg font-medium active:opacity-80"
             >
               Noter /20
@@ -530,35 +551,48 @@ function JurySimulation({ onClose }: { onClose: () => void }) {
         <div ref={bottomRef} />
       </div>
 
-      <div className="bg-surface border-t border-border px-4 py-3 flex gap-2 items-end flex-shrink-0">
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Votre réponse au jury..."
-          rows={2}
-          className="flex-1 bg-background border border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-accent resize-none"
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              send();
-            }
-          }}
-        />
-        <button
-          onClick={send}
-          disabled={!input.trim() || loading}
-          className="w-10 h-10 bg-accent text-white rounded-xl flex items-center justify-center flex-shrink-0 disabled:opacity-50 active:opacity-80"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12zm0 0h7.5"
-            />
-          </svg>
-        </button>
-      </div>
+      {!scored ? (
+        <div className="bg-surface border-t border-border px-4 py-3 flex gap-2 items-end flex-shrink-0">
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder={`Votre réponse (${questionsLeft} question${questionsLeft !== 1 ? "s" : ""} restante${questionsLeft !== 1 ? "s" : ""})…`}
+            rows={2}
+            className="flex-1 bg-background border border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-accent resize-none"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                send();
+              }
+            }}
+          />
+          <button
+            onClick={send}
+            disabled={!input.trim() || loading}
+            className="w-10 h-10 bg-accent text-white rounded-xl flex items-center justify-center flex-shrink-0 disabled:opacity-50 active:opacity-80"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12zm0 0h7.5"
+              />
+            </svg>
+          </button>
+        </div>
+      ) : (
+        !loading && (
+          <div className="bg-surface border-t border-border px-4 py-4 flex-shrink-0">
+            <button
+              onClick={onClose}
+              className="w-full py-3 bg-accent text-white rounded-xl text-sm font-semibold active:opacity-80"
+            >
+              Fermer la simulation
+            </button>
+          </div>
+        )
+      )}
     </div>
   );
 }

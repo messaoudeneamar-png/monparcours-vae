@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>MonParcours VAE — DEES 2025</title>
+<style>
+:root{--bg:#F7F5F0;--surface:#FFFFFF;--surface2:#F0EDE6;--border:#E0D9CE;--text:#1A1814;--muted:#8A8278;--accent:#2D6A4F;--al:#D8F3DC;--accent2:#E76F51;--a2l:#FDEBD0;--accent3:#457B9D;--a3l:#D0E8F5;--gold:#C9A84C;--gl:#FDF3DC;--r:14px;--sh:0 2px 12px rgba(0,0,0,0.07);}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,'Helvetica Neue',sans-serif;font-size:16px;line-height:1.5;min-height:100vh;padding-bottom:90px;}
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -2px 10px rgba(0,0,0,0.06);}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 2px 6px;gap:2px;cursor:pointer;border:none;background:none;color:var(--muted);font-size:9px;font-weight:500;font-family:inherit;}
+.ni.on{color:var(--accent);}
+.ni .ico{font-size:18px;line-height:1;}
+.pg{display:none;padding:16px;max-width:680px;margin:0 auto;}
+.pg.on{display:block;animation:fi 0.2s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+.ph{margin-bottom:20px;padding-top:8px;}
+.pt{font-size:24px;font-weight:700;letter-spacing:-0.5px;}
+.ps{font-size:13px;color:var(--muted);margin-top:2px;}
+.card{background:var(--surface);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--sh);border:1px solid var(--border);}
+.ct{font-size:15px;font-weight:700;margin-bottom:8px;}
+.cb{font-size:14px;color:var(--muted);line-height:1.6;}
+.bdg{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin-right:4px;margin-bottom:4px;}
+.bc1{background:var(--al);color:var(--accent);}
+.bc2{background:var(--a2l);color:var(--accent2);}
+.bc3{background:var(--a3l);color:var(--accent3);}
+.bc4{background:var(--gl);color:var(--gold);}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:13px 20px;border-radius:10px;border:none;font-size:15px;font-weight:600;cursor:pointer;width:100%;margin-top:8px;font-family:inherit;}
+.btn:active{opacity:0.8;}
+.bp{background:var(--accent);color:#fff;}
+.bs{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.bsm{padding:8px 14px;font-size:13px;width:auto;margin-top:0;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.fg{margin-bottom:14px;}
+.fl{display:block;font-size:13px;font-weight:600;margin-bottom:6px;}
+.fh{font-size:12px;color:var(--muted);margin-bottom:6px;line-height:1.4;}
+.fi,.ft,.fs{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:15px;color:var(--text);font-family:inherit;outline:none;-webkit-appearance:none;}
+.fi:focus,.ft:focus,.fs:focus{border-color:var(--accent);background:var(--surface);}
+.ft{min-height:110px;resize:vertical;line-height:1.5;}
+.st{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:20px 0 10px;}
+.tag{padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:2px solid var(--border);background:var(--surface2);color:var(--muted);font-family:inherit;margin-right:6px;margin-bottom:6px;}
+.tag.s1{background:var(--al);color:var(--accent);border-color:var(--accent);}
+.tag.s2{background:var(--a2l);color:var(--accent2);border-color:var(--accent2);}
+.tag.s3{background:var(--a3l);color:var(--accent3);border-color:var(--accent3);}
+.tag.s4{background:var(--gl);color:var(--gold);border-color:var(--gold);}
+.al{padding:12px 14px;border-radius:10px;font-size:14px;margin-bottom:12px;}
+.aok{background:var(--al);color:var(--accent);}
+.aerr{background:var(--a2l);color:var(--accent2);}
+.sp{width:18px;height:18px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.pb{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;margin-top:6px;}
+.pf{height:100%;border-radius:4px;transition:width 0.5s;background:var(--accent);}
+.qo{padding:13px 14px;border-radius:10px;border:2px solid var(--border);background:var(--surface);font-size:15px;cursor:pointer;width:100%;text-align:left;margin-bottom:8px;font-family:inherit;color:var(--text);}
+.qo.ok{border-color:var(--accent);background:var(--al);color:var(--accent);}
+.qo.ko{border-color:var(--accent2);background:var(--a2l);color:var(--accent2);}
+.ah{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--surface);border-radius:var(--r);border:1px solid var(--border);cursor:pointer;margin-bottom:6px;font-weight:600;font-size:14px;box-shadow:var(--sh);}
+.ab{display:none;padding:14px 16px;background:var(--surface);border-radius:0 0 var(--r) var(--r);border:1px solid var(--border);border-top:none;margin-top:-8px;margin-bottom:10px;font-size:14px;line-height:1.7;}
+.ab.on{display:block;}
+.comp{background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:10px;}
+.comp-t{font-size:14px;font-weight:700;margin-bottom:6px;}
+.comp-s{font-size:14px;color:var(--text);margin-bottom:8px;line-height:1.5;}
+.comp-e{font-size:13px;color:var(--muted);font-style:italic;padding:10px;background:var(--surface);border-radius:8px;margin-bottom:8px;line-height:1.5;}
+.ind-item{font-size:13px;color:var(--text);padding:4px 0 4px 16px;position:relative;border-bottom:1px solid var(--border);line-height:1.4;}
+.ind-item:last-child{border-bottom:none;}
+.ind-item::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:11px;}
+.aibox{background:linear-gradient(135deg,#e8f5e9,#e3f2fd);border:1px solid #a5d6a7;border-radius:var(--r);padding:14px;margin-top:12px;font-size:14px;line-height:1.8;white-space:pre-wrap;}
+.ail{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.sc{background:var(--surface);border-radius:var(--r);padding:16px;margin-bottom:12px;border:1px solid var(--border);box-shadow:var(--sh);}
+.es{text-align:center;padding:50px 20px;color:var(--muted);}
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;}
+.ov.on{display:flex;}
+.modal{background:var(--surface);border-radius:20px 20px 0 0;padding:20px 16px 50px;width:100%;max-height:88vh;overflow-y:auto;animation:su 0.3s ease;position:relative;}
+@keyframes su{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.mc{position:absolute;top:20px;right:16px;font-size:22px;cursor:pointer;color:var(--muted);background:none;border:none;}
+.hbanner{background:linear-gradient(135deg,var(--accent),#1a4731);border-radius:18px;padding:22px 18px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden;}
+.hbanner::after{content:'🎓';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:52px;opacity:0.25;}
+.hbt{font-size:22px;font-weight:700;margin-bottom:4px;}
+.hbs{font-size:13px;opacity:0.85;}
+.sr{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.sc2{background:var(--surface);border-radius:var(--r);padding:14px 10px;text-align:center;border:1px solid var(--border);box-shadow:var(--sh);}
+.sn{font-size:26px;font-weight:700;color:var(--accent);line-height:1;}
+.sl{font-size:10px;color:var(--muted);margin-top:4px;}
+.gi{padding:12px 0;border-bottom:1px solid var(--border);}
+.gt{font-size:15px;font-weight:700;}
+.gd{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.5;}
+.ge{font-size:13px;color:var(--text);margin-top:6px;padding:8px;background:var(--surface2);border-radius:6px;font-style:italic;}
+.gr{font-size:12px;color:var(--accent);margin-top:4px;font-weight:500;}
+.sb{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:15px;color:var(--text);font-family:inherit;outline:none;margin-bottom:14px;}
+.tr{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
+.tr::-webkit-scrollbar{display:none;}
+.tb{padding:8px 16px;border-radius:20px;border:2px solid var(--border);background:var(--surface);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;color:var(--muted);font-family:inherit;}
+.tb.on{border-color:var(--accent);background:var(--accent);color:#fff;}
+.hb{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:12px;}
+.tagrow{display:flex;flex-wrap:wrap;}
+.eval-box{background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:10px;border-left:3px solid var(--accent);}
+.eval-title{font-size:13px;font-weight:700;margin-bottom:6px;color:var(--accent);}
+.eval-content{font-size:13px;color:var(--text);line-height:1.6;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <button class="ni on" onclick="sp('home')"><span class="ico">🏠</span><span>Accueil</span></button>
+  <button class="ni" onclick="sp('blocs')"><span class="ico">📚</span><span>Blocs</span></button>
+  <button class="ni" onclick="sp('redaction')"><span class="ico">✍️</span><span>Rédaction</span></button>
+  <button class="ni" onclick="sp('ressources')"><span class="ico">🔍</span><span>Ressources</span></button>
+  <button class="ni" onclick="sp('plus')"><span class="ico">⚙️</span><span>Plus</span></button>
+</nav>
+
+<!-- ACCUEIL -->
+<div id="pg-home" class="pg on">
+  <div class="hbanner">
+    <div class="hbt">MonParcours VAE</div>
+    <div class="hbs">DEES — Arrêté du 6 octobre 2025 — Applicable sept. 2026</div>
+  </div>
+  <div class="sr">
+    <div class="sc2"><div class="sn" id="st-s">0</div><div class="sl">Situations</div></div>
+    <div class="sc2"><div class="sn" id="st-b">0/4</div><div class="sl">Blocs couverts</div></div>
+    <div class="sc2"><div class="sn" id="st-q">—</div><div class="sl">Quiz</div></div>
+  </div>
+  <div class="st">Navigation rapide</div>
+  <div class="card" style="cursor:pointer" onclick="sp('blocs')">
+    <div style="display:flex;align-items:center;gap:12px"><span style="font-size:28px">📚</span><div><div class="ct">Les 4 blocs DEES</div><div class="cb">Compétences complètes et indicateurs officiels vulgarisés</div></div></div>
+  </div>
+  <div class="card" style="cursor:pointer" onclick="sp('redaction')">
+    <div style="display:flex;align-items:center;gap:12px"><span style="font-size:28px">✍️</span><div><div class="ct">Rédaction IA</div><div class="cb">Situations VAE, transmissions, rapports, PPE, oral...</div></div></div>
+  </div>
+  <div class="card" style="cursor:pointer" onclick="sp('ressources')">
+    <div style="display:flex;align-items:center;gap:12px"><span style="font-size:28px">🔍</span><div><div class="ct">Ressources</div><div class="cb">Vocabulaire pro, lois, auteurs, structures, exemples</div></div></div>
+  </div>
+  <div class="card" style="cursor:pointer" onclick="sp('plus')">
+    <div style="display:flex;align-items:center;gap:12px"><span style="font-size:28px">⚙️</span><div><div class="ct">Quiz, Situations, Oral, Planning</div><div class="cb">Tout pour préparer votre VAE</div></div></div>
+  </div>
+  <div class="st">Clé API Mistral</div>
+  <div class="card">
+    <div class="ct">🤖 Configuration IA</div>
+    <div class="cb" style="margin-bottom:10px">Entrez votre clé Mistral pour activer l'assistant. Stockée uniquement sur votre appareil.</div>
+    <input type="password" class="fi" id="ki" placeholder="Votre clé API Mistral..." oninput="saveKey()">
+    <div id="ks" style="font-size:13px;margin-top:8px"></div>
+  </div>
+  <div class="st">Informations importantes</div>
+  <div class="card">
+    <div class="ct">📋 Épreuve conclusive BC1</div>
+    <div class="cb">Dossier de 25 à 30 pages + soutenance orale de 40 min (15 min présentation + 25 min échanges). Écrit coeff. 2, oral coeff. 3. Jury : 1 formateur + 1 professionnel DEES.</div>
+  </div>
+  <div class="card">
+    <div class="ct">⚠️ Validation des blocs</div>
+    <div class="cb">Chaque bloc est validé séparément — pas de compensation entre blocs. Minimum 10/20 par unité d'enseignement. Les notes au sein d'un même bloc sont compensables.</div>
+  </div>
+</div>
+
+<!-- BLOCS -->
+<div id="pg-blocs" class="pg">
+  <div class="ph"><div class="pt">Les 4 blocs DEES</div><div class="ps">Référentiel officiel — arrêté 6 oct. 2025</div></div>
+  <div class="tr">
+    <button class="tb on" onclick="showB('bc1',this)">BC1</button>
+    <button class="tb" onclick="showB('bc2',this)">BC2</button>
+    <button class="tb" onclick="showB('bc3',this)">BC3</button>
+    <button class="tb" onclick="showB('bc4',this)">BC4</button>
+    <button class="tb" onclick="showB('eval',this)">📊 Éval</button>
+    <button class="tb" onclick="showB('jury',this)">🎤 Jury</button>
+  </div>
+  <div id="bz"></div>
+</div>
+
+<!-- REDACTION -->
+<div id="pg-redaction" class="pg">
+  <div class="ph"><div class="pt">✍️ Rédaction IA</div><div class="ps">Tout type d'écrit professionnel avec Mistral</div></div>
+  <div class="card" style="background:linear-gradient(135deg,#e8f5e9,#e3f2fd);border-color:#a5d6a7">
+    <div class="ct" style="color:var(--accent)">🔄 Langage terrain → Professionnel</div>
+    <div style="margin-bottom:8px"><div style="font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:3px">TERRAIN</div><div style="font-size:13px;font-style:italic;color:var(--muted);padding:8px;background:rgba(255,255,255,0.6);border-radius:6px">"Le jeune était énervé et cassait tout"</div></div>
+    <div><div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:3px">PROFESSIONNEL</div><div style="font-size:13px;padding:8px;background:rgba(255,255,255,0.6);border-radius:6px">"Le jeune présentait un état d'agitation psychomotrice avec passage à l'acte nécessitant une intervention éducative contenante."</div></div>
+  </div>
+  <div class="fg">
+    <label class="fl">Type d'écrit</label>
+    <select class="fs" id="rdt" onchange="updateRdHint()">
+      <option value="situation_vae">📋 Situation VAE (Livret 2)</option>
+      <option value="analyse">🔍 Analyse de situation éducative</option>
+      <option value="transmission">📨 Transmission d'équipe</option>
+      <option value="observation">👁️ Observation éducative</option>
+      <option value="incident">⚠️ Note d'incident</option>
+      <option value="rapport">📄 Rapport éducatif</option>
+      <option value="cr">📝 Compte rendu de réunion</option>
+      <option value="ppe">🎯 Projet Personnalisé (PPE)</option>
+      <option value="smart">✅ Objectifs SMART</option>
+      <option value="social">🏛️ Note sociale</option>
+      <option value="mail">📧 Mail professionnel</option>
+      <option value="oral">🎤 Préparation oral jury BC1</option>
+      <option value="reform">✏️ Reformulation professionnelle</option>
+      <option value="synthese">📊 Synthèse éducative</option>
+      <option value="loi">⚖️ Explication d'une loi</option>
+      <option value="auteur">📚 Explication auteur / concept</option>
+      <option value="analyse_reflexive">🪞 Analyse réflexive (BC4)</option>
+    </select>
+  </div>
+  <div id="rdhint" style="display:none;margin-bottom:14px"><div id="rdh" class="fh" style="background:var(--a3l);padding:10px;border-radius:8px;color:var(--accent3)"></div></div>
+  <div class="fg">
+    <label class="fl">Votre texte *</label>
+    <textarea class="ft" id="rdi" style="min-height:130px" placeholder="Écrivez naturellement, en langage terrain. Mistral reformule en langage professionnel."></textarea>
+  </div>
+  <div class="fg">
+    <label class="fl">Contexte (optionnel)</label>
+    <input type="text" class="fi" id="rdc" placeholder="Ex: MECS, jeune 15 ans, lundi soir...">
+  </div>
+  <button class="btn bp" id="rdbtn" onclick="genEcrit()">🤖 Générer avec Mistral</button>
+  <div id="rdres" style="display:none;margin-top:16px">
+    <div class="ail">✨ Écrit généré</div>
+    <div class="aibox" id="rdtxt"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+      <button class="btn bs bsm" onclick="copyRd()">📋 Copier</button>
+      <button class="btn bs bsm" onclick="expRd()">📤 Exporter</button>
+      <button class="btn bsm" style="background:var(--al);color:var(--accent);border:none" onclick="amelRd()">🔄 Améliorer</button>
+      <button class="btn bsm" style="background:var(--accent);color:#fff;border:none" onclick="saveEcrit()">💾 Sauvegarder</button>
+    </div>
+  </div>
+  <div id="rdal" style="margin-top:8px"></div>
+
+  <div class="st">Mes écrits sauvegardés</div>
+  <div id="ecrits-list"></div>
+</div>
+
+<!-- RESSOURCES -->
+<div id="pg-ressources" class="pg">
+  <div class="ph"><div class="pt">Ressources</div><div class="ps">Vocabulaire professionnel enrichi</div></div>
+  <div class="tr">
+    <button class="tb on" onclick="showR('vocab',this)">Vocabulaire</button>
+    <button class="tb" onclick="showR('lois',this)">Lois</button>
+    <button class="tb" onclick="showR('auteurs',this)">Auteurs</button>
+    <button class="tb" onclick="showR('struct',this)">Structures</button>
+    <button class="tb" onclick="showR('exemples',this)">Exemples</button>
+  </div>
+  <input type="search" class="sb" id="rs" placeholder="🔍 Rechercher..." oninput="filterR()">
+  <div id="rz"></div>
+</div>
+
+<!-- PLUS -->
+<div id="pg-plus" class="pg">
+  <div class="ph"><div class="pt">Plus</div><div class="ps">Quiz, situations, oral, planning, livrets</div></div>
+  <div class="tr">
+    <button class="tb on" onclick="showP('sits',this)">📝 Situations</button>
+    <button class="tb" onclick="showP('quiz',this)">🧠 Quiz</button>
+    <button class="tb" onclick="showP('oral',this)">🎤 Oral</button>
+    <button class="tb" onclick="showP('theorie',this)">📖 Théorie</button>
+    <button class="tb" onclick="showP('planning',this)">📅 Planning</button>
+    <button class="tb" onclick="showP('livrets',this)">📖 Livrets</button>
+  </div>
+  <div id="pz"></div>
+</div>
+
+<!-- OVERLAY ADD -->
+<div class="ov" id="ov-add" onclick="ovOut(event,'ov-add')">
+  <div class="modal">
+    <button class="mc" onclick="closeOv('ov-add')">✕</button>
+    <div style="font-size:18px;font-weight:700;margin-bottom:16px;padding-right:30px">✍️ Nouvelle situation</div>
+    <div class="fg"><label class="fl">Titre *</label><input type="text" class="fi" id="ft" placeholder="Ex: Gestion d'une crise en atelier"></div>
+    <div class="fg"><label class="fl">Structure</label><input type="text" class="fi" id="fst" placeholder="Ex: MECS, DITEP, IME..."></div>
+    <div class="fg">
+      <label class="fl">Décrivez la situation *</label>
+      <div class="fh">Écrivez naturellement — Mistral reformule en langage VAE professionnel.</div>
+      <textarea class="ft" id="fd" placeholder="Ce qui s'est passé, ce que vous avez fait, comment ça s'est terminé..."></textarea>
+    </div>
+    <div class="fg">
+      <label class="fl">Blocs de compétences</label>
+      <div class="tagrow">
+        <button class="tag" id="tb1" onclick="togTag('bc1')">BC1</button>
+        <button class="tag" id="tb2" onclick="togTag('bc2')">BC2</button>
+        <button class="tag" id="tb3" onclick="togTag('bc3')">BC3</button>
+        <button class="tag" id="tb4" onclick="togTag('bc4')">BC4</button>
+      </div>
+    </div>
+    <button class="btn bp" onclick="saveSit()">💾 Enregistrer</button>
+    <button class="btn bs" id="aibtn" onclick="aiSit()">🤖 Structurer avec Mistral</button>
+    <div id="air" style="display:none"><div class="ail" style="margin-top:12px">✨ Analyse Mistral</div><div class="aibox" id="ait"></div><button class="btn bs bsm" style="margin-top:8px;width:auto" onclick="copyAI()">📋 Copier</button></div>
+    <div id="fal" style="margin-top:8px"></div>
+  </div>
+</div>
+
+<!-- OVERLAY VIEW -->
+<div class="ov" id="ov-view" onclick="ovOut(event,'ov-view')">
+  <div class="modal"><button class="mc" onclick="closeOv('ov-view')">✕</button><div id="ovvb"></div></div>
+</div>
+
+<script>
+// ===== DONNÉES OFFICIELLES BC1-BC4 =====
+var BLOCS = {
+  bc1: {
+    t: "BC1 — Concevoir et conduire un accompagnement éducatif spécialisé dans une visée préventive et inclusive",
+    h: "504h — 630h de pratique minimum",
+    c: "#2D6A4F", e: "🤝",
+    intro: "Dans le cadre de l'accompagnement éducatif, l'éducateur spécialisé mobilise toutes les situations du quotidien pour favoriser les apprentissages visant le développement de l'autonomie. Il conçoit et met en œuvre l'action éducative adaptée aux besoins et aux choix de la personne.",
+    activites: [
+      "Mettre en œuvre un accompagnement éducatif spécialisé visant le développement de l'autonomie de la personne et son acquisition des règles de vie en société",
+      "Assurer la fonction de référent en coordonnant le projet socio-éducatif personnalisé dans une logique de continuité du parcours"
+    ],
+    comps: [
+      {
+        t: "Concevoir et mettre en œuvre l'animation du quotidien comme support à la relation éducative",
+        simple: "Vous utilisez chaque moment du quotidien — repas, activité, temps libre — comme occasion d'éduquer et de créer du lien. Ce n'est pas par hasard : chaque action est pensée avec un sens éducatif.",
+        ex: "MECS : Le repas n'est pas juste un moment de nourriture. Vous en faites un espace de règles de vie, de partage, d'écoute. Chaque interaction compte.",
+        indicateurs: [
+          "Assurer par sa disponibilité une fonction de tiers, de repère et d'étayage qui favorise le développement de la personnalité",
+          "Organiser, animer et évaluer des actions éducatives adaptées aux besoins des personnes et aux objectifs de leurs projets personnalisés",
+          "Développer sa créativité pour saisir dans le quotidien toute opportunité de délivrer un message éducatif",
+          "Concevoir des actions et mettre en œuvre des médiations éducatives formalisées ou spontanées, et savoir en expliciter le sens",
+          "Assurer la fonction de référent éducatif"
+        ]
+      },
+      {
+        t: "Mobiliser toute situation pour favoriser les apprentissages des règles de vie en société",
+        simple: "Vous aidez les personnes à comprendre et respecter les règles qui permettent de vivre ensemble. Pas par la contrainte — par l'explication, l'exemple, et en permettant à chacun de s'exprimer.",
+        ex: "Un conflit entre jeunes devient une occasion d'apprendre à gérer les désaccords, à entendre l'autre, à trouver des compromis — compétences pour toute la vie.",
+        indicateurs: [
+          "Transmettre les règles de la vie en société et accompagner leur compréhension et appropriation pour permettre à la personne de s'y inscrire comme citoyen",
+          "Favoriser les situations d'apprentissage permettant de comprendre l'organisation de la société afin d'exercer sa citoyenneté",
+          "Veiller au respect des règles de la vie collective en favorisant l'expression des singularités et la participation de chacun",
+          "Accompagner la personne ou le groupe dans l'exploration de son environnement et la mobilisation des ressources à sa disposition"
+        ]
+      },
+      {
+        t: "Coordonner des actions socio-éducatives dans et hors l'établissement ou le service",
+        simple: "Vous êtes le pivot — le référent de parcours. Vous assurez la continuité entre tous les acteurs qui interviennent autour de la personne, pour que rien ne tombe dans les failles.",
+        ex: "Un jeune approche de la majorité. Vous coordonnez l'ASE, la mission locale, le bailleur social, le suivi psy, la famille. Tout le monde est aligné pour éviter la rupture à 18 ans.",
+        indicateurs: [
+          "Assurer la référence et le pilotage de projets socioéducatifs",
+          "Assurer le rôle d'interlocuteur privilégié et veiller à la continuité du parcours de la personne en concertation avec les autres professionnels",
+          "Développer une vision globale de la situation de la personne afin de faciliter la coordination des actions socioéducatives",
+          "Exercer la fonction de référent de parcours auprès des acteurs concourant à la mise en œuvre du projet personnalisé"
+        ]
+      }
+    ]
+  },
+  bc2: {
+    t: "BC2 — Favoriser et soutenir l'autodétermination des individus et des collectifs dans un but d'émancipation",
+    h: "504h — 630h de pratique minimum",
+    c: "#E76F51", e: "🌱",
+    intro: "L'éducateur met en œuvre un accompagnement individuel et collectif à visée préventive et inclusive. Il crée les conditions d'accueil de la personne dont il soutient la place et le rôle dans l'élaboration, la mise en œuvre et l'évaluation de son projet personnalisé.",
+    activites: [
+      "Mettre en œuvre un accompagnement éducatif individuel et collectif à visée préventive et inclusive dans le respect des principes éthiques et déontologiques",
+      "Inscrire ses pratiques dans une démarche réflexive permettant d'analyser les enjeux de la relation professionnelle, d'ajuster son positionnement et d'assurer son développement professionnel"
+    ],
+    comps: [
+      {
+        t: "Soutenir le développement de l'autodétermination et la participation de la personne dans son projet",
+        simple: "La personne n'est pas un objet de soin — elle est actrice de sa propre vie. Votre rôle est de créer les conditions pour qu'elle puisse s'exprimer, choisir, décider. Même quand ses choix ne sont pas ceux que vous auriez faits.",
+        ex: "Un jeune veut quitter son apprentissage. Plutôt que de décider à sa place, vous l'aidez à analyser la situation, à envisager les conséquences, à explorer des alternatives. La décision finale lui appartient.",
+        indicateurs: [
+          "Créer des conditions favorables à l'établissement d'une relation éducative",
+          "Assurer l'accueil et l'information de la personne et, le cas échéant, de son entourage",
+          "Recueillir les éléments nécessaires à la contextualisation de la demande pour comprendre les difficultés et identifier les ressources",
+          "Coconstruire l'analyse avec la personne pour déterminer le projet personnalisé sur la base d'objectifs négociés et formalisés",
+          "Co-évaluer avec la personne les actions mises en œuvre et les ajuster si nécessaire",
+          "Soutenir la parole et la capacité d'agir de la personne à chaque étape de l'accompagnement",
+          "Orienter la personne vers les organismes et services adaptés",
+          "Prévenir, repérer, évaluer et traiter les situations d'urgence, de risque ou de danger",
+          "Garantir les droits et libertés de la personne en explicitant le cadre de mise en œuvre du projet éducatif",
+          "Garantir un cadre d'intervention sécurisant et bientraitant afin de veiller à l'intégrité physique et psychique de la personne",
+          "Accompagner la personne dans l'exercice de ses droits et devoirs de citoyen"
+        ]
+      },
+      {
+        t: "Coconstruire, coordonner et évaluer un projet collectif d'action éducative ou de développement social",
+        simple: "Vous travaillez aussi avec des groupes — pas seulement des individus. Vous animez, réglez les tensions, faites participer chacun, et utilisez la dynamique collective comme levier éducatif.",
+        ex: "DITEP : Vous co-construisez avec le groupe un projet de jardin collectif. Chacun a un rôle, une responsabilité. Le projet lui-même est secondaire — c'est l'apprentissage du 'vivre ensemble' qui compte.",
+        indicateurs: [
+          "Créer les conditions d'accueil, d'expression, de participation des personnes dans un groupe et soutenir les initiatives",
+          "Recueillir les éléments nécessaires à la contextualisation des besoins ou attentes du groupe",
+          "Coconstruire l'analyse avec les membres d'un groupe afin de déterminer le type de projet pertinent sur la base d'objectifs négociés",
+          "Promouvoir et susciter l'adhésion des différentes parties prenantes au projet collectif",
+          "Déterminer et négocier les moyens humains, matériels et budgétaires nécessaires",
+          "Coordonner un projet sur le territoire en mobilisant les ressources des partenaires",
+          "Co-évaluer avec les membres du groupe les actions mises en œuvre et les ajuster",
+          "Observer, analyser et réguler la dynamique de groupe pour garantir un cadre sécurisant et bientraitant"
+        ]
+      },
+      {
+        t: "Conduire une analyse réflexive et éthique de sa pratique professionnelle",
+        simple: "Vous ne faites pas que travailler — vous réfléchissez à ce que vous faites, pourquoi, comment faire mieux. Vous questionnez vos pratiques, affrontez les dilemmes éthiques, et continuez à vous développer professionnellement.",
+        ex: "Après une crise mal gérée, vous ne passez pas à autre chose. En supervision, vous analysez : qu'est-ce qui s'est passé en moi ? Qu'aurais-je pu faire différemment ? C'est de la posture réflexive.",
+        indicateurs: [
+          "Partager et questionner de manière critique en équipe la pratique professionnelle mise en œuvre, notamment dans les situations complexes",
+          "Appliquer un processus de délibération réflexive individuel ou collectif visant à dépasser les tensions éthiques",
+          "Proposer et développer des évolutions de la pratique professionnelle",
+          "S'engager dans un processus de perfectionnement de sa pratique professionnelle",
+          "Contribuer au développement de la profession par la formation des étudiants et la participation à des recherches-action"
+        ]
+      },
+      {
+        t: "Mobiliser et développer ses ressources dans les dimensions émotionnelles, corporelles et sociales",
+        simple: "Votre outil principal c'est vous-même — votre corps, vos émotions, votre présence. Savoir gérer ses émotions, comprendre celles des autres, se protéger de l'épuisement : c'est une compétence professionnelle à part entière.",
+        ex: "Un jeune vous insulte violemment. Vous ne réagissez pas de façon émotionnelle — vous avez appris à réguler. Votre calme régule le sien. Mais après, vous prenez du recul pour comprendre ce que ça a provoqué en vous.",
+        indicateurs: [
+          "Se décentrer et mettre à distance ses représentations afin de prendre en compte les cultures, croyances et modes de vie des personnes",
+          "Développer sa compréhension des manifestations émotionnelles pour analyser leur rôle et adapter son positionnement",
+          "Identifier, interroger et réguler son implication professionnelle dans la relation d'accompagnement",
+          "Appréhender les différentes représentations du corps et de l'intime pour repérer leur impact dans les interactions professionnelles",
+          "Développer une approche respectueuse de la pudeur et de l'intimité des personnes",
+          "Repérer pour soi et entre pairs les signes d'épuisement physique, psychique, émotionnel pour agir de manière adaptée"
+        ]
+      }
+    ]
+  },
+  bc3: {
+    t: "BC3 — S'inscrire dans une dynamique partenariale et territoriale en lien avec la mise en œuvre des politiques de cohésion sociale",
+    h: "252h — 455h de pratique minimum",
+    c: "#457B9D", e: "🌐",
+    intro: "L'éducateur inscrit son intervention dans la globalité des champs professionnels requis pour la conduite de l'action. Il actualise en continu ses connaissances, développe son expertise et s'inscrit dans des coopérations partenariales et intersectorielles.",
+    activites: [
+      "Actualiser en continu ses connaissances dans les domaines des politiques de cohésion sociale, des besoins des populations et des pratiques d'intervention",
+      "Développer des coopérations partenariales et intersectorielles permettant de coconstruire un diagnostic partagé et de travailler en réseau dans une logique de réduction des inégalités"
+    ],
+    comps: [
+      {
+        t: "Assurer une veille professionnelle et diffuser les informations de façon appropriée",
+        simple: "Vous ne restez pas dans votre bulle. Vous vous tenez informé des évolutions législatives, des nouvelles pratiques, des recherches. Et vous partagez ces informations utilement avec votre équipe.",
+        ex: "La loi change, une nouvelle RBPP est publiée. Vous la lisez, vous l'analysez, vous expliquez à l'équipe ce que ça change concrètement dans la pratique.",
+        indicateurs: [
+          "Identifier et mobiliser les sources d'information, les espaces et lieux ressources",
+          "Recenser, sélectionner et analyser les ressources pertinentes dans son domaine de spécialité",
+          "Exploiter les données recueillies pour documenter un sujet",
+          "Contribuer au partage d'information"
+        ]
+      },
+      {
+        t: "Mobiliser une expertise sectorielle à partir d'un diagnostic partagé sur un territoire",
+        simple: "Vous connaissez votre territoire — ses ressources, ses acteurs, ses problématiques. Vous contribuez à construire une analyse partagée de ce territoire avec vos partenaires.",
+        ex: "Vous participez à un diagnostic territorial sur le décrochage scolaire dans votre commune. Vous apportez votre regard d'éducateur terrain, vous identifiez les jeunes à risque, vous proposez des réponses adaptées.",
+        indicateurs: [
+          "Appréhender les enjeux et les évolutions des politiques de cohésion sociale et territoriale",
+          "Participer au repérage et à l'identification des besoins des personnes et des groupes sur un territoire",
+          "Identifier et mobiliser les outils d'enquête et d'analyse adaptés à l'élaboration d'un diagnostic",
+          "Mobiliser les acteurs et partager les priorités d'action avec les partenaires dans le cadre d'un diagnostic de territoire",
+          "Contribuer à une connaissance partagée des problématiques d'un territoire",
+          "Formaliser des préconisations argumentées aux instances décisionnaires sur le territoire"
+        ]
+      },
+      {
+        t: "Développer des dynamiques partenariales et coopérer en réseau",
+        simple: "Vous connaissez les acteurs de votre territoire et vous construisez des partenariats durables et utiles. Vous représentez votre établissement, vous négociez, vous coopérez.",
+        ex: "Pour accompagner un jeune vers l'insertion professionnelle, vous mobilisez la Mission Locale, un employeur du territoire, le CIO, l'ASE. Vous êtes le chef d'orchestre de ce réseau.",
+        indicateurs: [
+          "Présenter et représenter son service ou établissement auprès des partenaires du territoire",
+          "Repérer les partenaires du territoire et coopérer avec les acteurs en s'appuyant sur leurs compétences spécifiques",
+          "Décoder les positionnements et les enjeux entre les acteurs en présence",
+          "Participer à des instances d'échanges et de coopération interinstitutionnelle",
+          "Mobiliser et s'inscrire dans des réseaux professionnels et des dynamiques institutionnelles et interinstitutionnelles"
+        ]
+      },
+      {
+        t: "Intégrer les questions environnementales et de la transition écologique",
+        simple: "Nouveau dans le référentiel 2025 ! L'éducateur spécialisé doit maintenant intégrer les enjeux écologiques dans sa pratique et accompagner les personnes dans la transition écologique.",
+        ex: "Vous accompagnez un groupe de jeunes dans un projet de compostage collectif. L'objectif ? Développer leur sens des responsabilités collectives et leur compréhension des enjeux environnementaux.",
+        indicateurs: [
+          "Analyser les différents éléments d'une problématique commune à un groupe en intégrant les questions environnementales",
+          "Repérer et analyser les conséquences de la vulnérabilité écologique sur les conditions de vie des populations",
+          "Intégrer les dimensions du développement durable dans la co-construction d'un diagnostic",
+          "Inscrire ses pratiques professionnelles dans une démarche écoresponsable",
+          "Accompagner les personnes et les groupes dans la transition écologique"
+        ]
+      }
+    ]
+  },
+  bc4: {
+    t: "BC4 — S'inscrire dans un contexte professionnel du travail social",
+    h: "245h — 210h de pratique minimum",
+    c: "#C9A84C", e: "🏛️",
+    intro: "Dans le cadre de ses missions, l'éducateur spécialisé gère ses activités professionnelles quotidiennes de manière autonome et concertée avec l'équipe. Il mobilise divers outils et techniques de communication et s'investit dans une démarche d'amélioration continue des pratiques.",
+    activites: [
+      "Gérer ses activités professionnelles quotidiennes de manière autonome et concertée avec l'équipe dans l'intérêt de la qualité de service",
+      "Mobiliser les différents outils et techniques de communications en fonction des objectifs et des interlocuteurs visés"
+    ],
+    comps: [
+      {
+        t: "Prévoir et organiser ses activités professionnelles",
+        simple: "Vous gérez votre travail quotidien de façon autonome et organisée — plannings, objectifs, procédures. Vous vous adaptez aux imprévus sans perdre le fil.",
+        ex: "Vous gérez seul une soirée difficile quand un collègue est absent. Vous priorisez, vous décidez, vous adaptez votre planning. Le lendemain, vous transmettez tout à votre chef de service.",
+        indicateurs: [
+          "Définir ses objectifs de travail au quotidien et les moyens nécessaires pour les atteindre",
+          "Ajuster les objectifs et les actions en fonction des aléas",
+          "Élaborer des plannings d'interventions et d'activités dans le cadre de l'organisation de service",
+          "Appliquer les procédures et les consignes liées à son activité professionnelle"
+        ]
+      },
+      {
+        t: "Adapter sa manière de communiquer aux enjeux des interactions professionnelles",
+        simple: "Vous savez vous adapter dans vos communications — avec les jeunes, avec les familles, avec les partenaires, avec la hiérarchie. Votre façon de parler et d'écrire change selon les interlocuteurs.",
+        ex: "Vous rédigez un rapport pour le juge des enfants — langage factuel et juridique. Vous expliquez la même situation à des parents — langage accessible et empathique. Même réalité, communication différente.",
+        indicateurs: [
+          "Ajuster ses modes de communication aux besoins des publics et des situations",
+          "Concevoir des supports de communication écrite, orale et visuelle accessibles par tous",
+          "Identifier les différents types d'écrits et savoir les élaborer",
+          "Argumenter des propositions pour éclairer la prise de décision",
+          "Sélectionner, analyser, synthétiser l'information afin de présenter les éléments utiles et indispensables",
+          "Transmettre des informations dans le respect de la confidentialité des données et du cadre juridique"
+        ]
+      },
+      {
+        t: "Appréhender et mobiliser des outils numériques en fonction des besoins",
+        simple: "Vous maîtrisez les outils numériques nécessaires à votre travail — logiciels, plateformes collaboratives, outils de communication. Et vous accompagnez les personnes vers l'autonomie numérique.",
+        ex: "Vous aidez un jeune en insertion à créer un CV en ligne, à chercher un emploi sur des plateformes numériques, à utiliser les services publics en ligne. C'est de l'éducation numérique concrète.",
+        indicateurs: [
+          "Identifier les outils et les fonctionnalités bureautiques nécessaires à son activité professionnelle",
+          "Distinguer les modalités de traitement des données à caractère personnel (RGPD)",
+          "Prévenir, identifier et accompagner une situation de précarité ou de trouble lié au numérique",
+          "Accompagner les usages des personnes vers l'autonomie numérique",
+          "Identifier les enjeux liés à l'usage de l'intelligence artificielle",
+          "Adopter les bonnes pratiques et les bons outils pour l'utilisation de plateformes numériques"
+        ]
+      },
+      {
+        t: "Agir en responsabilité et coopérer au sein d'une équipe professionnelle",
+        simple: "Vous êtes un membre fiable et responsable de votre équipe. Vous participez aux décisions collectives, vous contribuez à la cohésion, vous clarifiez les responsabilités de chacun.",
+        ex: "En réunion d'équipe, vous défendez votre point de vue sur la situation d'un jeune tout en respectant les décisions collectives. Vous n'êtes pas toujours d'accord — mais vous jouez le jeu de l'équipe.",
+        indicateurs: [
+          "Situer son action dans le cadre des missions du service, de l'établissement, de l'organisation",
+          "Contribuer à la dynamique de travail et à l'élaboration en équipe des modalités de suivi, de régulation et d'évaluation",
+          "Clarifier et établir les zones de responsabilité partagées et spécifiques dans le cadre d'une coopération professionnelle",
+          "Confronter ses observations et ses analyses, s'appuyer sur les compétences de chacun pour favoriser la cohésion"
+        ]
+      },
+      {
+        t: "S'investir dans une démarche qualité et d'amélioration continue des pratiques",
+        simple: "Vous participez activement à l'amélioration des pratiques de votre établissement. Vous contribuez aux évaluations, aux rapports d'activité, aux réflexions sur les évolutions nécessaires.",
+        ex: "Votre établissement prépare son évaluation externe. Vous participez à l'auto-évaluation, vous documentez les bonnes pratiques, vous identifiez les axes d'amélioration. C'est votre rôle de professionnel.",
+        indicateurs: [
+          "Contribuer à la démarche d'évaluation continue de la qualité de service, à la création et à l'amélioration des outils d'évaluation",
+          "Participer aux analyses collectives portant sur l'amélioration de l'action menée par le service ou l'établissement",
+          "Participer à la rédaction de rapports d'activités",
+          "Concourir à la réflexion sur les évolutions du service, de l'établissement, de l'organisation",
+          "Veiller au respect des obligations fixées par le RGPD"
+        ]
+      }
+    ]
+  }
+};
+
+var VOCAB = [
+  {t:"Accompagnement éducatif",d:"Action de cheminer AVEC une personne pour l'aider à évoluer, sans décider à sa place. L'éducateur est 'avec' et non 'devant'.",ex:"'J'ai accompagné ce jeune dans ses démarches' plutôt que 'je l'ai aidé'.",r:"BC1"},
+  {t:"Agitation psychomotrice",d:"État d'excitation physique et mentale intense, souvent précurseur d'un passage à l'acte. La personne ne parvient plus à se contrôler.",ex:"'Le jeune présentait une agitation psychomotrice croissante nécessitant une intervention préventive.'",r:"BC1"},
+  {t:"Alliance de travail",d:"Lien de confiance et de coopération entre l'éducateur et la personne accompagnée. Sans cette alliance, aucun accompagnement n'est possible.",ex:"'L'alliance de travail avec ce jeune a mis plusieurs mois à se construire.'",r:"BC1"},
+  {t:"Analyse de pratique",d:"Réunion professionnelle pour réfléchir sur des situations vécues et améliorer sa pratique. Souvent animée par un superviseur extérieur.",ex:"'En analyse de pratique, j'ai pu comprendre pourquoi cette situation m'avait autant affecté.'",r:"BC4"},
+  {t:"Anamnèse",d:"Recueil de l'histoire de vie d'une personne — son passé, son parcours, ses expériences significatives. Indispensable pour comprendre le présent.",ex:"'L'anamnèse de ce jeune révèle de multiples ruptures d'attachement depuis la petite enfance.'",r:"BC1"},
+  {t:"Autodétermination",d:"Droit et capacité de la personne à faire ses propres choix sur sa vie, même imparfaits. Principe fondamental du BC2.",ex:"'Dans le respect de l'autodétermination, nous avons soutenu le choix du jeune même si l'équipe ne le partageait pas.'",r:"BC2"},
+  {t:"Bientraitance",d:"Ensemble de pratiques qui respectent activement la dignité, les droits et le bien-être des personnes. Ce n'est pas l'absence de maltraitance — c'est un engagement actif.",ex:"'Notre projet d'établissement place la bientraitance au cœur de toutes nos pratiques.'",r:"BC2"},
+  {t:"Cadre d'intervention",d:"Ensemble des règles, limites et repères qui structurent l'accompagnement et le rendent sécurisant pour la personne.",ex:"'Le cadre d'intervention a dû être réajusté suite aux comportements répétés du jeune.'",r:"BC1"},
+  {t:"Co-construction",d:"Processus par lequel l'éducateur et la personne élaborent ENSEMBLE le projet, les objectifs et les actions. Pas l'éducateur seul qui décide.",ex:"'Le PPE a été co-construit avec le jeune — il a choisi ses propres objectifs prioritaires.'",r:"BC2"},
+  {t:"Communication non violente (CNV)",d:"Méthode de Rosenberg : Observation, Sentiment, Besoin, Demande. Évite les jugements et favorise la coopération.",ex:"'En utilisant la CNV : Quand tu cries (O), je me sens impuissant (S), j'ai besoin de calme (B), peux-tu baisser la voix (D) ?'",r:"BC2"},
+  {t:"Confidentialité",d:"Obligation de ne pas divulguer les informations concernant les personnes accompagnées à des tiers non autorisés.",ex:"'J'ai respecté la confidentialité en ne transmettant que les informations nécessaires à l'équipe.'",r:"BC4"},
+  {t:"Contenance émotionnelle",d:"Capacité à accueillir et 'tenir' les émotions débordantes d'une personne sans être submergé. Proche du concept de holding de Winnicott.",ex:"'Ma présence calme a constitué un holding pour ce jeune en grande détresse.'",r:"BC1"},
+  {t:"Décentration",d:"Capacité à se mettre à distance de ses propres représentations, valeurs et émotions pour mieux comprendre l'autre.",ex:"'La décentration m'a permis de comprendre que le comportement du jeune avait du sens dans son histoire.'",r:"BC4"},
+  {t:"Désamorçage",d:"Technique d'intervention visant à prévenir l'escalade d'une situation conflictuelle avant qu'elle ne devienne une crise.",ex:"'Par une intervention de désamorçage précoce, j'ai pu éviter la confrontation physique entre les deux jeunes.'",r:"BC1"},
+  {t:"Empowerment / Pouvoir d'agir",d:"Processus par lequel la personne développe sa capacité à agir sur sa propre vie. Paulo Freire est l'auteur de référence.",ex:"'Notre accompagnement vise l'empowerment du jeune en lui donnant progressivement les outils pour décider seul.'",r:"BC2"},
+  {t:"Étayage",d:"Soutien temporaire apporté à la personne pour lui permettre d'acquérir une compétence. On retire progressivement l'étayage quand elle n'en a plus besoin.",ex:"'L'étayage mis en place pour les démarches administratives a permis à M. X de les réaliser seul au bout de 3 mois.'",r:"BC1"},
+  {t:"Fatigue compassionnelle",d:"Épuisement émotionnel progressif lié à l'exposition répétée à la souffrance des personnes accompagnées. Risque professionnel réel.",ex:"'Des signes de fatigue compassionnelle ont été observés dans l'équipe, nécessitant une supervision externe.'",r:"BC4"},
+  {t:"Holding",d:"Concept de Winnicott : capacité à 'tenir' émotionnellement et sécuriser la personne par votre présence rassurante et contenante.",ex:"'Ma présence calme et constante a constitué un holding pour ce jeune en grande détresse.'",r:"BC1"},
+  {t:"Hypervigilance",d:"État d'alerte permanent, souvent consécutif à un trauma. La personne interprète tout comme une menace potentielle.",ex:"'L'hypervigilance de ce jeune, liée à ses traumatismes précoces, rend toute relation de confiance difficile.'",r:"BC2"},
+  {t:"Inclusion",d:"Principe selon lequel toute personne doit pouvoir participer à la vie sociale ordinaire. Nouveau référentiel 2025 : inclut aussi la transition écologique.",ex:"'Le projet d'inclusion scolaire de ce jeune a nécessité un partenariat étroit avec l'école ordinaire.'",r:"BC3"},
+  {t:"Intervention éducative contenante",d:"Intervention qui vise à limiter physiquement et émotionnellement le débordement d'une personne, dans le respect de sa dignité.",ex:"'Une intervention éducative contenante a été nécessaire pour protéger le jeune et son entourage.'",r:"BC1"},
+  {t:"Médiation éducative",d:"Utilisation d'un support (activité, objet, animal, art) comme intermédiaire pour créer ou développer la relation et les apprentissages.",ex:"'La médiation par l'équitation a permis à ce jeune mutique de progressivement verbaliser ses émotions.'",r:"BC1"},
+  {t:"Mise à distance des représentations",d:"Processus consistant à identifier et neutraliser ses propres préjugés pour mieux accompagner sans projeter.",ex:"'La mise à distance de mes représentations sur la 'mauvaise famille' m'a permis de travailler efficacement avec les parents.'",r:"BC4"},
+  {t:"Passage à l'acte",d:"Expression comportementale d'une tension émotionnelle non verbalisée. La personne agit ce qu'elle ne peut pas dire.",ex:"'Le passage à l'acte violent de ce jeune est à comprendre comme l'expression d'une souffrance non élaborée.'",r:"BC1"},
+  {t:"Posture éducative",d:"Façon globale d'être et de se positionner dans la relation éducative — attitude, langage corporel, choix d'intervention.",ex:"'Ma posture éducative non-jugeante a permis à ce jeune de s'ouvrir progressivement.'",r:"BC1"},
+  {t:"PPE — Projet Personnalisé",d:"Document co-construit avec la personne définissant ses objectifs et les actions mises en place. Obligatoire — loi 2002-2.",ex:"'Le PPE a été révisé lors de la synthèse pour intégrer les nouvelles priorités exprimées par le jeune.'",r:"BC1"},
+  {t:"Résilience",d:"Concept de Cyrulnik : capacité à se reconstruire après un traumatisme grâce à des tuteurs de résilience. Elle se construit dans la relation.",ex:"'L'éducateur référent a joué un rôle de tuteur de résilience pour ce jeune abandonné par sa famille.'",r:"BC2"},
+  {t:"Retrait relationnel",d:"Comportement de repli sur soi, d'isolement, de refus de contact. Signe possible de souffrance ou de méfiance.",ex:"'Le retrait relationnel progressif de ce jeune a alerté l'équipe sur une dégradation de son état psychique.'",r:"BC2"},
+  {t:"Secret professionnel partagé",d:"Permet à des professionnels d'une même équipe de se partager des informations confidentielles dans l'intérêt de la personne.",ex:"'En réunion pluridisciplinaire, nous fonctionnons sous le régime du secret professionnel partagé.'",r:"BC3"},
+  {t:"Synthèse éducative",d:"Réunion pluridisciplinaire faisant le bilan de l'accompagnement et ajustant les objectifs et actions du projet personnalisé.",ex:"'La synthèse semestrielle a permis de réorienter le projet de M. X vers une insertion professionnelle progressive.'",r:"BC4"},
+  {t:"Transition écologique",d:"NOUVEAU BC 2025 ! L'éducateur spécialisé doit intégrer les enjeux environnementaux dans sa pratique et accompagner les personnes dans ce processus.",ex:"'Le projet de jardinage collectif s'inscrit dans une démarche d'éducation à la transition écologique.'",r:"BC3"},
+  {t:"Transmission",d:"Communication écrite ou orale des informations pertinentes entre professionnels pour assurer la continuité de l'accompagnement.",ex:"'La transmission de fin de service a décrit l'incident avec les faits, les interventions et les suites à donner.'",r:"BC4"},
+  {t:"Tuteur de résilience",d:"Personne (souvent un éducateur) qui permet à un enfant en souffrance de se reconstruire par la qualité du lien qu'elle offre.",ex:"'L'éducateur référent est devenu un véritable tuteur de résilience pour ce jeune abandonné par sa famille.'",r:"BC2"},
+  {t:"Veille professionnelle",d:"Action de se tenir informé des évolutions législatives, des nouvelles pratiques et des recherches dans son domaine.",ex:"'Ma veille professionnelle m'a permis d'intégrer les nouvelles RBPP sur l'autisme dans notre pratique.'",r:"BC3"},
+  {t:"Visite médiatisée",d:"Visite encadrée par un professionnel entre un enfant et sa famille, dans un cadre protégé. Maintient le lien tout en protégeant l'enfant.",ex:"'Les visites médiatisées ont permis de maintenir le lien père-fils dans un cadre sécurisant pour le jeune.'",r:"BC1"},
+];
+
+var LOIS = [
+  {t:"Loi 2002-2 — Rénovation sociale",d:"La grande loi du secteur social. Donne aux usagers 7 droits fondamentaux : respect de la dignité, confidentialité, accès à l'information, participation aux décisions, projet personnalisé, recours et expression via le CVS.",ex:"Chaque fois que vous co-construisez un PPE ou animez un CVS, vous mettez en œuvre la loi 2002-2.",r:"2 janvier 2002"},
+  {t:"Loi 2007-293 — Protection de l'enfance",d:"Réforme la protection de l'enfance. Renforce la prévention, clarifie les procédures de signalement, crée les CRIP (Cellule de Recueil des Informations Préoccupantes). Obligation de signaler les enfants en danger.",ex:"Quand vous rédigez une IP (Information Préoccupante) et la transmettez à la CRIP, vous appliquez cette loi.",r:"5 mars 2007"},
+  {t:"Loi 2005-102 — Handicap",d:"Loi sur l'égalité des droits et des chances pour les personnes handicapées. Crée les MDPH, pose le principe d'inclusion scolaire et professionnelle, définit les formes de compensation.",ex:"L'orientation d'un jeune en IME ou DITEP passe par la MDPH — c'est la loi 2005-102 qui organise cela.",r:"11 février 2005"},
+  {t:"Loi 2016-297 — Protection de l'enfant",d:"Renforce la protection de l'enfant. Améliore le PPE qui doit être révisé tous les ans, clarifie la notion de danger, renforce la prise en compte de la parole de l'enfant.",ex:"Le PPE renforcé par cette loi doit être révisé annuellement avec la personne accompagnée.",r:"14 mars 2016"},
+  {t:"CASF — Code de l'Action Sociale et des Familles",d:"Le texte de référence qui regroupe toutes les lois du secteur social et médico-social. L'article L226-3 concerne l'obligation de signalement. L'article D.142-1-1 définit le travail social.",ex:"Quand vous parlez d'obligation de signalement, vous faites référence à l'article L226-3 du CASF.",r:"Droit social"},
+  {t:"RBPP HAS / HCTS",d:"Recommandations de Bonnes Pratiques Professionnelles. Publiées par la Haute Autorité de Santé et le Haut Conseil du Travail Social. Elles définissent ce qui est considéré comme bonne pratique.",ex:"'Conformément aux recommandations HAS sur la bientraitance, nous avons mis en place...'",r:"HAS / HCTS"},
+  {t:"Arrêté du 6 octobre 2025",d:"Le nouveau référentiel DEES ! Applicable au 1er septembre 2026. 4 blocs de compétences, 3442h de formation, 180 crédits ECTS. Grade de licence (niveau 6 RNCP).",ex:"C'est le texte qui encadre votre VAE si vous commencez en septembre 2026.",r:"JO 14 oct. 2025"},
+  {t:"RGPD — Protection des données",d:"Règlement Général sur la Protection des Données. Encadre la collecte et le traitement des données personnelles. Mentionné dans le BC4 comme compétence à maîtriser.",ex:"Les dossiers des personnes accompagnées sont soumis au RGPD — durée de conservation, accès, sécurité.",r:"BC4"},
+];
+
+var AUTEURS = [
+  {t:"Donald Winnicott (1896-1971)",d:"Pédiatre et psychanalyste britannique. Ses concepts sont incontournables en éducation spécialisée. À citer dans le BC1.",ex:"Concepts clés :\n• Holding : portage émotionnel, capacité à tenir et sécuriser\n• Objet transitionnel : l'ourson qui rassure\n• Mère suffisamment bonne : pas parfaite, mais assez bonne\n\nSur le terrain : quand vous restez calme face à une crise, vous faites du holding.",r:"BC1"},
+  {t:"Boris Cyrulnik (né en 1937)",d:"Neurologue et psychiatre français. A popularisé le concept de résilience. Incontournable pour le BC1 et BC2.",ex:"Concepts clés :\n• Résilience : se reconstruire après un traumatisme\n• Tuteur de résilience : la personne qui permet cette reconstruction\n• Trauma : cicatrices qui peuvent se transformer en forces\n\nSur le terrain : vous êtes le tuteur de résilience de vos jeunes.",r:"BC1 / BC2"},
+  {t:"Carl Rogers (1902-1987)",d:"Psychologue américain. A développé l'approche centrée sur la personne. Base de toute relation d'aide.",ex:"Concepts clés :\n• Empathie : comprendre le monde de l'autre de l'intérieur\n• Congruence : être authentique, en accord avec soi-même\n• Regard positif inconditionnel : accepter la personne telle qu'elle est\n\nSur le terrain : ces 3 attitudes sont la base de votre relation éducative.",r:"BC1 / BC2"},
+  {t:"Paulo Freire (1921-1997)",d:"Pédagogue brésilien. A développé la pédagogie des opprimés et le concept d'empowerment. Central pour le BC2.",ex:"Concepts clés :\n• Empowerment : développer le pouvoir d'agir\n• Conscientisation : prendre conscience de sa situation pour la changer\n• Éducation comme acte d'émancipation, pas de domestication\n\nSur le terrain : aider une personne à reprendre le contrôle de sa vie.",r:"BC2"},
+  {t:"John Bowlby (1907-1990)",d:"Psychiatre britannique. A développé la théorie de l'attachement. Fondamental pour comprendre les enfants placés.",ex:"Concepts clés :\n• Attachement sécure : enfant qui a pu compter sur ses figures d'attachement\n• Attachement insécure : enfant qui n'a pas pu — base de nombreux troubles\n• Figure d'attachement : la personne qui rassure\n\nSur le terrain : les comportements des enfants placés s'expliquent souvent par des troubles de l'attachement.",r:"BC1"},
+  {t:"Abraham Maslow (1908-1970)",d:"Psychologue américain. A développé la pyramide des besoins. Outil pratique pour analyser les besoins d'une personne.",ex:"Pyramide du bas vers le haut :\n1. Physiologiques (manger, dormir)\n2. Sécurité\n3. Appartenance\n4. Estime de soi\n5. Accomplissement\n\nSur le terrain : avant de travailler sur l'insertion pro, assurez-vous que les besoins de base sont couverts.",r:"BC1 / BC2"},
+  {t:"Marshall Rosenberg (1934-2015)",d:"Psychologue américain. Créateur de la Communication Non Violente (CNV). Très utile pour la relation et la gestion des conflits.",ex:"Méthode OSBD :\n• Observation (les faits)\n• Sentiment (ce que je ressens)\n• Besoin (ce dont j'ai besoin)\n• Demande (ce que je demande)\n\nSur le terrain : outil concret pour les conflits, les réunions, les familles.",r:"BC2"},
+  {t:"Fernand Deligny (1913-1996)",d:"Éducateur français. A travaillé avec des enfants autistes selon une approche non directive. Pionnier du respect de la différence.",ex:"Concepts clés :\n• Présence sans emprise\n• Respect absolu de l'altérité\n• 'Lignes d'erre' : observer sans intervenir\n\nSur le terrain : inspiration pour accompagner sans forcer, sans projeter.",r:"BC1"},
+];
+
+var STRUCTS = [
+  {t:"MECS",d:"Maison d'Enfants à Caractère Social. Héberge des mineurs en danger ou sans famille. Vie en collectivité avec éducateurs 24h/24. Financée par l'ASE.",ex:"Vous y travaillez en internat — les jeunes vivent avec l'équipe éducative. Accompagnement global, quotidien, éducatif.",r:"Protection de l'enfance"},
+  {t:"DITEP",d:"Dispositif Intégré Thérapeutique, Éducatif et Pédagogique. Pour jeunes avec troubles du comportement. Peut fonctionner en internat, semi-internat ou ambulatoire selon les besoins.",ex:"Le fonctionnement en 'dispositif' signifie qu'un jeune peut passer d'un mode à l'autre. C'est une innovation importante.",r:"Handicap"},
+  {t:"IME",d:"Institut Médico-Éducatif. Pour enfants et adolescents avec déficience intellectuelle. Accompagnement éducatif, pédagogique et thérapeutique.",ex:"Équipe pluridisciplinaire : éducateurs, enseignants spécialisés, psychologues, orthophonistes, kinésithérapeutes.",r:"Loi 2005-102"},
+  {t:"ESAT",d:"Établissement et Service d'Aide par le Travail. Emploi protégé pour adultes handicapés. L'éducateur accompagne l'insertion professionnelle.",ex:"Les travailleurs ESAT ont un statut spécifique — ni salarié ordinaire ni bénéficiaire classique. Mission éducative ET professionnelle.",r:"Handicap adulte"},
+  {t:"SAVS / SAMSAH",d:"Service d'Accompagnement à la Vie Sociale / Médico-Social. Pour adultes handicapés vivant à domicile. L'éducateur se déplace chez eux.",ex:"Accompagnement dans les actes de la vie quotidienne, la gestion du domicile, les démarches administratives, l'insertion sociale.",r:"Handicap"},
+  {t:"CHRS",d:"Centre d'Hébergement et de Réinsertion Sociale. Pour personnes en grande précarité. Objectif : retour au logement autonome.",ex:"Public diversifié : sans-abri, sortants de prison, personnes fuyant des violences conjugales. Mission d'insertion sociale et professionnelle.",r:"Inclusion sociale"},
+  {t:"ASE",d:"Aide Sociale à l'Enfance. Service du département qui protège les mineurs. Place les jeunes, finance les établissements, suit les familles.",ex:"L'ASE est votre partenaire principal en protection de l'enfance. Les PPE sont co-construits avec le référent ASE.",r:"Loi 2007-293"},
+  {t:"PJJ",d:"Protection Judiciaire de la Jeunesse. Mineurs délinquants ou en danger grave. Travaille en lien direct avec les juges des enfants.",ex:"Les mesures PJJ sont décidées par le juge — l'éducateur PJJ les met en œuvre. Accompagnement judiciaire ET éducatif.",r:"Justice"},
+  {t:"MDPH",d:"Maison Départementale des Personnes Handicapées. Évalue les besoins et délivre les notifications d'orientation vers les établissements adaptés.",ex:"C'est la MDPH qui décide qu'un jeune peut aller en IME — sans notification MDPH, pas d'orientation possible.",r:"Loi 2005-102"},
+  {t:"Mission Locale",d:"Structure d'accompagnement pour les jeunes de 16-25 ans en difficulté d'insertion professionnelle et sociale.",ex:"Partenaire indispensable quand un jeune de votre MECS approche de la majorité. À contacter dès 16-17 ans.",r:"Insertion"},
+];
+
+var EXEMPLES = [
+  {t:"Crise en MECS — Gestion et analyse complète",d:"Contexte : MECS, groupe de 8 adolescents, lundi soir, atelier cuisine.\n\nSituation : M. T. (15 ans) présente une agitation psychomotrice croissante suite à un conflit avec un pair. Il fracasse plusieurs objets et insulte violemment l'équipe.\n\nIntervention : J'ai demandé aux autres jeunes de quitter la pièce (réduction des stimuli). Je suis resté calme, voix basse, posture ouverte non menaçante. Je n'ai pas cherché à raisonner pendant la phase aiguë. Après 20 minutes, M. T. s'est progressivement apaisé. Je l'ai accompagné dans sa chambre pour un temps calme.\n\nAprès la crise : 30 minutes plus tard, débriefing. M. T. a pu verbaliser sa frustration initiale. Transmission écrite à l'équipe + alerte chef de service.\n\nPréconisations : Réunion clinique pour analyser les déclencheurs. Ajustement du PPE. Soutien psychologique renforcé.\n\nBlocs : BC1 (gestion de crise, holding, posture éducative) + BC4 (transmissions, posture réflexive)\nRéférences : Winnicott (holding), Cyrulnik (résilience)\nLois : Loi 2007-293 (protection), RBPP HAS (bientraitance)",r:"BC1 · BC4"},
+  {t:"Accompagnement vers l'autonomie — DITEP",d:"Contexte : DITEP, jeune M. (12 ans), TSA de niveau 1, faible tolérance à la frustration.\n\nSituation : M. abandonne toute activité dès la première difficulté. Peut devenir agressif envers l'environnement.\n\nAction éducative : Mise en place d'objectifs micro-progressifs avec renforcement positif immédiat. Tableau de progression visuel que M. peut consulter lui-même. Co-construction des objectifs avec M. lors d'entretiens hebdomadaires.\n\nÉvolution sur 3 mois : M. reste maintenant 20 minutes sur une activité difficile contre 3 minutes au départ. Son niveau d'agressivité a diminué de 60%.\n\nPréconisations : Maintenir les micro-paliers. Introduire progressivement la frustration différée. Partager la méthode avec l'équipe pédagogique.\n\nBlocs : BC1 (accompagnement, médiation) + BC2 (autodétermination, co-construction, objectifs négociés)\nRéférences : Maslow (besoins), Rogers (regard positif inconditionnel), empowerment (Freire)",r:"BC1 · BC2"},
+  {t:"Signalement d'une Information Préoccupante — MECS",d:"Contexte : MECS, Mme L. (13 ans), retour de weekend en famille.\n\nObservation : Mme L. présente des marques suspectes sur les avant-bras et un comportement inhabituellement replié. Refus de parler, pleurs discrets.\n\nIntervention : Création d'un espace de parole sécurisant, sans pression. Mme L. a évoqué des violences physiques du beau-père. Transmission immédiate au chef de service. Co-rédaction d'une IP factuelle et objective. Transmission à la CRIP du département.\n\nSuite : Soutien psychologique proposé. Contact avec l'ASE référente. Signalement judiciaire envisagé selon l'évolution.\n\nBlocs : BC1 (relation de confiance) + BC3 (partenariat ASE/CRIP/justice) + BC4 (écrits professionnels, responsabilité légale)\nLois : Art. L226-3 CASF (obligation de signalement), Loi 2007-293, Loi 2016-297",r:"BC1 · BC3 · BC4"},
+  {t:"Partenariat et inclusion scolaire — IME",d:"Contexte : IME, M. X (14 ans), déficience intellectuelle légère, souhait d'inclusion scolaire.\n\nDémarche : M. X exprime clairement son souhait de fréquenter l'école ordinaire quelques heures par semaine. Rencontre avec l'enseignant référent, l'équipe pédagogique, la MDPH et la famille. Co-construction d'un emploi du temps adapté. Formation courte de l'enseignant aux spécificités de M. X.\n\nMise en œuvre : M. X fréquente 2 matins par semaine une classe ordinaire avec un AESH. Réunion de suivi mensuelle avec tous les acteurs.\n\nRésultat à 6 mois : M. X valorisé. Ses compétences sociales se sont développées. Il parle de 'ses amis à l'école'.\n\nBlocs : BC3 (partenariat multi-acteurs) + BC2 (autodétermination, projet co-construit) + BC1 (PPE)\nLois : Loi 2005-102 (inclusion), Loi 2002-2 (projet co-construit avec la personne)",r:"BC1 · BC2 · BC3"},
+  {t:"Gestion de l'agressivité — DITEP",d:"Contexte : DITEP, groupe de 6 jeunes de 10-14 ans, atelier sport.\n\nSituation : M. Y (12 ans, TDAH sévère) perd le contrôle suite à une défaite lors d'un match. Il insulte ses coéquipiers, renverse le matériel et menace physiquement un pair.\n\nIntervention : J'interromps l'activité. Je m'approche de M. Y calmement, voix basse, posture ouverte. Je l'isole dans un espace calme. J'attends l'apaisement sans parler. Après 10 minutes, M. Y exprime sa frustration — il pensait que l'arbitrage était injuste.\n\nAnalyse : Le passage à l'acte est la manifestation d'une régulation émotionnelle défaillante, accentuée par le TDAH. La compétition a agi comme déclencheur. La présence contenante a permis l'apaisement.\n\nPréconisations : Adapter les activités compétitives. Travailler la gestion de la frustration. Ajuster le PPE.\n\nBlocs : BC1 (gestion de crise, contenance) + BC2 (régulation émotionnelle) + BC4 (transmissions)\nRéférences : Winnicott (holding), troubles du neurodéveloppement (TDAH)",r:"BC1 · BC2 · BC4"},
+  {t:"Dynamique de groupe et bouc émissaire — ESAT",d:"Contexte : ESAT, atelier menuiserie, groupe de 8 travailleurs handicapés adultes.\n\nSituation : Depuis l'arrivée d'un nouveau travailleur (M. A, TSA), le groupe le met à l'écart et lui attribue les tâches les moins valorisantes. M. A se replie sur lui-même.\n\nAnalyse : M. A est devenu le bouc émissaire du groupe. Sa différence génère incompréhension et rejet. Le groupe projette ses tensions sur lui.\n\nIntervention : Entretien individuel avec M. A pour l'écouter. Travail avec le groupe sur le respect et la différence. Activité collective de co-construction d'une règle de vie. Valorisation des compétences spécifiques de M. A devant le groupe.\n\nÉvolution : En 2 mois, M. A est mieux intégré. Le groupe comprend mieux le TSA.\n\nBlocs : BC2 (dynamique de groupe, bientraitance) + BC1 (relation individuelle et collective)\nRéférences : Phénomènes de groupe (bouc émissaire, Anzieu), TSA",r:"BC1 · BC2"},
+  {t:"Prévention santé et partenariat — CHRS",d:"Contexte : CHRS, groupe de 10 adultes en grande précarité, hébergement d'urgence.\n\nSituation : Plusieurs résidents présentent des comportements à risque (alcool, automédication). Peu ont accès à un médecin traitant.\n\nAction : Mise en place d'ateliers santé hebdomadaires — information sur les droits (CMU, AME), orientation vers le CMP, accompagnement physique aux rendez-vous médicaux. Partenariat avec une association de prévention santé du territoire.\n\nRésultats : 6 résidents accompagnés vers un médecin traitant. 3 ont entamé une démarche en addictologie. L'atelier est devenu un espace de parole apprécié.\n\nBlocs : BC2 (prévention, promotion de la santé) + BC3 (partenariat territorial) + BC1 (accompagnement quotidien)\nLois : Loi 2002-2 (droits des usagers)",r:"BC1 · BC2 · BC3"},
+];
+
+var QUIZ = [
+  // BC1
+  {q:"Selon le référentiel 2025, BC1 dure :",o:["252h","350h","504h","445h"],a:2,e:"BC1 = 504h de théorie + 630h minimum de pratique. C'est le plus important car c'est le cœur du métier.",c:"BC1"},
+  {q:"L'épreuve conclusive du BC1 comprend :",o:["Un dossier de 10 pages + 20 min d'oral","Un dossier de 25-30 pages + 40 min d'oral","Un QCM + 30 min d'oral","Un rapport de stage uniquement"],a:1,e:"Dossier 25-30 pages (coeff 2) + soutenance 40 min : 15 min présentation + 25 min échanges (coeff 3). Jury : 1 formateur + 1 professionnel DEES.",c:"BC1"},
+  {q:"Le 'holding' selon Winnicott c'est :",o:["Une technique de contention physique","Un portage émotionnel sécurisant","Un type de réunion d'équipe","Un document administratif"],a:1,e:"Le holding c'est la capacité à tenir émotionnellement la personne par votre présence rassurante. Comme un parent qui sécurise son enfant.",c:"BC1"},
+  {q:"Le PPE doit être co-construit avec :",o:["L'équipe pluridisciplinaire uniquement","Le chef de service","La personne accompagnée elle-même","Les familles uniquement"],a:2,e:"Le PPE est CO-construit avec la personne accompagnée — exigence de la loi 2002-2. La personne est actrice de son projet.",c:"BC1"},
+  {q:"La médiation éducative c'est :",o:["Une réunion de médiation entre jeunes","Utiliser un support comme intermédiaire pour créer la relation","Une technique juridique","Un type d'évaluation"],a:1,e:"La médiation éducative utilise un support (activité, animal, art) pour créer ou développer la relation et les apprentissages. On passe par le FAIRE pour atteindre l'ÊTRE.",c:"BC1"},
+  {q:"La théorie de l'attachement a été développée par :",o:["Carl Rogers","Donald Winnicott","John Bowlby","Abraham Maslow"],a:2,e:"Bowlby développe la théorie de l'attachement : l'enfant a besoin de figures d'attachement stables pour se développer. Fondamental pour comprendre les enfants placés.",c:"BC1"},
+  {q:"L'objet transitionnel selon Winnicott c'est :",o:["Un objet dangereux à retirer","Un objet comme le doudou qui rassure dans la transition","Un formulaire administratif","Un outil éducatif"],a:1,e:"L'objet transitionnel (le doudou, la peluche) aide l'enfant à gérer la séparation avec sa figure d'attachement. Winnicott montre son rôle essentiel dans le développement.",c:"BC1"},
+  {q:"Le référent de parcours a pour mission principale :",o:["Gérer les conflits","Coordonner et assurer la continuité du parcours de la personne","Rédiger les rapports financiers","Animer les activités"],a:1,e:"Le référent de parcours est le pivot — il coordonne tous les acteurs, assure la continuité, et veille à ce que personne ne tombe dans les failles.",c:"BC1"},
+  {q:"Les objectifs SMART sont :",o:["Simples, Mesurables, Actifs, Rapides, Temporels","Spécifiques, Mesurables, Atteignables, Réalistes, Temporels","Structurés, Méthodiques, Applicables, Rationnels, Théoriques","Sociaux, Médicaux, Affectifs, Relationnels, Thérapeutiques"],a:1,e:"SMART : Spécifiques, Mesurables, Atteignables, Réalistes, Temporels. Outil essentiel pour formuler des objectifs éducatifs clairs et évaluables.",c:"BC1"},
+  {q:"La pyramide de Maslow classe les besoins dans quel ordre ?",o:["Accomplissement → Estime → Appartenance → Sécurité → Physiologiques","Physiologiques → Sécurité → Appartenance → Estime → Accomplissement","Sécurité → Physiologiques → Appartenance → Estime → Accomplissement","Estime → Appartenance → Sécurité → Physiologiques → Accomplissement"],a:1,e:"Du bas vers le haut : Physiologiques → Sécurité → Appartenance → Estime → Accomplissement. En travail social : couvrir les besoins de base avant de viser l'accomplissement.",c:"BC1"},
+  {q:"La visite médiatisée c'est :",o:["Une visite virtuelle en visioconférence","Une visite encadrée par un professionnel entre un enfant et sa famille","Une visite de l'inspection","Une médiation entre deux familles"],a:1,e:"La visite médiatisée est encadrée par un professionnel dans un cadre protégé. Elle maintient le lien famille-enfant tout en protégeant l'enfant.",c:"BC1"},
+  {q:"L'autobiographie raisonnée c'est :",o:["Un type de rapport éducatif","Un outil pédagogique permettant au jeune de raconter et analyser son histoire","Un document administratif","Une technique de médiation"],a:1,e:"L'autobiographie raisonnée permet à la personne de mettre en mots son histoire, de lui donner du sens. Outil puissant pour la construction identitaire.",c:"BC1"},
+  // BC2
+  {q:"Le BC2 vise principalement :",o:["La gestion d'équipe","L'autodétermination et l'émancipation des personnes","Les partenariats territoriaux","La communication professionnelle"],a:1,e:"BC2 : Favoriser et soutenir l'autodétermination des individus et des collectifs dans un but d'émancipation.",c:"BC2"},
+  {q:"La résilience selon Cyrulnik c'est :",o:["L'invulnérabilité face aux traumatismes","La capacité à se reconstruire après un traumatisme grâce à des tuteurs","L'oubli des traumatismes","Une technique thérapeutique"],a:1,e:"La résilience n'est pas l'invulnérabilité — c'est la capacité à se reconstruire dans la relation, grâce à des tuteurs de résilience.",c:"BC2"},
+  {q:"La Communication Non Violente a été créée par :",o:["Carl Rogers","Paulo Freire","Marshall Rosenberg","Boris Cyrulnik"],a:2,e:"CNV de Rosenberg : Observation, Sentiment, Besoin, Demande. Évite les jugements et favorise la coopération.",c:"BC2"},
+  {q:"L'empowerment c'est :",o:["Une technique de contention","Le développement du pouvoir d'agir de la personne sur sa propre vie","Une méthode pédagogique","Un type de réunion"],a:1,e:"L'empowerment (Freire) : développer la capacité de la personne à agir sur sa propre vie. Votre rôle est de rendre votre présence de moins en moins nécessaire.",c:"BC2"},
+  {q:"La fatigue compassionnelle c'est :",o:["Un droit au repos","L'épuisement lié à l'exposition répétée à la souffrance des personnes","Une maladie professionnelle reconnue","Un trouble du comportement"],a:1,e:"Risque professionnel réel. L'exposition répétée à la souffrance épuise émotionnellement si elle n'est pas accompagnée par la supervision et l'analyse de pratique.",c:"BC2"},
+  {q:"La décentration c'est :",o:["Changer de poste","Se mettre à distance de ses propres représentations pour comprendre l'autre","Faire une pause","Travailler ailleurs"],a:1,e:"La décentration : identifier et neutraliser ses propres préjugés pour mieux comprendre l'autre sans projeter.",c:"BC2"},
+  {q:"L'approche systémique c'est :",o:["Travailler seul de façon méthodique","Comprendre la personne dans son système (famille, groupe, institution)","Une méthode de rangement","Un type de bilan"],a:1,e:"La systémique (Bateson) : on ne peut pas comprendre une personne isolément. Elle fait partie d'un système. Modifier un élément modifie tout le système.",c:"BC2"},
+  {q:"Le bouc émissaire dans un groupe c'est :",o:["Le leader du groupe","Le membre sur lequel le groupe projette ses tensions","Le plus jeune du groupe","L'éducateur"],a:1,e:"Phénomène de groupe : le bouc émissaire est le membre sur lequel le groupe projette ses tensions pour maintenir sa cohésion. L'éducateur doit l'identifier et le réguler.",c:"BC2"},
+  {q:"Éthique et déontologie : quelle est la différence ?",o:["Ce sont des synonymes","La déontologie ce sont les règles professionnelles, l'éthique c'est votre réflexion sur le bien agir","L'éthique concerne les lois, la déontologie les valeurs","La déontologie est personnelle, l'éthique est collective"],a:1,e:"Déontologie = règles professionnelles (secret pro, obligation de signalement). Éthique = votre réflexion personnelle sur ce qu'il est juste de faire. Les deux sont indispensables.",c:"BC2"},
+  {q:"Le TSPT c'est :",o:["Un type de projet personnalisé","Le Trouble du Stress Post-Traumatique","Un texte législatif","Une technique éducative"],a:1,e:"Le Trouble du Stress Post-Traumatique : reviviscences, évitement, hyperactivation. Certains comportements difficiles sont des réponses adaptatives à un trauma.",c:"BC2"},
+  {q:"La pair-aidance c'est :",o:["L'aide apportée par les parents","Le soutien mutuel entre personnes ayant vécu des expériences similaires","Une technique de médiation","Un type de supervision"],a:1,e:"La pair-aidance : des personnes ayant vécu des expériences similaires se soutiennent mutuellement. Levier éducatif puissant dans les groupes.",c:"BC2"},
+  // BC3
+  {q:"Quelle nouvelle compétence apparaît dans le BC3 en 2025 ?",o:["Le numérique","La transition écologique","La gestion des conflits","La communication interculturelle"],a:1,e:"Nouveau 2025 : intégrer les questions environnementales et de transition écologique dans la construction des réponses adaptées aux besoins du territoire.",c:"BC3"},
+  {q:"Le diagnostic territorial sert à :",o:["Diagnostiquer les maladies sur un territoire","Analyser les besoins, ressources et acteurs d'un territoire","Évaluer les compétences de l'équipe","Rédiger le rapport d'activité"],a:1,e:"Le diagnostic territorial analyse les besoins des populations, les ressources disponibles, les acteurs en présence et les inégalités existantes pour adapter les réponses.",c:"BC3"},
+  {q:"Le secret professionnel partagé permet :",o:["De tout dire à n'importe qui","Aux professionnels d'une même équipe de partager des infos dans l'intérêt de la personne","De contacter la presse","De communiquer avec la famille sans accord"],a:1,e:"Le secret professionnel partagé est une exception légale permettant la communication interne dans l'intérêt de la personne accompagnée.",c:"BC3"},
+  {q:"La réunion de synthèse c'est :",o:["Une réunion administrative","Une réunion pluridisciplinaire qui fait le bilan d'un accompagnement et ajuste le PPE","Une réunion de crise","Une réunion avec les familles"],a:1,e:"La synthèse réunit tous les professionnels autour d'une personne pour croiser les regards et ajuster le projet personnalisé.",c:"BC3"},
+  {q:"La CRIP c'est :",o:["Un syndicat de travailleurs sociaux","La Cellule de Recueil des Informations Préoccupantes","Un type d'établissement","Un diplôme"],a:1,e:"La CRIP reçoit les Informations Préoccupantes concernant les enfants en danger. Créée par la loi 2007-293.",c:"BC3"},
+  {q:"La Mission Locale accompagne :",o:["Les personnes âgées","Les jeunes de 16 à 25 ans en difficulté d'insertion","Les adultes handicapés","Les familles en crise"],a:1,e:"La Mission Locale : accompagnement des jeunes 16-25 ans vers l'emploi et l'insertion sociale. Partenaire incontournable en protection de l'enfance.",c:"BC3"},
+  {q:"La veille professionnelle c'est :",o:["Surveiller les jeunes la nuit","Se tenir informé des évolutions législatives et des nouvelles pratiques","Surveiller ses collègues","Faire des rondes"],a:1,e:"La veille professionnelle : rester informé des évolutions du secteur (lois, RBPP, recherches) pour adapter sa pratique. Compétence clé du BC3.",c:"BC3"},
+  {q:"Le travail intersectoriel c'est :",o:["Travailler dans plusieurs secteurs à la fois","Coopérer avec des acteurs de différents secteurs autour d'une même personne","Travailler en dehors de son secteur","Un type de formation"],a:1,e:"L'intersectorialité : coopérer avec des acteurs de différents secteurs (santé, justice, éducation) pour une réponse globale et coordonnée.",c:"BC3"},
+  // BC4
+  {q:"Le référentiel DEES 2025 est applicable à partir de :",o:["Janvier 2026","Mars 2026","Septembre 2026","Janvier 2027"],a:2,e:"L'arrêté du 6 octobre 2025 entre en vigueur le 1er septembre 2026.",c:"BC4"},
+  {q:"Dans le BC4, quelle compétence numérique est mentionnée ?",o:["Créer des sites web","Identifier les enjeux liés à l'usage de l'IA","Gérer les réseaux sociaux","Programmer des applications"],a:1,e:"Le référentiel 2025 mentionne explicitement : identifier les enjeux liés à l'usage de l'intelligence artificielle dans le BC4.",c:"BC4"},
+  {q:"La posture réflexive selon Schön c'est :",o:["Réfléchir avant d'agir uniquement","Réfléchir sur l'action après qu'elle s'est produite pour apprendre","Ne jamais agir sans réfléchir","Une posture physique"],a:1,e:"Schön distingue la réflexion dans l'action (pendant) et la réflexion sur l'action (après). Les deux sont essentielles pour progresser professionnellement.",c:"BC4"},
+  {q:"Le RGPD concerne :",o:["Les règles de grammaire professionnelle","La protection des données personnelles","Le règlement des conflits","La gestion des risques"],a:1,e:"RGPD : Règlement Général sur la Protection des Données. Encadre la collecte et le traitement des données personnelles. Obligation légale pour tous les professionnels.",c:"BC4"},
+  {q:"Les RBPP sont publiées par :",o:["Le ministère du travail","La HAS et le HCTS","L'ASE","Les établissements de formation"],a:1,e:"Les Recommandations de Bonnes Pratiques Professionnelles sont publiées par la Haute Autorité de Santé (HAS) et le Haut Conseil du Travail Social (HCTS).",c:"BC4"},
+  {q:"L'analyse de pratique sert principalement à :",o:["Évaluer les jeunes accompagnés","Réfléchir collectivement sur sa propre pratique professionnelle","Former les nouveaux éducateurs","Rédiger les rapports"],a:1,e:"L'analyse de pratique : espace collectif pour réfléchir sur des situations vécues, questionner ses choix, améliorer sa pratique et prendre soin de soi.",c:"BC4"},
+  {q:"La juste distance professionnelle c'est :",o:["Rester froid et distant","Être trop proche pour mieux aider","Être pleinement présent tout en maintenant son objectivité professionnelle","Éviter tout contact"],a:2,e:"La juste distance : ni trop proche (risque de fusion), ni trop loin (froideur). Être pleinement disponible tout en préservant son objectivité.",c:"BC4"},
+  {q:"Le travail prescrit vs travail réel c'est :",o:["Ce qu'on devrait faire vs ce qu'on fait vraiment","La théorie vs la pratique","Les règles vs les lois","Le jour vs la nuit"],a:0,e:"Travail prescrit = ce que les procédures définissent. Travail réel = ce qu'on fait vraiment sur le terrain. L'écart entre les deux est une réalité professionnelle normale.",c:"BC4"},
+  // LOIS
+  {q:"La loi 2002-2 donne combien de droits fondamentaux aux usagers ?",o:["4","5","7","10"],a:2,e:"7 droits : dignité, confidentialité, accès à l'information, participation, projet personnalisé, recours, expression via le CVS.",c:"lois"},
+  {q:"La loi 2007-293 concerne :",o:["Le handicap","La protection de l'enfance","La rénovation sociale","L'insertion professionnelle"],a:1,e:"Loi 2007-293 : réforme la protection de l'enfance, clarifie les signalements, crée les CRIP.",c:"lois"},
+  {q:"La loi 2005-102 concerne :",o:["La protection de l'enfance","La rénovation sociale","Les droits des personnes handicapées","L'insertion professionnelle"],a:2,e:"Loi 2005-102 : égalité des droits pour les personnes handicapées. Crée les MDPH, pose le principe d'inclusion.",c:"lois"},
+  {q:"La MDPH a été créée par :",o:["Loi 2002-2","Loi 2007-293","Loi 2005-102","Loi 2016-297"],a:2,e:"La MDPH (Maison Départementale des Personnes Handicapées) a été créée par la loi du 11 février 2005.",c:"lois"},
+  {q:"Le CVS c'est :",o:["Centre de Vie Sociale","Conseil de Vie Sociale","Commission de Validation Sociale","Cellule de Vigilance Sociale"],a:1,e:"CVS : Conseil de Vie Sociale. Instance obligatoire où les personnes accompagnées donnent leur avis sur le fonctionnement de l'établissement. Loi 2002-2.",c:"lois"},
+  {q:"L'IP dans la protection de l'enfance c'est :",o:["Inspection Professionnelle","Information Préoccupante","Intervention Prioritaire","Indicateur de Performance"],a:1,e:"IP : Information Préoccupante. Signalement transmis à la CRIP quand un enfant est en danger. Obligation légale — art. L226-3 du CASF.",c:"lois"},
+  {q:"La loi 2016-297 renforce :",o:["Le handicap","La rénovation sociale","La protection de l'enfant et le PPE annuel","L'insertion professionnelle"],a:2,e:"Loi 2016-297 : renforce la protection de l'enfant, impose la révision annuelle du PPE et renforce la prise en compte de la parole de l'enfant.",c:"lois"},
+  {q:"Le CASF c'est :",o:["Le Certificat d'Aptitude aux Services Familiaux","Le Code de l'Action Sociale et des Familles","Le Centre d'Action Sociale et Familiale","Le Comité d'Aide Sociale et Familiale"],a:1,e:"CASF : Code de l'Action Sociale et des Familles. Le texte de référence qui regroupe toutes les lois du secteur social et médico-social.",c:"lois"},
+  // STRUCTURES
+  {q:"Un DITEP accueille :",o:["Des enfants avec déficience intellectuelle","Des jeunes avec troubles du comportement","Des adultes en insertion","Des personnes âgées"],a:1,e:"DITEP : Dispositif Intégré Thérapeutique, Éducatif et Pédagogique. Pour jeunes avec troubles du comportement. Peut fonctionner en internat, semi-internat ou ambulatoire.",c:"BC3"},
+  {q:"Un IME accueille :",o:["Des jeunes avec troubles du comportement","Des enfants et adolescents avec déficience intellectuelle","Des adultes handicapés","Des mineurs délinquants"],a:1,e:"IME : Institut Médico-Éducatif. Accompagnement éducatif, pédagogique et thérapeutique pour enfants et adolescents avec déficience intellectuelle.",c:"BC3"},
+  {q:"L'ASE c'est :",o:["Association de Solidarité entre Éducateurs","Aide Sociale à l'Enfance","Agence de Soin aux Enfants","Assistance Sociale et Éducative"],a:1,e:"ASE : Aide Sociale à l'Enfance. Service du département qui protège les mineurs, place les jeunes et finance les établissements.",c:"BC3"},
+  {q:"Un ESAT c'est :",o:["Un établissement scolaire spécialisé","Un Établissement et Service d'Aide par le Travail","Un service de soins","Une association de terrain"],a:1,e:"ESAT : emploi protégé pour adultes handicapés. L'éducateur accompagne l'insertion professionnelle dans un cadre adapté.",c:"BC3"},
+  {q:"La PJJ c'est :",o:["La Protection des Jeunes en Juridiction","La Protection Judiciaire de la Jeunesse","Le Programme de Justice Juvénile","La Prévention des Jeunes en Justice"],a:1,e:"PJJ : Protection Judiciaire de la Jeunesse. S'occupe des mineurs délinquants ou en danger grave, en lien avec les juges des enfants.",c:"BC3"},
+  // AUTEURS
+  {q:"Carl Rogers développe l'approche :",o:["Centrée sur le groupe","Centrée sur la personne","Centrée sur le thérapeute","Centrée sur la famille"],a:1,e:"Rogers : approche centrée sur la personne. Trois attitudes clés : empathie, congruence, regard positif inconditionnel.",c:"BC1"},
+  {q:"Paulo Freire est connu pour :",o:["La théorie de l'attachement","La pédagogie des opprimés et l'empowerment","La résilience","La pyramide des besoins"],a:1,e:"Freire : pédagogie des opprimés, empowerment, conscientisation. L'éducation comme outil d'émancipation — central dans le BC2.",c:"BC2"},
+  {q:"Fernand Deligny a travaillé avec :",o:["Des adultes en insertion","Des personnes âgées","Des enfants autistes","Des délinquants"],a:2,e:"Deligny : pionnier d'une approche non directive avec des enfants autistes. Respect absolu de l'altérité, présence sans emprise.",c:"BC1"},
+  {q:"Les représentations sociales ont été théorisées par :",o:["Winnicott","Maslow","Moscovici","Rogers"],a:2,e:"Moscovici : les représentations sociales sont des images, idées préconçues sur les autres groupes. Elles influencent nos comportements. La décentration permet de les questionner.",c:"BC4"},
+];
+
+var ORAL = [
+  {q:"Pourquoi avez-vous fait ce choix à ce moment précis ?",h:"Le jury veut voir votre capacité à analyser vos propres décisions. Répondez : contexte, votre lecture de la situation, pourquoi cette action était la plus adaptée. Soyez précis et utilisez 'je'.",cat:"Analyse réflexive"},
+  {q:"Qu'auriez-vous fait différemment avec le recul ?",h:"Le jury ne cherche pas à vous piéger. Il veut voir votre posture réflexive (BC4). Reconnaître une erreur et en tirer des apprentissages = maturité professionnelle. N'esquivez pas.",cat:"Posture réflexive"},
+  {q:"Quel auteur rattachez-vous à cette situation ?",h:"Préparez 3-4 auteurs : Winnicott (relation, holding), Cyrulnik (résilience), Rogers (écoute active), Maslow (besoins). Faites le lien CONCRET avec votre situation. Pas un récit mais une analyse.",cat:"Références théoriques"},
+  {q:"Comment avez-vous travaillé avec l'équipe pluridisciplinaire ?",h:"BC3 : expliquez vos transmissions, votre participation aux réunions, comment les différents regards (éducatif, psy, social) ont enrichi l'accompagnement. Valorisez le travail collectif.",cat:"Travail d'équipe (BC3)"},
+  {q:"Quelle loi encadre cette situation ?",h:"Ayez en tête 3 lois clés : 2002-2 (droits usagers/PPE), 2007-293 (protection enfance/signalement), 2005-102 (handicap/inclusion). Expliquez CONCRÈTEMENT en quoi elle guide votre pratique.",cat:"Cadre législatif"},
+  {q:"Comment avez-vous pris en compte l'autodétermination de la personne ?",h:"BC2 : expliquez comment vous avez associé la personne aux décisions, comment vous avez respecté ses choix même difficiles, comment vous avez développé son pouvoir d'agir progressivement.",cat:"BC2 — Autodétermination"},
+  {q:"Comment avez-vous géré vos émotions dans cette situation ?",h:"BC4 : décrivez votre régulation émotionnelle, comment vous êtes resté calme (holding). Mentionnez l'analyse de pratique et la supervision comme espaces de régulation. Montrez que vous vous connaissez.",cat:"Gestion des émotions (BC4)"},
+  {q:"Quels étaient vos objectifs et comment les avez-vous évalués ?",h:"Formulez des objectifs SMART (Spécifiques, Mesurables, Atteignables, Réalistes, Temporels) à CT/MT/LT. Expliquez vos critères d'évaluation. Montrez que vous distinguez les objectifs atteints et non atteints.",cat:"Objectifs et évaluation (BC1)"},
+  {q:"Comment avez-vous associé la famille à l'accompagnement ?",h:"BC2 : expliquez votre démarche avec la famille — les liens maintenus, les difficultés rencontrées, comment vous avez préservé l'intérêt de la personne tout en respectant la place des parents.",cat:"Travail avec les familles (BC2)"},
+  {q:"Qu'est-ce que cette situation vous a appris sur votre pratique ?",h:"Question réflexive centrale (BC4). Soyez honnête sur vos apprentissages, les ajustements de posture, les nouvelles façons d'aborder ce type de situation. C'est votre évolution professionnelle.",cat:"Développement professionnel (BC4)"},
+  {q:"En quoi cette situation illustre-t-elle votre bloc de compétences ?",h:"Le jury veut que vous fassiez le lien entre ce que vous avez vécu et les compétences officielles du référentiel. Citez les compétences et les indicateurs qui correspondent à ce que vous avez fait.",cat:"Lien avec le référentiel"},
+  {q:"Comment avez-vous intégré la dimension de transition écologique ?",h:"NOUVEAU 2025 ! Le jury peut poser cette question. Montrez comment vous intégrez les enjeux environnementaux dans votre pratique — même modestement. Ex : démarches zéro déchet, projets nature, sensibilisation.",cat:"Transition écologique (BC3 — nouveau 2025)"},
+];
+
+var PLANNING = [
+  {d:"Sept. 2026",t:"Démarrage VAE",desc:"Inscription officielle, entretien de positionnement. Dépôt du Livret 1 (recevabilité).",col:"var(--accent)"},
+  {d:"Oct. — Nov. 2026",t:"Livret 1 — Recevabilité",desc:"Présentation de votre parcours professionnel, expériences, motivation. Justificatifs : contrats, fiches de paie, attestations.",col:"var(--accent3)"},
+  {d:"Déc. 2026",t:"Validation recevabilité",desc:"Si votre Livret 1 est accepté, vous pouvez commencer le Livret 2.",col:"var(--accent)"},
+  {d:"Jan. — Avr. 2027",t:"Livret 2 — Les situations",desc:"4 situations professionnelles, une par bloc (BC1 à BC4). 3 à 6 pages par situation. Analyse + références + préconisations.",col:"var(--accent2)"},
+  {d:"Mai 2027",t:"Dépôt Livret 2",desc:"Envoi du Livret 2 complet au jury. Dernier délai pour être prêt.",col:"var(--gold)"},
+  {d:"Juin — Sept. 2027",t:"Préparation oral",desc:"Entraînement aux questions du jury. Maîtriser les blocs, les auteurs, les lois. Simulez des oraux.",col:"var(--accent3)"},
+  {d:"Oct. 2027",t:"Épreuve conclusive BC1",desc:"Dossier 25-30 pages + soutenance 40 min. Devant 1 formateur + 1 professionnel DEES.",col:"var(--accent2)"},
+  {d:"Nov. 2027",t:"Résultats",desc:"Validation totale (DEES obtenu) ou partielle. En cas de partielle, vous avez 5 ans pour compléter.",col:"var(--accent)"},
+];
+
+// ===== STATE =====
+var sits=[], selTags=[], curR='vocab', curP='sits', qzCat='all';
+var qzS={qs:[],idx:0,score:0,done:false};
+
+function init(){
+  try{sits=JSON.parse(localStorage.getItem('vae_sits')||'[]');}catch(e){sits=[];}
+  var k=localStorage.getItem('vae_key')||'antpqV9q3zKznUKF59sJgXE7y0pLAuRw';
+  if(!localStorage.getItem('vae_key')){localStorage.setItem('vae_key','antpqV9q3zKznUKF59sJgXE7y0pLAuRw');}
+  document.getElementById('ki').value=k;
+  upKs(k);
+  upStats();
+  showB('bc1',null);
+  showR('vocab',null);
+  showP('sits',null);
+  updateRdHint();
+  renderEcrits();
+}
+
+function saveKey(){var k=document.getElementById('ki').value.trim();localStorage.setItem('vae_key',k);upKs(k);}
+function upKs(k){var el=document.getElementById('ks');if(k){el.textContent='✅ Clé Mistral enregistrée — IA active';el.style.color='var(--accent)';}else{el.textContent='⚠️ Pas de clé — fonctions IA désactivées';el.style.color='var(--accent2)';}}
+
+function upStats(){
+  document.getElementById('st-s').textContent=sits.length;
+  var b={};sits.forEach(function(s){if(s.blocs)s.blocs.forEach(function(x){b[x]=1;});});
+  document.getElementById('st-b').textContent=Object.keys(b).length+'/4';
+  var last=localStorage.getItem('vae_last_quiz');
+  document.getElementById('st-q').textContent=last?last+'%':'—';
+}
+
+function sp(p){
+  document.querySelectorAll('.pg').forEach(function(x){x.classList.remove('on');});
+  document.querySelectorAll('.ni').forEach(function(x){x.classList.remove('on');});
+  document.getElementById('pg-'+p).classList.add('on');
+  var ps=['home','blocs','redaction','ressources','plus'];
+  var i=ps.indexOf(p);
+  if(i>=0)document.querySelectorAll('.ni')[i].classList.add('on');
+  if(p==='plus')showP(curP,null);
+  if(p==='home')upStats();
+}
+
+// ===== BLOCS =====
+function showB(bc,btn){
+  if(btn){document.querySelectorAll('#pg-blocs .tb').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');}
+  var z=document.getElementById('bz');
+  if(bc==='eval'){z.innerHTML=renderEval();return;}
+  if(bc==='jury'){z.innerHTML=renderJury();return;}
+  var d=BLOCS[bc];if(!d)return;
+  var h='<div class="card" style="border-left:4px solid '+d.c+'">';
+  h+='<div style="font-size:26px;margin-bottom:8px">'+d.e+'</div>';
+  h+='<div class="hb">'+d.h+'</div>';
+  h+='<div class="ct" style="font-size:16px;color:'+d.c+'">'+d.t+'</div>';
+  h+='<div class="cb" style="margin-top:8px">'+d.intro+'</div>';
+  h+='<div style="margin-top:12px"><div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px">ACTIVITÉS OFFICIELLES</div>';
+  d.activites.forEach(function(a){h+='<div style="font-size:13px;padding:4px 0 4px 14px;position:relative;border-bottom:1px solid var(--border);line-height:1.4"><span style="position:absolute;left:0;color:'+d.c+'">→</span>'+a+'</div>';});
+  h+='</div></div>';
+  h+='<div class="st">Compétences et indicateurs officiels</div>';
+  d.comps.forEach(function(comp,i){
+    h+='<div class="ah" onclick="togAcc(this)"><span>'+(i+1)+'. '+comp.t+'</span><span>▼</span></div>';
+    h+='<div class="ab">';
+    h+='<div style="padding:10px;background:var(--al);border-radius:8px;margin-bottom:12px;font-size:14px"><strong>💡 En clair :</strong> '+comp.simple+'</div>';
+    h+='<div style="padding:10px;background:var(--surface2);border-radius:8px;margin-bottom:12px;font-size:13px;font-style:italic;color:var(--muted)"><strong>🏥 Exemple terrain :</strong><br>'+comp.ex+'</div>';
+    h+='<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Indicateurs officiels</div>';
+    comp.indicateurs.forEach(function(ind){h+='<div class="ind-item">'+ind+'</div>';});
+    h+='</div>';
+  });
+  z.innerHTML=h;
+}
+
+function renderEval(){
+  var h='<div class="card"><div style="font-size:26px;margin-bottom:8px">📊</div>';
+  h+='<div class="ct" style="font-size:16px">Modalités d\'évaluation officielles</div>';
+  h+='<div class="cb">Arrêté du 6 octobre 2025 — Annexe V Référentiel d\'évaluation</div></div>';
+  var evals=[
+    {bc:'BC1',color:'var(--accent)',items:[
+      {t:'Contrôle continu',d:'Épreuves définies par l\'établissement de formation (rapports, études de cas, analyses de situations, entretiens professionnels). Les périodes de pratique font l\'objet d\'une évaluation par le référent professionnel.'},
+      {t:'Épreuve conclusive — Dossier écrit (coefficient 2)',d:'Production écrite individuelle de 25 à 30 pages (hors page de garde) + 3 pages d\'annexes facultatives. Dossier d\'analyse du parcours de formation et de réflexion sur le métier. Noté sur 20.'},
+      {t:'Épreuve conclusive — Soutenance orale (coefficient 3)',d:'40 minutes : 15 min de présentation par le candidat + 25 min d\'échanges avec le jury. Jury composé de 1 formateur + 1 professionnel titulaire du DEES. Notée sur 20.'},
+      {t:'Validation du BC1',d:'Moyenne de l\'épreuve conclusive (écrit coeff 2 + oral coeff 3) + contrôle continu. Minimum 10/20 par unité d\'enseignement. Les notes au sein du BC1 sont compensables.'}
+    ]},
+    {bc:'BC2',color:'var(--accent2)',items:[{t:'Contrôle continu uniquement',d:'Pas d\'épreuve conclusive pour le BC2. Épreuves définies par l\'établissement + évaluation des périodes de pratique par le référent professionnel.'}]},
+    {bc:'BC3',color:'var(--accent3)',items:[{t:'Contrôle continu uniquement',d:'Pas d\'épreuve conclusive pour le BC3. Épreuves définies par l\'établissement + évaluation des périodes de pratique par le référent professionnel.'}]},
+    {bc:'BC4',color:'var(--gold)',items:[{t:'Contrôle continu uniquement',d:'Pas d\'épreuve conclusive pour le BC4. Épreuves définies par l\'établissement + évaluation des périodes de pratique par le référent professionnel.'}]},
+  ];
+  evals.forEach(function(ev){
+    h+='<div class="ah" onclick="togAcc(this)" style="border-left:4px solid '+ev.color+'"><span>'+ev.bc+'</span><span>▼</span></div>';
+    h+='<div class="ab">';
+    ev.items.forEach(function(it){
+      h+='<div class="eval-box"><div class="eval-title">'+it.t+'</div><div class="eval-content">'+it.d+'</div></div>';
+    });
+    h+='</div>';
+  });
+  h+='<div class="card" style="margin-top:12px;background:var(--a2l);border-color:var(--accent2)"><div class="ct" style="color:var(--accent2)">⚠️ Règle importante</div><div class="cb">Chaque bloc est validé SÉPARÉMENT. Pas de compensation entre les blocs. Un bloc échoué doit être repassé — mais vous conservez les blocs validés pendant 5 ans.</div></div>';
+  return h;
+}
+
+function renderJury(){
+  var h='<div class="card"><div style="font-size:26px;margin-bottom:8px">🎤</div>';
+  h+='<div class="ct" style="font-size:16px">Ce qu\'attend vraiment le jury</div>';
+  h+='<div class="cb">Le jury ne veut pas un récit. Il veut comprendre POURQUOI vous avez fait ce choix et ce que vous en avez appris.</div></div>';
+  var items=[
+    {i:'✅',t:'Ce qu\'il veut entendre',l:['Une analyse réflexive : pourquoi j\'ai fait ce choix (et pas seulement quoi)','Des références théoriques citées et expliquées concrètement','Vos erreurs et ce que vous en avez tiré comme apprentissages','La progression de la personne accompagnée grâce à votre action','Votre positionnement professionnel clairement assumé','Les lois qui encadrent votre situation, avec leurs implications pratiques','La prise en compte de l\'autodétermination de la personne (BC2)']},
+    {i:'❌',t:'Ce qu\'il ne veut pas',l:['Un simple récit chronologique de ce qui s\'est passé','Des généralités sans situation concrète','Du jargon sans explication','Minimiser vos difficultés ou erreurs','Oublier la personne accompagnée dans votre discours','Les auteurs cités sans lien avec votre situation']},
+    {i:'🗣️',t:'Conseils pour l\'oral',l:['Prenez le temps de réfléchir avant de répondre — les silences sont acceptés','Utilisez "je" — c\'est votre expérience, assumez-la','Si vous ne savez pas, dites-le honnêtement — le jury respecte ça','Restez concret, donnez des exemples précis avec des faits','Montrez que vous avez évolué professionnellement depuis la situation','Connectez toujours à la personne accompagnée et à son intérêt']},
+  ];
+  items.forEach(function(it){
+    h+='<div class="ah" onclick="togAcc(this)"><span>'+it.i+' '+it.t+'</span><span>▼</span></div>';
+    h+='<div class="ab"><ul style="padding-left:18px">';
+    it.l.forEach(function(x){h+='<li style="margin-bottom:8px">'+x+'</li>';});
+    h+='</ul></div>';
+  });
+  return h;
+}
+
+function togAcc(hdr){
+  var b=hdr.nextElementSibling;
+  if(b){b.classList.toggle('on');var a=hdr.querySelector('span:last-child');if(a)a.textContent=b.classList.contains('on')?'▲':'▼';}
+}
+
+// ===== RESSOURCES =====
+function showR(type,btn){
+  curR=type;
+  if(btn){document.querySelectorAll('#pg-ressources .tb').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');}
+  document.getElementById('rs').value='';
+  renderR(type,'');
+}
+
+function filterR(){renderR(curR,document.getElementById('rs').value.toLowerCase());}
+
+function renderR(type,search){
+  var map={vocab:VOCAB,lois:LOIS,auteurs:AUTEURS,struct:STRUCTS,exemples:EXEMPLES};
+  var data=map[type]||[];
+  var filtered=search?data.filter(function(d){return(d.t+d.d).toLowerCase().includes(search);}):data;
+  var z=document.getElementById('rz');
+  if(!filtered.length){z.innerHTML='<div class="es"><div style="font-size:48px;opacity:0.5">🔍</div><div style="font-size:15px">Aucun résultat</div></div>';return;}
+  var h='';
+  filtered.forEach(function(item){
+    if(type==='exemples'){
+      h+='<div class="card"><div class="ct">'+item.t+'</div><div class="cb" style="white-space:pre-wrap">'+item.d+'</div>';
+      if(item.r){h+='<div style="margin-top:8px">';item.r.split('·').forEach(function(b){var bb=b.trim().toLowerCase().replace(' ','');h+='<span class="bdg '+bb+'">'+b.trim()+'</span>';});h+='</div>';}
+      h+='</div>';
+    }else{
+      h+='<div class="gi"><div class="gt">'+item.t+'</div><div class="gd">'+item.d+'</div>';
+      if(item.ex)h+='<div class="ge">'+item.ex+'</div>';
+      if(item.r)h+='<div class="gr">'+item.r+'</div>';
+      h+='</div>';
+    }
+  });
+  z.innerHTML=h;
+}
+
+// ===== PLUS =====
+function showP(tab,btn){
+  curP=tab;
+  if(btn){document.querySelectorAll('#pg-plus .tb').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');}
+  var z=document.getElementById('pz');
+  if(tab==='sits')z.innerHTML=renderSits();
+  else if(tab==='quiz')z.innerHTML=renderQuizHome();
+  else if(tab==='oral')z.innerHTML=renderOral();
+  else if(tab==='theorie')z.innerHTML=renderTheorie();
+  else if(tab==='planning')z.innerHTML=renderPlanning();
+  else if(tab==='livrets')z.innerHTML=renderLivrets();
+}
+
+function renderSits(){
+  var h='<button class="btn bp" onclick="openOv(\'ov-add\')">✍️ Nouvelle situation</button><div class="st">Enregistrées</div>';
+  if(!sits.length)return h+'<div class="es"><div style="font-size:48px;opacity:0.5">📭</div><div style="font-size:15px">Aucune situation<br>Ajoutez votre première expérience !</div></div>';
+  sits.slice().reverse().forEach(function(s,ri){
+    var idx=sits.length-1-ri;
+    h+='<div class="sc"><div style="font-size:16px;font-weight:700;margin-bottom:4px">'+s.titre+'</div>';
+    h+='<div style="font-size:12px;color:var(--muted);margin-bottom:10px">'+(s.struct?s.struct+' · ':'')+new Date(s.date).toLocaleDateString('fr-FR')+'</div>';
+    h+='<div style="font-size:14px;color:var(--muted);margin-bottom:10px">'+s.desc.substring(0,140)+(s.desc.length>140?'...':'')+'</div>';
+    if(s.blocs&&s.blocs.length)s.blocs.forEach(function(b){h+='<span class="bdg '+b+'">'+b.toUpperCase()+'</span>';});
+    h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">';
+    h+='<button class="btn bs bsm" onclick="viewSit('+idx+')">Voir</button>';
+    h+='<button class="btn bs bsm" onclick="expSit('+idx+')">📤</button>';
+    h+='<button class="btn bsm" style="background:var(--a2l);color:var(--accent2);border:none" onclick="delSit('+idx+')">🗑️</button>';
+    h+='</div></div>';
+  });
+  return h;
+}
+
+function renderQuizHome(){
+  return '<div class="tr"><button class="tb on" onclick="setQC(\'all\',this)">Tout</button><button class="tb" onclick="setQC(\'BC1\',this)">BC1</button><button class="tb" onclick="setQC(\'BC2\',this)">BC2</button><button class="tb" onclick="setQC(\'BC3\',this)">BC3</button><button class="tb" onclick="setQC(\'BC4\',this)">BC4</button><button class="tb" onclick="setQC(\'lois\',this)">Lois</button></div><div class="card"><div class="ct">🧠 Comment ça marche ?</div><div class="cb">Choisissez une catégorie et lancez le quiz. Questions mélangées à chaque fois. Après chaque réponse, une explication vous aide à comprendre.</div></div><button class="btn bp" onclick="launchQ()">Commencer le quiz</button><div id="qz-game" style="display:none"></div><div id="qz-res" style="display:none"></div>';
+}
+
+function renderTheorie(){
+var THEORIE = [
+  {
+    bc: "BC1", couleur: "var(--accent)", emoji: "🤝",
+    titre: "Concevoir et conduire un accompagnement éducatif spécialisé",
+    themes: [
+      {
+        t: "La relation éducative — Les fondamentaux",
+        contenu: [
+          {s:"C'est quoi ?", d:"La relation éducative c'est le lien professionnel de qualité que vous construisez avec la personne accompagnée. Ce n'est pas une amitié — c'est un engagement professionnel structuré, avec un cadre, des limites et un objectif : favoriser le développement de la personne."},
+          {s:"Les 3 piliers (Carl Rogers)", d:"• Empathie : comprendre le monde de l'autre de l'intérieur, sans le juger\n• Congruence : être authentique, en accord avec ce que vous ressentez\n• Regard positif inconditionnel : accepter la personne telle qu'elle est, même si son comportement pose problème\n\nEn clair : vous pouvez ne pas aimer le comportement d'un jeune — mais vous acceptez toujours la personne."},
+          {s:"Le holding (Winnicott)", d:"Winnicott parle de 'holding' — portage émotionnel. Comme un parent qui tient son bébé : il le sécurise, le contient, lui donne un sentiment de stabilité.\n\nEn pratique : quand un jeune est en crise, votre calme est votre outil. Votre régulation émotionnelle régule la sienne. C'est du holding."},
+          {s:"L'attachement (Bowlby)", d:"Les enfants ont besoin de figures d'attachement stables pour se développer. Un enfant qui n'a pas eu d'attachement sécure aura du mal à faire confiance, à s'ouvrir, à accepter les règles.\n\nPour vous : comprendre pourquoi un jeune placé résiste à la relation, c'est souvent comprendre ses troubles de l'attachement. Vous devenez progressivement une figure d'attachement stable."},
+          {s:"L'alliance de travail", d:"C'est le lien de coopération entre vous et la personne. Sans cette alliance, aucun projet éducatif n'est possible. Elle se construit dans le temps, par la régularité, la disponibilité, la fiabilité.\n\nPhrase jury : 'La construction de l'alliance de travail a constitué le préalable à toute action éducative.'"},
+        ]
+      },
+      {
+        t: "Les médiations éducatives",
+        contenu: [
+          {s:"C'est quoi ?", d:"Une médiation éducative c'est utiliser un support — une activité, un objet, un animal, un art — comme intermédiaire pour créer ou développer la relation et les apprentissages. On passe par le FAIRE pour atteindre l'ÊTRE."},
+          {s:"Pourquoi ça marche ?", d:"Certaines personnes ne peuvent pas parler directement de leurs difficultés. La médiation crée une distance sécurisante. On parle de l'activité, pas de soi — et pourtant, on travaille sur soi.\n\nExemple : un jeune mutique qui parle à son cheval, puis à l'éducateur, puis au groupe. Le cheval est la médiation."},
+          {s:"Types de médiations", d:"• Médiation sportive : foot, escalade, sports collectifs → coopération, règles, dépassement de soi\n• Médiation artistique : peinture, théâtre, musique → expression émotionnelle, créativité\n• Médiation animale : équithérapie, chiens → relation sans jugement\n• Médiation par le quotidien : cuisine, jardinage, bricolage → autonomie, règles de vie, responsabilité\n• Médiation numérique : usage raisonné du numérique → compétences citoyennes"},
+          {s:"Ce qu'attend le jury", d:"Le jury veut que vous explicitiez le SENS de la médiation. Pas juste 'on a fait de la cuisine' — mais 'l'atelier cuisine était support à la relation éducative et visait le développement des compétences sociales et de l'estime de soi du jeune.'"},
+        ]
+      },
+      {
+        t: "Le projet personnalisé (PPE)",
+        contenu: [
+          {s:"Définition officielle", d:"Le PPE (Projet Personnalisé d'Éducation) est un document co-construit avec la personne accompagnée. Il définit ses besoins, ses objectifs et les actions mises en place. Il est obligatoire (loi 2002-2) et doit être réévalué régulièrement."},
+          {s:"Les étapes", d:"1. Évaluation des besoins (observation, recueil d'informations)\n2. Co-construction avec la personne (ses aspirations, ses ressources)\n3. Définition des objectifs SMART\n4. Mise en œuvre des actions\n5. Évaluation et ajustement"},
+          {s:"Les objectifs SMART", d:"S — Spécifique : clairement défini\nM — Mesurable : on peut évaluer si c'est atteint\nA — Atteignable : réaliste par rapport aux capacités\nR — Réaliste : adapté au contexte\nT — Temporel : avec une échéance\n\nExemple : 'En 3 mois, M. X sera capable de préparer son repas seul 3 fois par semaine.'"},
+          {s:"La pyramide de Maslow — outil d'évaluation des besoins", d:"De bas en haut :\n1. Besoins physiologiques : manger, dormir, se soigner\n2. Sécurité : cadre stable, prévisibilité\n3. Appartenance : liens sociaux, famille, groupe\n4. Estime de soi : se sentir capable, reconnu\n5. Accomplissement : réaliser son potentiel\n\nEn pratique : inutile de travailler sur l'insertion pro (sommet) si les besoins de base ne sont pas couverts."},
+          {s:"Référent de parcours", d:"En tant que référent, vous êtes le coordinateur du projet. Vous faites le lien entre tous les acteurs — équipe, partenaires, famille. Vous assurez la continuité. Personne ne tombe dans les failles."},
+        ]
+      },
+      {
+        t: "L'éducation spécialisée — Histoire et fondements",
+        contenu: [
+          {s:"Les origines", d:"L'éducation spécialisée naît au XIXe siècle avec des pionniers comme Édouard Séguin (déficience intellectuelle) et Maria Montessori (pédagogie active). L'idée : toute personne, même en grande difficulté, peut apprendre et évoluer."},
+          {s:"Les courants pédagogiques", d:"• Pédagogie active (Montessori, Freinet) : l'enfant apprend par l'expérience, par le faire\n• Pédagogie institutionnelle (Oury) : l'institution elle-même est outil éducatif\n• Éducation populaire (Freire) : l'éducation comme émancipation\n• Approche systémique : comprendre la personne dans son environnement global"},
+          {s:"Le vivre ensemble", d:"L'éducateur spécialisé utilise le quotidien comme support éducatif. Les repas, les activités, les conflits, les temps libres — tout est occasion d'éduquer. C'est ce qu'on appelle 'l'éducation dans le quotidien'."},
+          {s:"La prévention et l'inclusion", d:"Le référentiel 2025 insiste sur la visée préventive et inclusive. L'éducateur ne réagit pas — il anticipe. Il ne sépare pas — il inclut. L'objectif final : permettre à chaque personne de vivre dans la société ordinaire."},
+        ]
+      }
+    ]
+  },
+  {
+    bc: "BC2", couleur: "var(--accent2)", emoji: "🌱",
+    titre: "Favoriser l'autodétermination et l'émancipation",
+    themes: [
+      {
+        t: "L'autodétermination — Théorie et pratique",
+        contenu: [
+          {s:"Définition", d:"L'autodétermination c'est le droit et la capacité de la personne à prendre ses propres décisions sur sa vie. Même des décisions imparfaites. Votre rôle : créer les conditions pour que cela soit possible."},
+          {s:"Le pouvoir d'agir (Empowerment)", d:"Concept de Paulo Freire : développer la capacité de la personne à agir sur sa propre vie et sur son environnement.\n\nEn pratique : vous ne faites pas À la place — vous faites AVEC, puis vous observez, puis vous laissez faire seul. C'est la graduation de l'accompagnement."},
+          {s:"Les 4 composantes de l'autodétermination", d:"1. Autonomie comportementale : agir selon ses préférences\n2. Autorégulation : gérer ses comportements et ses émotions\n3. Empowerment psychologique : croire en sa capacité à agir\n4. Auto-réalisation : se connaître, connaître ses forces et limites\n\nVotre accompagnement doit travailler ces 4 dimensions progressivement."},
+          {s:"Le paradoxe de l'éducateur", d:"Vous êtes là pour vous rendre inutile. Votre succès c'est quand la personne n'a plus besoin de vous. C'est difficile émotionnellement — mais c'est votre mission.\n\nPhrase jury : 'L'objectif de l'accompagnement était de développer progressivement l'autonomie du jeune afin qu'il puisse agir par lui-même.'"},
+        ]
+      },
+      {
+        t: "L'éthique et la déontologie professionnelle",
+        contenu: [
+          {s:"Éthique vs Déontologie", d:"• Déontologie : les règles professionnelles (secret professionnel, obligation de signalement, confidentialité). C'est le cadre légal.\n• Éthique : votre réflexion personnelle sur le bien et le mal, sur ce qu'il est juste de faire dans une situation donnée. C'est votre boussole intérieure."},
+          {s:"Les dilemmes éthiques", d:"Exemples de dilemmes que vous vivez :\n• Un jeune vous confie une information grave. Vous respectez sa confiance ou vous signalez ?\n• Une famille vous demande des informations confidentielles. Vous répondez ou vous gardez le secret ?\n• Vous désapprouvez une décision d'équipe. Vous la respectez ou vous la contestez ?\n\nLe jury adore ces situations. Préparez vos réponses."},
+          {s:"La délibération réflexive", d:"Face à un dilemme éthique, vous ne réagissez pas impulsivement. Vous deliberez :\n1. Identifier les valeurs en tension\n2. Analyser les enjeux pour chaque partie\n3. Consulter l'équipe et les textes de référence\n4. Décider et assumer\n5. Évaluer et apprendre"},
+          {s:"Les valeurs du travail social", d:"• Dignité de la personne\n• Respect de l'autonomie\n• Justice sociale\n• Solidarité\n• Non-jugement\n• Bientraitance\n\nCes valeurs guident chaque décision professionnelle."},
+        ]
+      },
+      {
+        t: "La résilience et le trauma",
+        contenu: [
+          {s:"La résilience (Cyrulnik)", d:"La résilience c'est la capacité à se reconstruire après un traumatisme. Ce n'est pas l'invulnérabilité — c'est la capacité à rebondir.\n\nImportant : la résilience ne se fait pas seul. Elle se construit DANS la relation, grâce à des tuteurs de résilience."},
+          {s:"Vous êtes un tuteur de résilience", d:"En tant qu'éducateur, vous êtes souvent LE tuteur de résilience du jeune. Vous offrez :\n• Une relation stable et prévisible\n• Un regard positif sur ce que la personne peut devenir\n• Un cadre sécurisant\n• Des opportunités de réussite\n\nPhrase jury : 'Par la qualité et la stabilité du lien éducatif, j'ai cherché à jouer un rôle de tuteur de résilience pour ce jeune.'"},
+          {s:"Le trauma et ses effets", d:"Un trauma c'est un événement qui dépasse les capacités d'adaptation de la personne. Effets possibles :\n• Hypervigilance : toujours sur le qui-vive\n• Dissociation : se couper de ses émotions\n• Troubles de l'attachement : difficulté à faire confiance\n• Comportements d'acting-out : agir pour ne pas ressentir\n\nComprendre le trauma explique beaucoup de comportements des personnes accompagnées."},
+          {s:"Le stress post-traumatique (TSPT)", d:"Trouble qui peut apparaître après un trauma grave. Symptômes : reviviscences (flashbacks), évitement, hyperactivation neurovégétative, altérations cognitives.\n\nPour vous : certains comportements 'difficiles' sont des réponses adaptatives à un trauma. Pas de la mauvaise volonté."},
+        ]
+      },
+      {
+        t: "La dynamique de groupe",
+        contenu: [
+          {s:"Le groupe comme levier éducatif", d:"Vous travaillez souvent avec des groupes. Le groupe n'est pas un obstacle — c'est un outil. Les pairs peuvent éduquer mieux que vous dans certaines situations."},
+          {s:"Les phénomènes de groupe (Anzieu, Martin)", d:"• Le bouc émissaire : le groupe projette ses tensions sur un membre\n• Le leader : peut être positif ou négatif pour la dynamique\n• La cohésion : sentiment d'appartenance qui soude le groupe\n• La conformité : pression du groupe sur l'individu\n• La pair-aidance : les membres se soutiennent mutuellement"},
+          {s:"L'approche systémique", d:"La systémique (Bateson, Watzlawick) dit que vous ne pouvez pas comprendre une personne isolément — elle fait partie d'un système (famille, groupe, institution). Modifier un élément du système modifie tout le système.\n\nEn pratique : quand un jeune va mal, regardez aussi le groupe, la famille, l'institution. Le problème n'est pas toujours là où on croit."},
+          {s:"Réguler la dynamique de groupe", d:"Votre rôle : observer la dynamique, identifier les tensions, réguler sans écraser les individualités. Vous créez un cadre qui permet à chacun de s'exprimer et de contribuer."},
+        ]
+      }
+    ]
+  },
+  {
+    bc: "BC3", couleur: "var(--accent3)", emoji: "🌐",
+    titre: "Dynamiques partenariales et territoriales",
+    themes: [
+      {
+        t: "Les politiques sociales — Comprendre le contexte",
+        contenu: [
+          {s:"Qu'est-ce qu'une politique sociale ?", d:"C'est l'ensemble des décisions prises par l'État pour réduire les inégalités et protéger les personnes vulnérables. Elles définissent votre cadre de travail : qui vous accompagnez, comment, avec quelles ressources."},
+          {s:"Les grandes lois à connaître", d:"• Loi 2002-2 (2002) : droits des usagers, participation, projet personnalisé, CVS\n• Loi 2005-102 (2005) : droits des personnes handicapées, inclusion, MDPH\n• Loi 2007-293 (2007) : protection de l'enfance, signalement, CRIP\n• Loi 2016-297 (2016) : renforcement protection de l'enfant, PPE annuel\n• Arrêté 6 octobre 2025 : nouveau référentiel DEES, applicable sept. 2026\n\nChaque loi répond à un contexte social et politique. Comprendre POURQUOI elle a été créée aide à comprendre ce qu'elle impose."},
+          {s:"La décentralisation", d:"En France, le social est organisé à plusieurs niveaux :\n• État : définit les lois et les politiques nationales\n• Région : formation professionnelle\n• Département : finance et pilote l'ASE, le handicap, l'insertion\n• Commune : action sociale de proximité, CCAS\n• Établissements : mettent en œuvre sur le terrain\n\nVous êtes au bout de la chaîne — mais c'est là que tout se concrétise."},
+          {s:"La cohésion sociale", d:"Concept central du BC3. La cohésion sociale c'est le ciment qui fait tenir une société ensemble — les liens de solidarité, la réduction des inégalités, l'inclusion de tous.\n\nVotre mission contribue à la cohésion sociale en incluant les personnes les plus vulnérables."},
+          {s:"Les violences et discriminations", d:"L'éducateur doit connaître les dispositifs de lutte contre les violences et discriminations :\n• Discrimination : traitement inégal basé sur un critère prohibé (origine, handicap, genre...)\n• Violence institutionnelle : peut venir de l'institution elle-même\n• Votre rôle : repérer, signaler et accompagner\n\nPhrase jury : 'J'ai veillé à ce que le cadre d'intervention soit exempt de toute forme de discrimination.'"},
+        ]
+      },
+      {
+        t: "Le travail en réseau et les partenariats",
+        contenu: [
+          {s:"Pourquoi travailler en réseau ?", d:"Seul, vous ne pouvez pas tout. Chaque partenaire apporte une expertise complémentaire. Le réseau permet la continuité du parcours de la personne quand elle quitte votre structure."},
+          {s:"Les acteurs clés du réseau", d:"• ASE : protection de l'enfance, financement MECS\n• PJJ : mineurs délinquants ou en danger judiciaire\n• Mission Locale : insertion 16-25 ans\n• MDPH : orientation et droits handicap\n• CRIP : recueil des informations préoccupantes\n• CMP/CMPP : soin psychiatrique enfants\n• Éducation Nationale / AESH : inclusion scolaire\n• Bailleur social : accès au logement\n• CAF : prestations familiales\n• CPAM : couverture maladie"},
+          {s:"Comment construire un partenariat ?", d:"Un partenariat ne se décrète pas — il se construit :\n1. Identifier le partenaire et ses compétences\n2. Le contacter et présenter son établissement\n3. Définir les modalités de collaboration\n4. Formaliser si nécessaire (convention)\n5. Évaluer régulièrement\n\nPhrase jury : 'J'ai développé un partenariat avec la Mission Locale afin d'assurer la continuité du parcours du jeune vers l'insertion.'"},
+          {s:"Le diagnostic territorial", d:"Avant d'agir, comprendre le territoire. Un diagnostic territorial analyse :\n• Les besoins des populations\n• Les ressources disponibles\n• Les acteurs en présence\n• Les inégalités existantes\n• Les vulnérabilités sociales et environnementales\n\nMéthodologie : observation, enquête, collecte de données, analyse, préconisations argumentées."},
+          {s:"La transition écologique — Nouveau 2025", d:"Nouveauté importante du référentiel 2025 !\n\nEn pratique :\n• Accompagner les personnes vers des pratiques écoresponsables\n• Identifier comment la vulnérabilité écologique impacte les conditions de vie\n• Inscrire ses pratiques dans une démarche durable\n• Intégrer le développement durable dans les diagnostics territoriaux\n\nExemple terrain : jardinage collectif en MECS, compostage, sensibilisation aux économies d'énergie, projet nature en DITEP."},
+        ]
+      },
+      {
+        t: "Le travail en équipe pluridisciplinaire",
+        contenu: [
+          {s:"Qu'est-ce que la pluridisciplinarité ?", d:"Une équipe pluridisciplinaire réunit des professionnels de différentes disciplines autour d'une même personne. Chacun apporte son regard spécifique.\n\nComposition type en MECS : éducateur spécialisé, psychologue, assistant social, chef de service, médecin, infirmier.\nComposition type en IME/DITEP : + enseignant spécialisé, orthophoniste, psychomotricien, kinésithérapeute."},
+          {s:"Le secret professionnel partagé", d:"Dans une équipe pluridisciplinaire, vous pouvez partager des informations confidentielles dans l'intérêt de la personne. Ce n'est pas une violation du secret — c'est le secret professionnel partagé.\n\nLimites : ce partage reste limité à ce qui est nécessaire pour l'accompagnement. Pas de bavardage informel hors cadre professionnel."},
+          {s:"La réunion de synthèse", d:"Réunion pluridisciplinaire qui fait le bilan de l'accompagnement d'une personne. Chaque professionnel présente son regard. Ensemble, on ajuste le PPE.\n\nVotre rôle : apporter votre observation éducative de terrain — ce que vous voyez au quotidien, que les autres ne voient pas. C'est votre valeur ajoutée."},
+          {s:"La veille professionnelle", d:"Vous ne pouvez pas rester figé dans vos pratiques. La veille professionnelle c'est :\n• Lire les nouvelles RBPP publiées par la HAS\n• Suivre l'évolution des lois\n• Participer aux journées professionnelles\n• Partager les ressources avec l'équipe\n\nPhrase jury : 'Ma veille professionnelle m'a permis d'intégrer les nouvelles recommandations sur l'autisme dans notre pratique d'équipe.'"},
+          {s:"Gérer les désaccords en équipe", d:"Vous pouvez ne pas être d'accord avec une décision d'équipe. Vous l'exprimez dans le bon cadre (réunion, entretien avec le chef de service). Puis vous respectez la décision collective.\n\nC'est la démocratie professionnelle. Pas l'anarchie — pas la soumission aveugle."},
+        ]
+      }
+    ]
+  },
+  {
+    bc: "BC4", couleur: "var(--gold)", emoji: "🏛️",
+    titre: "Contexte professionnel du travail social",
+    themes: [
+      {
+        t: "La posture réflexive — Théorie et pratique",
+        contenu: [
+          {s:"C'est quoi la posture réflexive ?", d:"C'est la capacité à réfléchir sur sa propre pratique — pas seulement pendant l'action, mais après. Prendre du recul, analyser ce qui s'est passé, comprendre pourquoi, imaginer autrement.\n\nDonald Schön appelle ça la 'réflexion sur l'action' — différente de la réflexion dans l'action (pendant que ça se passe)."},
+          {s:"L'analyse de pratique", d:"Espace collectif (souvent avec un superviseur extérieur) où les professionnels analysent des situations vécues. Objectifs :\n• Comprendre ce qui s'est passé\n• Identifier ce qui a bien fonctionné et pourquoi\n• Trouver des alternatives pour les prochaines fois\n• Prendre soin de soi professionnellement\n\nC'est obligatoire dans beaucoup d'établissements — et essentiel."},
+          {s:"La décentration", d:"Se mettre à distance de ses propres représentations, valeurs, préjugés pour mieux comprendre l'autre.\n\nExemple : un jeune qui ne respecte pas les règles — avant de juger, décentrez-vous. Pourquoi ces règles lui semblent-elles injustes ? Qu'est-ce que son histoire lui a appris sur les règles ?"},
+          {s:"Les représentations sociales", d:"Moscovici : nous avons tous des représentations (images, idées préconçues) sur les autres groupes. Ces représentations influencent nos comportements sans qu'on en soit conscients.\n\nLa décentration c'est identifier et questionner ses propres représentations."},
+        ]
+      },
+      {
+        t: "La communication professionnelle",
+        contenu: [
+          {s:"Les écrits professionnels", d:"Votre écrit engage votre responsabilité professionnelle et peut avoir des conséquences juridiques. Règles fondamentales :\n• Faits objectifs : décrivez ce que vous avez VU et ENTENDU, pas ce que vous pensez\n• Pas de jugements de valeur : 'M. X a frappé le mur' et non 'M. X est violent'\n• Chronologie claire : heure, lieu, personnes présentes\n• Vocabulaire professionnel : précis et accessible"},
+          {s:"Les différents types d'écrits", d:"• Transmission : information quotidienne entre professionnels\n• Note d'incident : faits graves nécessitant une trace écrite\n• Observation éducative : regard clinique sur l'évolution d'une personne\n• Rapport éducatif : bilan d'accompagnement pour le juge ou l'ASE\n• PPE : projet personnalisé co-construit\n• IP (Information Préoccupante) : signalement danger enfant"},
+          {s:"Le numérique et l'IA — Nouveau BC4 2025", d:"Nouveauté du référentiel ! L'éducateur doit :\n• Maîtriser les outils numériques professionnels\n• Comprendre les enjeux du RGPD (protection des données)\n• Accompagner les personnes vers l'autonomie numérique\n• Identifier les risques du numérique (addiction, cyberharcèlement)\n• Comprendre les enjeux de l'intelligence artificielle\n\nEn clair : vous devez être compétent numériquement ET accompagner les personnes dans ce domaine."},
+          {s:"La communication adaptée", d:"Vous adaptez votre communication selon l'interlocuteur :\n• Avec les personnes accompagnées : langage simple, accessible, bienveillant\n• Avec l'équipe : langage professionnel, précis, factuel\n• Avec les partenaires : langage institutionnel, contextualisé\n• Avec les familles : langage accessible, respectueux, empathique\n• Avec la hiérarchie : concis, structuré, propositionnel"},
+        ]
+      },
+      {
+        t: "Prendre soin de soi — Prévenir l'épuisement",
+        contenu: [
+          {s:"La fatigue compassionnelle", d:"L'exposition répétée à la souffrance des personnes accompagnées épuise émotionnellement. Symptômes :\n• Irritabilité, cynisme\n• Perte d'empathie\n• Sentiment d'inefficacité\n• Troubles du sommeil\n• Absentéisme\n\nCe n'est pas une faiblesse — c'est un risque professionnel réel qui touche tous les métiers du soin et du social."},
+          {s:"Le burn-out vs la fatigue compassionnelle", d:"• Burn-out : épuisement lié à la surcharge de travail et au manque de reconnaissance\n• Fatigue compassionnelle : épuisement lié à l'absorption de la souffrance de l'autre\n\nLes deux peuvent coexister. Les deux se préviennent et se traitent."},
+          {s:"Les facteurs protecteurs", d:"• L'analyse de pratique et la supervision\n• Le soutien de l'équipe\n• Les espaces de décharge émotionnelle\n• La formation continue\n• Les rituels de 'décompression' après le travail\n• Maintenir une vie personnelle riche hors du travail\n• Reconnaître ses limites et les communiquer"},
+          {s:"La juste distance professionnelle", d:"Ni trop proche (risque de fusion, perte d'objectivité), ni trop loin (froideur, déshumanisation). La juste distance c'est être pleinement présent tout en maintenant son objectivité professionnelle.\n\nPhrase jury : 'J'ai veillé à maintenir une juste distance professionnelle permettant d'être pleinement disponible pour la personne tout en préservant mon objectivité.'"},
+        ]
+      },
+      {
+        t: "La démarche qualité et l'amélioration continue",
+        contenu: [
+          {s:"C'est quoi la qualité dans le social ?", d:"La qualité c'est s'assurer que l'accompagnement respecte les droits des personnes et atteint ses objectifs. Outils : auto-évaluation, évaluation externe, indicateurs de résultats, RBPP."},
+          {s:"Les RBPP (HAS / HCTS)", d:"Recommandations de Bonnes Pratiques Professionnelles. Ce sont des textes qui définissent ce qui constitue une bonne pratique dans le secteur. Exemples :\n• RBPP sur la bientraitance\n• RBPP sur la participation des personnes\n• RBPP sur l'accompagnement en MECS\n\nLe jury apprécie quand vous les citez."},
+          {s:"Le rapport d'activité", d:"Document annuel qui rend compte des actions menées et de leurs résultats. Vous participez à sa rédaction. C'est un outil de pilotage et de transparence."},
+          {s:"Le RGPD dans la pratique", d:"Règlement Général sur la Protection des Données. Obligations concrètes :\n• Les dossiers des personnes sont protégés\n• Durée de conservation limitée\n• Accès restreint aux personnes autorisées\n• Droit d'accès et de rectification pour les personnes\n\nVous ne partagez pas de données personnelles sans cadre légal."},
+        ]
+      }
+    ]
+  }
+];
+
+  var h = '<div class="card" style="background:linear-gradient(135deg,#e8f5e9,#e3f2fd);border-color:#a5d6a7">';
+  h += '<div style="font-size:22px;font-weight:700;margin-bottom:4px">📖 Théorie & Révision</div>';
+  h += '<div style="font-size:13px;color:var(--muted)">Contenu théorique détaillé et vulgarisé — pour réviser et préparer le jury</div></div>';
+
+  var tabH = '<div class="tr">';
+  THEORIE.forEach(function(bloc){
+    tabH += '<button class="tb" style="border-color:'+bloc.couleur+'" onclick="showThBloc(\''+bloc.bc+'\',this)">'+bloc.emoji+' '+bloc.bc+'</button>';
+  });
+  tabH += '</div>';
+  h += tabH;
+  h += '<div id="th-content"></div>';
+
+  // Auto-show BC1
+  setTimeout(function(){
+    var btns = document.querySelectorAll('#th-content').length ? null : null;
+    showThBloc('BC1', null);
+  }, 50);
+
+  // Store data globally
+  window._THEORIE = THEORIE;
+
+  // Auto-show BC1 after render
+  setTimeout(function(){ showThBloc('BC1', null); }, 50);
+
+  return h;
+}
+
+function showThBloc(bc, btn){
+  var data = window._THEORIE;
+  if(!data) return;
+  var bloc = null;
+  data.forEach(function(b){ if(b.bc === bc) bloc = b; });
+  if(!bloc) return;
+
+  // Update tab active state
+  var allTabs = document.querySelectorAll('#pz .tr .tb');
+  allTabs.forEach(function(t){
+    if(t.textContent.includes(bc)) t.classList.add('on');
+    else if(['BC1','BC2','BC3','BC4'].some(function(x){ return t.textContent.includes(x);})) t.classList.remove('on');
+  });
+
+  var z = document.getElementById('th-content');
+  if(!z) return;
+
+  var h = '<div class="card" style="border-left:4px solid '+bloc.couleur+';margin-top:8px">';
+  h += '<div style="font-size:22px;margin-bottom:6px">'+bloc.emoji+'</div>';
+  h += '<div style="font-size:16px;font-weight:700;color:'+bloc.couleur+'">'+bloc.bc+' — '+bloc.titre+'</div></div>';
+
+  bloc.themes.forEach(function(theme){
+    h += '<div class="ah" onclick="togAcc(this)"><span>'+theme.t+'</span><span>▼</span></div>';
+    h += '<div class="ab">';
+    theme.contenu.forEach(function(item){
+      h += '<div style="margin-bottom:14px">';
+      h += '<div style="font-size:13px;font-weight:700;color:'+bloc.couleur+';text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">'+item.s+'</div>';
+      h += '<div style="font-size:14px;line-height:1.7;white-space:pre-wrap;color:var(--text)">'+item.d+'</div>';
+      h += '</div>';
+    });
+    h += '</div>';
+  });
+
+  z.innerHTML = h;
+}
+
+function renderOral(){
+  var h='<div class="card"><div class="ct">🎤 Simulateur d\'oral jury</div><div class="cb">Entraînez-vous aux questions types du jury. Préparez votre réponse mentalement avant de voir le conseil.</div></div>';
+  ORAL.forEach(function(q,i){
+    h+='<div class="oral-q card"><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">'+q.cat+'</div>';
+    h+='<div style="font-size:16px;font-weight:600;margin-bottom:12px;line-height:1.4">'+q.q+'</div>';
+    h+='<div class="ah" onclick="togAcc(this)" style="font-size:13px"><span>💡 Voir le conseil</span><span>▼</span></div>';
+    h+='<div class="ab" style="font-size:13px;background:var(--a3l);border-radius:8px;padding:12px;line-height:1.6">'+q.h+'</div></div>';
+  });
+  return h;
+}
+
+function renderPlanning(){
+  var h='<div class="card"><div class="ct">📅 Rétro-planning VAE DEES</div><div class="cb">Calendrier indicatif pour une VAE démarrée en septembre 2026.</div></div>';
+  PLANNING.forEach(function(p){
+    h+='<div style="display:flex;gap:12px;margin-bottom:16px">';
+    h+='<div style="width:36px;height:36px;border-radius:50%;background:'+p.col+';display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:2px">📍</div>';
+    h+='<div><div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">'+p.d+'</div>';
+    h+='<div style="font-size:15px;font-weight:700;margin:2px 0">'+p.t+'</div>';
+    h+='<div style="font-size:13px;color:var(--muted);line-height:1.5">'+p.desc+'</div></div></div>';
+  });
+  return h;
+}
+
+function renderLivrets(){
+  var h='';
+  var livrets=[
+    {t:"📋 Livret 1 — Recevabilité",col:"var(--accent)",desc:"Le Livret 1 est votre candidature à la VAE. Il prouve que vous avez l'expérience suffisante pour prétendre au DEES.",sections:[
+      {t:"Votre identité et parcours",d:"Nom, prénom, coordonnées, parcours de formation et professionnel chronologique."},
+      {t:"Votre expérience en lien avec le DEES",d:"Vous devez justifier d'au moins 1 an d'expérience (1607h) dans le secteur social, médico-social ou éducatif."},
+      {t:"Votre motivation",d:"Pourquoi la VAE ? Pourquoi le DEES ? Qu'est-ce que ce diplôme va changer pour vous professionnellement ?"},
+      {t:"Les pièces justificatives",d:"Contrats de travail, fiches de paie, attestations employeur, certificats de formation, bulletins de salaire."},
+    ],conseil:"Soyez précis et chronologique. Le jury doit comprendre clairement votre parcours."},
+    {t:"📖 Livret 2 — Les situations professionnelles",col:"var(--accent2)",desc:"Le cœur de la VAE. Vous rédigez 4 situations professionnelles — une par bloc — qui prouvent que vous maîtrisez les compétences du DEES.",sections:[
+      {t:"Structure de chaque situation",d:"1. Description du contexte et de la structure\n2. Description factuelle de la situation vécue\n3. Analyse de vos actions et de vos choix (POURQUOI)\n4. Références théoriques et législatives\n5. Évaluation et préconisations"},
+      {t:"Ce que le jury cherche",d:"Pas un récit mais une ANALYSE. Pas 'j'ai fait...' mais 'j'ai fait... parce que... en référence à... ce qui a permis...'"},
+      {t:"Longueur recommandée",d:"Entre 3 et 6 pages par situation. La qualité prime sur la quantité."},
+      {t:"Épreuve conclusive BC1",d:"Le BC1 nécessite en plus : un dossier de 25-30 pages (analyse du parcours + réflexion sur le métier) + soutenance orale de 40 min."},
+      {t:"Les erreurs à éviter",d:"Trop descriptif, pas assez analytique. Pas de références théoriques. Oublier la personne accompagnée. Écrire 'on' au lieu de 'je'."},
+    ],conseil:"Utilisez l'onglet 'Rédaction IA' pour transformer vos situations terrain en situations VAE professionnelles."},
+  ];
+  livrets.forEach(function(lv){
+    h+='<div class="card" style="border-left:4px solid '+lv.col+'"><div class="ct" style="color:'+lv.col+';font-size:16px">'+lv.t+'</div><div class="cb" style="margin-bottom:12px">'+lv.desc+'</div>';
+    lv.sections.forEach(function(s){
+      h+='<div class="ah" onclick="togAcc(this)" style="font-size:13px"><span>'+s.t+'</span><span>▼</span></div>';
+      h+='<div class="ab" style="font-size:13px;white-space:pre-wrap">'+s.d+'</div>';
+    });
+    h+='<div style="margin-top:12px;padding:10px;background:var(--surface2);border-radius:8px;font-size:13px;color:var(--accent)"><strong>💡 Conseil :</strong> '+lv.conseil+'</div></div>';
+  });
+  return h;
+}
+
+// ===== QUIZ =====
+function setQC(cat,btn){
+  qzCat=cat;
+  document.querySelectorAll('#pg-plus .tb').forEach(function(b){if(['Tout','BC1','BC2','BC3','BC4','Lois'].includes(b.textContent))b.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+}
+
+function launchQ(){
+  var qs=qzCat==='all'?QUIZ:QUIZ.filter(function(q){return q.c===qzCat;});
+  if(!qs.length){alert('Pas de questions pour cette catégorie');return;}
+  qs=qs.slice().sort(function(){return Math.random()-0.5;}).slice(0,Math.min(10,qs.length));
+  qzS={qs:qs,idx:0,score:0,done:false};
+  document.getElementById('qz-game').style.display='block';
+  document.getElementById('qz-res').style.display='none';
+  renderQ();
+}
+
+function renderQ(){
+  var q=qzS.qs[qzS.idx];
+  var total=qzS.qs.length;var n=qzS.idx+1;
+  var h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">';
+  h+='<div style="font-size:13px;color:var(--muted)">Question '+n+'/'+total+'</div>';
+  h+='<button onclick="endQ()" style="background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;font-family:inherit">Quitter</button></div>';
+  h+='<div class="pb" style="margin-bottom:18px"><div class="pf" style="width:'+(n/total*100)+'%"></div></div>';
+  h+='<div class="card"><div style="font-size:11px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">'+q.c+'</div>';
+  h+='<div style="font-size:17px;font-weight:600;line-height:1.4;margin-bottom:16px">'+q.q+'</div><div id="qopts">';
+  q.o.forEach(function(opt,i){h+='<button class="qo" onclick="ansQ('+i+')">'+opt+'</button>';});
+  h+='</div><div id="qexp" style="display:none;margin-top:12px;padding:12px;background:var(--al);border-radius:10px;font-size:14px;color:var(--accent);line-height:1.6"></div>';
+  h+='<button id="qnxt" class="btn bp" style="display:none;margin-top:12px" onclick="nxtQ()">Question suivante →</button></div>';
+  h+='<div style="text-align:center;font-size:20px;font-weight:700;color:var(--accent);margin-top:12px" id="qsco"></div>';
+  document.getElementById('qz-game').innerHTML=h;
+  qzS.done=false;
+}
+
+function ansQ(idx){
+  if(qzS.done)return;qzS.done=true;
+  var q=qzS.qs[qzS.idx];
+  var btns=document.querySelectorAll('.qo');
+  btns[q.a].classList.add('ok');
+  if(idx!==q.a)btns[idx].classList.add('ko');
+  else qzS.score++;
+  btns.forEach(function(b){b.disabled=true;});
+  document.getElementById('qexp').textContent=q.e;
+  document.getElementById('qexp').style.display='block';
+  document.getElementById('qsco').textContent=qzS.score+'/'+(qzS.idx+1);
+  if(qzS.idx<qzS.qs.length-1)document.getElementById('qnxt').style.display='flex';
+  else setTimeout(showQR,1200);
+}
+
+function nxtQ(){qzS.idx++;renderQ();}
+
+function showQR(){
+  document.getElementById('qz-game').style.display='none';
+  document.getElementById('qz-res').style.display='block';
+  var pct=Math.round(qzS.score/qzS.qs.length*100);
+  localStorage.setItem('vae_last_quiz',pct);upStats();
+  var h='<div class="card" style="text-align:center;padding:30px">';
+  h+='<div style="font-size:52px;margin-bottom:12px">'+(pct>=80?'🏆':pct>=60?'👍':'💪')+'</div>';
+  h+='<div style="font-size:22px;font-weight:700;margin-bottom:8px">'+(pct>=80?'Excellent !':pct>=60?'Bon travail !':'Continuez !')+'</div>';
+  h+='<div style="font-size:15px;color:var(--muted);margin-bottom:20px">'+(pct>=80?'Vous êtes prêt pour le jury !':pct>=60?'Encore quelques révisions !':'Consultez les blocs et le glossaire.')+'</div>';
+  h+='<div style="font-size:42px;font-weight:700;color:var(--accent);margin-bottom:20px">'+qzS.score+'/'+qzS.qs.length+' ('+pct+'%)</div>';
+  h+='<button class="btn bp" onclick="launchQ()">Recommencer</button>';
+  h+='<button class="btn bs" onclick="showP(\'quiz\',null)">Accueil quiz</button></div>';
+  document.getElementById('qz-res').innerHTML=h;
+}
+
+function endQ(){document.getElementById('qz-game').style.display='none';}
+
+// ===== SITUATIONS =====
+function viewSit(idx){
+  var s=sits[idx];
+  var h='<div style="font-size:18px;font-weight:700;margin-bottom:4px;padding-right:30px">'+s.titre+'</div>';
+  h+='<div style="font-size:13px;color:var(--muted);margin-bottom:16px">'+(s.struct||'')+' · '+new Date(s.date).toLocaleDateString('fr-FR')+'</div>';
+  if(s.blocs&&s.blocs.length){h+='<div style="margin-bottom:12px">';s.blocs.forEach(function(b){h+='<span class="bdg '+b+'">'+b.toUpperCase()+'</span>';});h+='</div>';}
+  h+='<div style="font-size:15px;line-height:1.7;white-space:pre-wrap;margin-bottom:16px">'+s.desc+'</div>';
+  if(s.ai){h+='<div class="ail">✨ Analyse Mistral</div><div class="aibox">'+s.ai+'</div>';}
+  h+='<button class="btn bp" style="margin-top:16px" onclick="expSit('+idx+')">📤 Exporter</button>';
+  h+='<button class="btn bs" onclick="closeOv(\'ov-view\')">Fermer</button>';
+  document.getElementById('ovvb').innerHTML=h;
+  openOv('ov-view');
+}
+
+function delSit(idx){
+  if(confirm('Supprimer cette situation ?')){
+    sits.splice(idx,1);
+    localStorage.setItem('vae_sits',JSON.stringify(sits));
+    showP('sits',null);upStats();
+  }
+}
+
+function expSit(idx){
+  var s=sits[idx];
+  var txt='# '+s.titre+'\n\nStructure : '+(s.struct||'Non renseignée')+'\nDate : '+new Date(s.date).toLocaleDateString('fr-FR')+'\n';
+  if(s.blocs&&s.blocs.length)txt+='Blocs : '+s.blocs.map(function(b){return b.toUpperCase();}).join(', ')+'\n';
+  txt+='\n## Situation\n\n'+s.desc+'\n';
+  if(s.ai)txt+='\n## Analyse VAE (Mistral)\n\n'+s.ai+'\n';
+  var blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download=s.titre.replace(/[^a-z0-9]/gi,'_').substring(0,40)+'.txt';a.click();URL.revokeObjectURL(url);
+}
+
+function togTag(bc){
+  var idx=selTags.indexOf(bc);
+  var btn=document.getElementById('tb'+bc.slice(-1));
+  if(idx>=0){selTags.splice(idx,1);btn.className='tag';}
+  else{selTags.push(bc);btn.className='tag s'+bc.slice(-1);}
+}
+
+function saveSit(){
+  var titre=document.getElementById('ft').value.trim();
+  var desc=document.getElementById('fd').value.trim();
+  if(!titre||!desc){showFAl('Remplissez le titre et la situation','err');return;}
+  var ai=document.getElementById('ait').textContent.trim();
+  sits.push({titre:titre,desc:desc,struct:document.getElementById('fst').value.trim(),blocs:selTags.slice(),date:new Date().toISOString(),ai:ai});
+  localStorage.setItem('vae_sits',JSON.stringify(sits));
+  upStats();closeOv('ov-add');resetForm();showP('sits',null);sp('plus');
+}
+
+function resetForm(){
+  document.getElementById('ft').value='';document.getElementById('fd').value='';document.getElementById('fst').value='';
+  document.getElementById('air').style.display='none';document.getElementById('ait').textContent='';
+  selTags=[];['1','2','3','4'].forEach(function(n){document.getElementById('tb'+n).className='tag';});
+}
+
+async function aiSit(){
+  var k=localStorage.getItem('vae_key');
+  if(!k){showFAl('Entrez votre clé Mistral dans l\'accueil','err');return;}
+  var desc=document.getElementById('fd').value.trim();
+  if(!desc){showFAl('Décrivez d\'abord la situation','err');return;}
+  var btn=document.getElementById('aibtn');btn.disabled=true;btn.innerHTML='<span class="sp"></span> Analyse...';
+  var prompt='Tu es expert VAE DEES (référentiel officiel octobre 2025). Un éducateur décrit une situation terrain. Structure-la pour son livret VAE.\n\nSituation : "'+desc+'"\n\nRéponds avec :\n📋 SITUATION REFORMULÉE (langage professionnel VAE)\n🎯 COMPÉTENCES MOBILISÉES (blocs BC1-BC4 avec indicateurs officiels)\n📚 RÉFÉRENCES THÉORIQUES (auteurs + concepts)\n💡 PRÉCONISATIONS\n⚖️ CADRE LÉGISLATIF\n\nSois concret, utile et accessible à un professionnel terrain.';
+  try{
+    var r=await fetch('https://api.mistral.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:'mistral-small-latest',max_tokens:900,messages:[{role:'user',content:prompt}]})});
+    if(!r.ok)throw new Error('Erreur '+r.status);
+    var d=await r.json();
+    var txt=d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content||'';
+    document.getElementById('ait').textContent=txt;
+    document.getElementById('air').style.display='block';
+    showFAl('Analyse terminée !','ok');
+  }catch(e){showFAl('Erreur Mistral : '+e.message,'err');}
+  finally{btn.disabled=false;btn.innerHTML='🤖 Structurer avec Mistral';}
+}
+
+function copyAI(){
+  var txt=document.getElementById('ait').textContent;
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){alert('Copié !');});}
+  else{var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('Copié !');}
+}
+
+function showFAl(msg,type){
+  var el=document.getElementById('fal');
+  el.innerHTML='<div class="al '+(type==='err'?'aerr':'aok')+'">'+msg+'</div>';
+  setTimeout(function(){if(el)el.innerHTML='';},3000);
+}
+
+// ===== REDACTION IA =====
+var RD_PROMPTS={
+  situation_vae:'Tu es expert VAE DEES (référentiel officiel octobre 2025). Transforme cette situation terrain en situation VAE professionnelle structurée pour le Livret 2. Structure : contexte, situation factuelle (reformulée professionnellement), analyse éducative avec compétences BC1-BC4, références théoriques (auteurs, concepts), préconisations, cadre législatif.',
+  analyse:'Tu es éducateur spécialisé expert. Rédige une analyse de situation professionnelle structurée : contexte, faits observés objectivement, hypothèses éducatives, analyse (pourquoi ce comportement ?), compétences mobilisées, préconisations.',
+  transmission:'Tu es éducateur spécialisé. Rédige une transmission professionnelle claire et concise pour l\'équipe : date/heure, personnes concernées, faits observés, actions menées, suite à donner.',
+  observation:'Tu es éducateur spécialisé. Rédige une observation éducative professionnelle et objective, sans jugement de valeur. Faits observables uniquement. Utilise le langage professionnel du secteur social.',
+  incident:'Tu es éducateur spécialisé. Rédige une note d\'incident factuelle et chronologique : date, heure, lieu, personnes présentes, déroulement des faits, intervention réalisée, suite donnée.',
+  rapport:'Tu es éducateur spécialisé. Rédige un rapport éducatif structuré : présentation de la situation, évolution observée, analyse éducative, objectifs atteints ou non, propositions pour la suite.',
+  cr:'Tu es éducateur spécialisé. Rédige un compte rendu de réunion professionnel : date, participants, points abordés, décisions prises, actions à mener, prochaine réunion.',
+  ppe:'Tu es éducateur spécialisé. Rédige un Projet Personnalisé (PPE) structuré : présentation de la personne, besoins identifiés (avec Maslow si pertinent), objectifs CT/MT/LT (SMART), actions mises en place, moyens, modalités d\'évaluation.',
+  smart:'Tu es éducateur spécialisé. Transforme ces éléments en objectifs SMART (Spécifiques, Mesurables, Atteignables, Réalistes, Temporellement définis) pour un projet éducatif. Formule chaque objectif clairement.',
+  social:'Tu es travailleur social expert. Rédige une note sociale professionnelle : situation familiale et sociale, problématiques identifiées, ressources de la personne, besoins, propositions d\'intervention.',
+  mail:'Tu es éducateur spécialisé. Rédige un mail professionnel clair, courtois et adapté au secteur social et médico-social. Objet précis, corps structuré, formule de politesse adaptée.',
+  oral:'Tu es expert VAE DEES (référentiel 2025). Prépare cet éducateur à l\'épreuve conclusive du BC1 : reformule sa situation de façon percutante pour le jury (dossier + oral 40 min), anticipe les 5 questions les plus probables du jury avec des éléments de réponse incluant références théoriques et législatives, et donne 3 conseils clés pour l\'oral.',
+  reform:'Tu es expert en communication professionnelle du secteur social. Reformule ce texte en langage professionnel du secteur social et médico-social. Transforme le langage terrain en langage VAE sans perdre le sens. Garde le \'je\'.',
+  synthese:'Tu es éducateur spécialisé. Rédige une synthèse éducative structurée : présentation de la personne, évolution observée depuis le début de l\'accompagnement, analyse éducative, bilan des objectifs du PPE, préconisations pour la suite.',
+  loi:'Tu es expert en droit social français. Explique cette loi / ce concept juridique de façon claire et accessible pour un éducateur spécialisé préparant le DEES VAE. Inclure : texte officiel, date, principaux droits et obligations, implications concrètes sur le terrain, comment la citer dans un livret VAE.',
+  auteur:'Tu es expert en travail social. Explique cet auteur / ce concept théorique de façon claire et accessible pour un éducateur spécialisé préparant le DEES VAE. Inclure : biographie courte, concepts clés expliqués simplement, lien avec le référentiel DEES (quel bloc ?), exemples concrets d\'application sur le terrain.',
+  analyse_reflexive:'Tu es expert VAE DEES. Aide cet éducateur à rédiger une analyse réflexive professionnelle pour son BC4 / épreuve conclusive BC1. Structure : description de la situation, analyse de ses propres actions (pourquoi ?), questionnement éthique et déontologique, apprentissages professionnels, évolution de sa posture éducative.'
+};
+
+var RD_HINTS={
+  situation_vae:'💡 Racontez une situation vécue — ce qui s\'est passé, ce que vous avez fait. Mistral la structure pour votre Livret 2 VAE.',
+  analyse:'💡 Décrivez la situation observée. Mistral la transforme en analyse éducative professionnelle structurée.',
+  transmission:'💡 Notez les faits essentiels à transmettre à l\'équipe. Mistral rédige la transmission.',
+  observation:'💡 Décrivez ce que vous avez vu. Mistral reformule en observation éducative factuelle et objective.',
+  incident:'💡 Racontez l\'incident : heure, lieu, personnes, déroulement. Mistral rédige la note factuelle.',
+  rapport:'💡 Donnez les éléments clés sur la personne et son évolution. Mistral structure le rapport.',
+  cr:'💡 Listez les points abordés et les décisions prises. Mistral rédige le compte rendu.',
+  ppe:'💡 Décrivez la personne, ses besoins et vos idées d\'objectifs. Mistral construit le PPE.',
+  smart:'💡 Décrivez ce que vous souhaitez atteindre avec la personne. Mistral formule les objectifs SMART.',
+  social:'💡 Décrivez la situation sociale de la personne. Mistral rédige la note sociale.',
+  mail:'💡 Dites à qui vous écrivez, pourquoi et ce que vous voulez dire. Mistral rédige le mail.',
+  oral:'💡 Décrivez votre situation VAE. Mistral vous prépare à l\'épreuve conclusive du BC1 (dossier + oral 40 min).',
+  reform:'💡 Collez votre texte terrain. Mistral le transforme en langage professionnel VAE.',
+  synthese:'💡 Donnez les éléments clés sur la personne et son parcours. Mistral structure la synthèse.',
+  loi:'💡 Nommez la loi (ex: loi 2002-2). Mistral l\'explique simplement avec ses implications terrain.',
+  auteur:'💡 Nommez l\'auteur ou le concept (ex: Winnicott, résilience). Mistral l\'explique avec exemples terrain.',
+  analyse_reflexive:'💡 Décrivez une situation complexe ou difficile. Mistral vous aide à rédiger l\'analyse réflexive pour votre BC4.'
+};
+
+function updateRdHint(){
+  var type=document.getElementById('rdt').value;
+  var hint=RD_HINTS[type]||'';
+  var box=document.getElementById('rdhint');
+  if(hint){document.getElementById('rdh').textContent=hint;box.style.display='block';}
+  else box.style.display='none';
+}
+
+async function genEcrit(){
+  var k=localStorage.getItem('vae_key');
+  if(!k){showRdAl('Entrez votre clé Mistral dans l\'accueil','err');return;}
+  var input=document.getElementById('rdi').value.trim();
+  if(!input){showRdAl('Entrez votre texte à transformer','err');return;}
+  var type=document.getElementById('rdt').value;
+  var context=document.getElementById('rdc').value.trim();
+  var sysPt=RD_PROMPTS[type]||RD_PROMPTS.reform;
+  var userContent=context?'Contexte : '+context+'\n\nTexte :\n'+input:input;
+  var btn=document.getElementById('rdbtn');btn.disabled=true;btn.innerHTML='<span class="sp"></span> Génération...';
+  document.getElementById('rdres').style.display='none';
+  try{
+    var r=await fetch('https://api.mistral.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:'mistral-small-latest',max_tokens:1200,messages:[{role:'system',content:sysPt+' Réponds directement avec l\'écrit demandé, sans introduction ni commentaire. Utilise le langage professionnel du secteur social et médico-social français. Garde le \'je\' pour les écrits à la première personne.'},{role:'user',content:userContent}]})});
+    if(!r.ok)throw new Error('Erreur '+r.status);
+    var d=await r.json();
+    var txt=d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content||'';
+    document.getElementById('rdtxt').textContent=txt;
+    document.getElementById('rdres').style.display='block';
+    renderEcrits();
+  }catch(e){showRdAl('Erreur Mistral : '+e.message,'err');}
+  finally{btn.disabled=false;btn.innerHTML='🤖 Générer avec Mistral';}
+}
+
+async function amelRd(){
+  var k=localStorage.getItem('vae_key');
+  if(!k){showRdAl('Entrez votre clé Mistral dans l\'accueil','err');return;}
+  var current=document.getElementById('rdtxt').textContent.trim();
+  if(!current)return;
+  var btn=document.getElementById('rdbtn');btn.disabled=true;btn.innerHTML='<span class="sp"></span> Amélioration...';
+  try{
+    var r=await fetch('https://api.mistral.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:'mistral-small-latest',max_tokens:1200,messages:[{role:'system',content:'Tu es expert en rédaction professionnelle du secteur social et médico-social français.'},{role:'user',content:'Améliore cet écrit professionnel en le rendant plus précis, mieux structuré et plus complet, tout en conservant le sens original et le \'je\' :\n\n'+current}]})});
+    if(!r.ok)throw new Error('Erreur '+r.status);
+    var d=await r.json();
+    var txt=d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content||'';
+    document.getElementById('rdtxt').textContent=txt;
+  }catch(e){showRdAl('Erreur : '+e.message,'err');}
+  finally{btn.disabled=false;btn.innerHTML='🤖 Générer avec Mistral';}
+}
+
+function copyRd(){
+  var txt=document.getElementById('rdtxt').textContent;
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){alert('Copié !');});}
+  else{var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('Copié !');}
+}
+
+function expRd(){
+  var type=document.getElementById('rdt').options[document.getElementById('rdt').selectedIndex].text;
+  var txt=type+'\n\n'+document.getElementById('rdtxt').textContent;
+  var blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='ecrit_professionnel.txt';a.click();URL.revokeObjectURL(url);
+}
+
+function saveEcrit(){
+  var txt=document.getElementById('rdtxt').textContent.trim();
+  if(!txt)return;
+  var type=document.getElementById('rdt').options[document.getElementById('rdt').selectedIndex].text;
+  var context=document.getElementById('rdc').value.trim();
+  var ecrits=[];
+  try{ecrits=JSON.parse(localStorage.getItem('vae_ecrits')||'[]');}catch(e){ecrits=[];}
+  ecrits.push({type:type,context:context,contenu:txt,date:new Date().toISOString()});
+  localStorage.setItem('vae_ecrits',JSON.stringify(ecrits));
+  showRdAl('Écrit sauvegardé !','ok');
+  renderEcrits();
+}
+
+function renderEcrits(){
+  var z=document.getElementById('ecrits-list');
+  if(!z)return;
+  var ecrits=[];
+  try{ecrits=JSON.parse(localStorage.getItem('vae_ecrits')||'[]');}catch(e){ecrits=[];}
+  if(!ecrits.length){z.innerHTML='<div class="es" style="padding:20px 0"><div style="font-size:32px;opacity:0.4">📂</div><div style="font-size:14px;color:var(--muted)">Aucun écrit sauvegardé</div></div>';return;}
+  var h='';
+  ecrits.slice().reverse().forEach(function(e,ri){
+    var idx=ecrits.length-1-ri;
+    h+='<div class="sc">';
+    h+='<div style="font-size:14px;font-weight:700;margin-bottom:4px">'+e.type+'</div>';
+    h+='<div style="font-size:12px;color:var(--muted);margin-bottom:8px">'+new Date(e.date).toLocaleDateString('fr-FR')+(e.context?' · '+e.context:'')+'</div>';
+    h+='<div style="font-size:13px;color:var(--muted);margin-bottom:10px">'+e.contenu.substring(0,120)+(e.contenu.length>120?'...':'')+'</div>';
+    h+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
+    h+='<button class="btn bs bsm" onclick="viewEcrit('+idx+')">Voir</button>';
+    h+='<button class="btn bs bsm" onclick="expEcrit('+idx+')">📤</button>';
+    h+='<button class="btn bsm" style="background:var(--a2l);color:var(--accent2);border:none" onclick="delEcrit('+idx+')">🗑️</button>';
+    h+='</div></div>';
+  });
+  z.innerHTML=h;
+}
+
+function viewEcrit(idx){
+  var ecrits=[];
+  try{ecrits=JSON.parse(localStorage.getItem('vae_ecrits')||'[]');}catch(e){ecrits=[];}
+  var e=ecrits[idx];
+  var h='<div style="font-size:16px;font-weight:700;margin-bottom:4px;padding-right:30px">'+e.type+'</div>';
+  h+='<div style="font-size:12px;color:var(--muted);margin-bottom:16px">'+new Date(e.date).toLocaleDateString('fr-FR')+(e.context?' · '+e.context:'')+'</div>';
+  h+='<div style="font-size:14px;line-height:1.7;white-space:pre-wrap;margin-bottom:16px">'+e.contenu+'</div>';
+  h+='<button class="btn bp" style="margin-top:8px" onclick="expEcrit('+idx+')">📤 Exporter</button>';
+  h+='<button class="btn bs" onclick="closeOv(\'ov-view\')">Fermer</button>';
+  document.getElementById('ovvb').innerHTML=h;
+  openOv('ov-view');
+}
+
+function expEcrit(idx){
+  var ecrits=[];
+  try{ecrits=JSON.parse(localStorage.getItem('vae_ecrits')||'[]');}catch(e){ecrits=[];}
+  var e=ecrits[idx];
+  var txt=e.type+'\nDate : '+new Date(e.date).toLocaleDateString('fr-FR')+(e.context?'\nContexte : '+e.context:'')+'\n\n'+e.contenu;
+  var blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='ecrit_'+new Date(e.date).toLocaleDateString('fr-FR').replace(/\//g,'-')+'.txt';a.click();URL.revokeObjectURL(url);
+}
+
+function delEcrit(idx){
+  if(confirm('Supprimer cet écrit ?')){
+    var ecrits=[];
+    try{ecrits=JSON.parse(localStorage.getItem('vae_ecrits')||'[]');}catch(e){ecrits=[];}
+    ecrits.splice(idx,1);
+    localStorage.setItem('vae_ecrits',JSON.stringify(ecrits));
+    renderEcrits();
+  }
+}
+
+function showRdAl(msg,type){
+  el.innerHTML='<div class="al '+(type==='err'?'aerr':'aok')+'">'+msg+'</div>';
+  setTimeout(function(){if(el)el.innerHTML='';},3000);
+}
+
+// ===== OVERLAYS =====
+function openOv(id){document.getElementById(id).classList.add('on');}
+function closeOv(id){document.getElementById(id).classList.remove('on');}
+function ovOut(e,id){if(e.target===document.getElementById(id))closeOv(id);}
+
+init();
+</script>
+</body>
+</html>

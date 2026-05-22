@@ -3,8 +3,14 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import Onboarding from "@/components/Onboarding";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import PageTransition from "@/components/PageTransition";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "MonParcours VAE",
@@ -20,17 +26,27 @@ export const viewport: Viewport = {
   themeColor: "#2D6A4F",
 };
 
+/* Anti-flash: apply saved theme before React hydrates */
+const themeScript = `try{var t=localStorage.getItem('vae_theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
-      <body className={`${inter.className} bg-background min-h-screen`}>
-        <Onboarding />
-        <main className="pb-20">{children}</main>
-        <BottomNav />
+    <html lang="fr" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className={inter.className}>
+        <ThemeProvider>
+          <Onboarding />
+          <main className="pb-20 min-h-screen bg-background">
+            <PageTransition>{children}</PageTransition>
+          </main>
+          <BottomNav />
+        </ThemeProvider>
       </body>
     </html>
   );

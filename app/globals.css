@@ -2,26 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Color tokens (RGB for Tailwind opacity support) ─────────────────────── */
 :root {
-  --background: #F7F5F0;
-  --foreground: #1A1A1A;
-  --accent: #2D6A4F;
-  --orange: #E76F51;
-  --blue: #457B9D;
+  --background: 247 245 240;
+  --foreground: 26 26 26;
+  --surface: 255 255 255;
+  --border: 229 224 216;
+  --muted: 107 114 128;
+  --accent: 45 106 79;
+  --accent-light: 82 183 136;
+  --accent-dark: 27 67 50;
+  --orange: 231 111 81;
+  --orange-light: 244 162 97;
+  --blue: 69 123 157;
+  --blue-light: 168 218 220;
 }
 
+[data-theme="dark"] {
+  --background: 13 28 19;
+  --foreground: 238 233 224;
+  --surface: 22 43 30;
+  --border: 36 61 46;
+  --muted: 143 168 152;
+  --accent: 82 183 136;
+  --accent-light: 116 198 157;
+  --accent-dark: 45 106 79;
+  --orange: 244 162 97;
+  --orange-light: 231 111 81;
+  --blue: 168 218 220;
+  --blue-light: 69 123 157;
+}
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: rgb(var(--foreground));
+  background: rgb(var(--background));
   font-family: Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv11", "ss01";
 }
 
-/* Safe area for mobile bottom nav */
+/* ── Safe area ───────────────────────────────────────────────────────────── */
 .pb-safe {
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: max(env(safe-area-inset-bottom), 8px);
 }
 
+/* ── Animations ──────────────────────────────────────────────────────────── */
 @keyframes fadeSlide {
   from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -30,13 +57,111 @@ body {
   animation: fadeSlide 0.35s ease both;
 }
 
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-page-in {
+  animation: pageIn 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up {
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.animate-scale-in {
+  animation: scaleIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* ── Premium card ────────────────────────────────────────────────────────── */
+.card-premium {
+  background: rgb(var(--surface));
+  border: 1px solid rgb(var(--border));
+  border-radius: 1rem;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 4px 12px rgba(0,0,0,0.06),
+    0 0 0 0 transparent;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.card-premium:active {
+  transform: scale(0.985);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 2px 6px rgba(0,0,0,0.04);
+}
+
+/* ── Gradient header ─────────────────────────────────────────────────────── */
+.header-gradient {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--accent-dark)) 0%,
+    rgb(var(--accent)) 60%,
+    rgb(var(--accent-light)) 100%
+  );
+}
+
+.header-gradient-soft {
+  background: linear-gradient(
+    180deg,
+    rgb(var(--surface)) 0%,
+    rgb(var(--background)) 100%
+  );
+}
+
+/* ── Gradient text ───────────────────────────────────────────────────────── */
+.text-gradient {
+  background: linear-gradient(135deg, rgb(var(--accent)) 0%, rgb(var(--accent-light)) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Button premium ──────────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background: rgb(var(--accent));
+  color: white;
+  font-weight: 600;
+  border-radius: 0.875rem;
+  font-size: 0.9375rem;
+  box-shadow: 0 2px 8px rgb(var(--accent) / 0.35), 0 1px 2px rgb(var(--accent) / 0.2);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 1px 4px rgb(var(--accent) / 0.25);
+  opacity: 0.92;
+}
+
+/* ── Scrollbar hide ──────────────────────────────────────────────────────── */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;

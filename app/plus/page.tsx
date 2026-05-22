@@ -2,10 +2,11 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { QUIZ, ORAL, PLANNING } from "@/lib/data";
 import type { QuizItem, PlanningItem } from "@/lib/data";
+import { useTheme } from "@/components/ThemeProvider";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
-type Tab = "situations" | "quiz" | "oral" | "planning" | "livrets";
+type Tab = "situations" | "quiz" | "oral" | "planning" | "livrets" | "reglages";
 
 type Situation = {
   id: string;
@@ -774,6 +775,81 @@ function LivretsTab() {
   );
 }
 
+// ── SettingsTab ────────────────────────────────────────────────────────────
+
+function SettingsTab() {
+  const { theme, toggle } = useTheme();
+  return (
+    <div className="space-y-4">
+      <div className="bg-surface rounded-2xl p-5 border border-border shadow-card">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1">
+            <p className="font-semibold text-foreground text-sm">Mode sombre</p>
+            <p className="text-xs text-muted mt-0.5 leading-relaxed">
+              Repose les yeux en environnement peu lumineux
+            </p>
+          </div>
+          <button
+            onClick={toggle}
+            aria-label="Basculer le mode sombre"
+            className={`relative flex-shrink-0 w-12 h-6 rounded-full transition-colors duration-300 ${
+              theme === "dark" ? "bg-accent" : "bg-border"
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-300 ${
+                theme === "dark" ? "translate-x-[1.375rem]" : "translate-x-0.5"
+              }`}
+            />
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-surface rounded-2xl p-5 border border-border shadow-card">
+        <p className="text-xs font-bold text-muted uppercase tracking-wider mb-4">Votre progression</p>
+        <div className="space-y-2.5">
+          {["vae_sits", "vae_ecrits"].map((key) => {
+            const items = (() => {
+              try {
+                const raw = localStorage.getItem(key);
+                return raw ? (JSON.parse(raw) as unknown[]).length : 0;
+              } catch { return 0; }
+            })();
+            const label = key === "vae_sits" ? "Situations créées" : "Écrits sauvegardés";
+            return (
+              <div key={key} className="flex justify-between text-sm">
+                <span className="text-muted">{label}</span>
+                <span className="font-bold text-foreground">{items}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="bg-surface rounded-2xl p-5 border border-border shadow-card">
+        <p className="text-xs font-bold text-muted uppercase tracking-wider mb-4">À propos</p>
+        <div className="space-y-2.5">
+          {[
+            { label: "Version", value: "1.0.0" },
+            { label: "Référentiel", value: "DEES 2025" },
+            { label: "Arrêté", value: "6 octobre 2025" },
+          ].map(({ label, value }) => (
+            <div key={label} className="flex justify-between text-sm">
+              <span className="text-muted">{label}</span>
+              <span className="font-semibold text-foreground">{value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-accent/8 rounded-2xl p-4 border border-accent/15 text-center">
+        <p className="text-xs text-accent font-semibold">🌿 MonParcours VAE</p>
+        <p className="text-xs text-muted mt-1">Votre diplôme DEES 2025 commence ici.</p>
+      </div>
+    </div>
+  );
+}
+
 // ── Page ───────────────────────────────────────────────────────────────────
 
 const TABS: { key: Tab; label: string }[] = [
@@ -782,6 +858,7 @@ const TABS: { key: Tab; label: string }[] = [
   { key: "oral", label: "Oral" },
   { key: "planning", label: "Planning" },
   { key: "livrets", label: "Livrets" },
+  { key: "reglages", label: "Réglages" },
 ];
 
 export default function PlusPage() {
@@ -814,6 +891,7 @@ export default function PlusPage() {
         {tab === "oral" && <OralTab />}
         {tab === "planning" && <PlanningTab />}
         {tab === "livrets" && <LivretsTab />}
+        {tab === "reglages" && <SettingsTab />}
       </div>
     </div>
   );

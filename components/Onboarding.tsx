@@ -76,7 +76,7 @@ export default function Onboarding() {
               Bienvenue sur<br />MonParcours VAE
             </h1>
             <p className="text-white/75 text-base leading-relaxed max-w-xs mx-auto">
-              L'application mobile pour préparer et réussir votre VAE DEES 2025 — où que vous soyez.
+              {"L'application mobile pour préparer et réussir votre VAE DEES 2025 — où que vous soyez."}
             </p>
           </div>
         </div>

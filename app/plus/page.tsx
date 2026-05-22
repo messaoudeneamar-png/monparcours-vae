@@ -779,6 +779,19 @@ function LivretsTab() {
 
 function SettingsTab() {
   const { theme, toggle } = useTheme();
+  const [counts, setCounts] = useState({ sits: 0, ecrits: 0 });
+
+  useEffect(() => {
+    try {
+      const sits = localStorage.getItem("vae_sits");
+      const ecrits = localStorage.getItem("vae_ecrits");
+      setCounts({
+        sits: sits ? (JSON.parse(sits) as unknown[]).length : 0,
+        ecrits: ecrits ? (JSON.parse(ecrits) as unknown[]).length : 0,
+      });
+    } catch {}
+  }, []);
+
   return (
     <div className="space-y-4">
       <div className="bg-surface rounded-2xl p-5 border border-border shadow-card">
@@ -808,21 +821,15 @@ function SettingsTab() {
       <div className="bg-surface rounded-2xl p-5 border border-border shadow-card">
         <p className="text-xs font-bold text-muted uppercase tracking-wider mb-4">Votre progression</p>
         <div className="space-y-2.5">
-          {["vae_sits", "vae_ecrits"].map((key) => {
-            const items = (() => {
-              try {
-                const raw = localStorage.getItem(key);
-                return raw ? (JSON.parse(raw) as unknown[]).length : 0;
-              } catch { return 0; }
-            })();
-            const label = key === "vae_sits" ? "Situations créées" : "Écrits sauvegardés";
-            return (
-              <div key={key} className="flex justify-between text-sm">
-                <span className="text-muted">{label}</span>
-                <span className="font-bold text-foreground">{items}</span>
-              </div>
-            );
-          })}
+          {[
+            { label: "Situations créées", value: counts.sits },
+            { label: "Écrits sauvegardés", value: counts.ecrits },
+          ].map(({ label, value }) => (
+            <div key={label} className="flex justify-between text-sm">
+              <span className="text-muted">{label}</span>
+              <span className="font-bold text-foreground">{value}</span>
+            </div>
+          ))}
         </div>
       </div>
 

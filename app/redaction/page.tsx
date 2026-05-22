@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { exportToWord, exportToPdf } from "@/lib/export";
+import { exportToWord, exportToPdf, stripMarkdown } from "@/lib/export";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -141,7 +141,7 @@ export default function RedactionPage() {
   };
 
   const copy = async () => {
-    await navigator.clipboard.writeText(result);
+    await navigator.clipboard.writeText(stripMarkdown(result));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -346,7 +346,7 @@ export default function RedactionPage() {
             </div>
 
             <div className="px-5 py-4 max-h-[60vh] overflow-y-auto">
-              <pre className="text-sm text-foreground leading-relaxed whitespace-pre-wrap font-sans">{result}</pre>
+              <pre className="text-sm text-foreground leading-relaxed whitespace-pre-wrap font-sans">{stripMarkdown(result)}</pre>
             </div>
 
             {/* Export buttons */}

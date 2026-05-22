@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { exportToWord, exportToPdf, stripMarkdown } from "@/lib/export";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -395,21 +396,37 @@ export default function ChatPage() {
                     : "bg-surface border border-border text-foreground rounded-bl-md shadow-sm"
                 }`}
               >
-                <p className="whitespace-pre-wrap">{m.content}</p>
+                <p className="whitespace-pre-wrap">{m.role === "assistant" ? stripMarkdown(m.content) : m.content}</p>
               </div>
               <div
-                className={`flex items-center gap-2 px-1 ${
+                className={`flex items-center gap-2 px-1 flex-wrap ${
                   m.role === "user" ? "flex-row-reverse" : "flex-row"
                 }`}
               >
                 <span className="text-[11px] text-muted">{m.time}</span>
                 {m.role === "assistant" && m.content && (
                   <button
-                    onClick={() => copyMsg(m.id, m.content)}
+                    onClick={() => copyMsg(m.id, stripMarkdown(m.content))}
                     className="text-[11px] text-muted hover:text-accent transition-colors"
                   >
                     {copiedId === m.id ? "✓ Copié" : "Copier"}
                   </button>
+                )}
+                {m.role === "assistant" && m.content.length > 300 && (
+                  <>
+                    <button
+                      onClick={() => exportToPdf(currentMode.label, stripMarkdown(m.content))}
+                      className="text-[11px] text-orange font-medium px-2 py-0.5 rounded-md bg-orange/10"
+                    >
+                      📄 PDF
+                    </button>
+                    <button
+                      onClick={() => exportToWord(currentMode.label, stripMarkdown(m.content))}
+                      className="text-[11px] text-blue font-medium px-2 py-0.5 rounded-md bg-blue/10"
+                    >
+                      📝 Word
+                    </button>
+                  </>
                 )}
               </div>
             </div>

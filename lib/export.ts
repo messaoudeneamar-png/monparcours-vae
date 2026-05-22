@@ -1,3 +1,10 @@
+export function stripMarkdown(text: string): string {
+  return text
+    .replace(/\*\*(.*?)\*\*/gs, "$1")
+    .replace(/\*(.*?)\*/gs, "$1")
+    .replace(/\*/g, "");
+}
+
 function slugify(title: string): string {
   return title.slice(0, 60).replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "_");
 }
@@ -14,8 +21,9 @@ export async function exportToWord(title: string, content: string): Promise<void
   const { Document, Paragraph, TextRun, HeadingLevel, Packer } = await import("docx");
 
   const date = frDate();
+  const clean = stripMarkdown(content);
 
-  const bodyParagraphs = content.split("\n").map((line) => {
+  const bodyParagraphs = clean.split("\n").map((line) => {
     if (/^###\s/.test(line)) return new Paragraph({ text: line.replace(/^###\s/, ""), heading: HeadingLevel.HEADING_3 });
     if (/^##\s/.test(line)) return new Paragraph({ text: line.replace(/^##\s/, ""), heading: HeadingLevel.HEADING_2 });
     if (/^#\s/.test(line)) return new Paragraph({ text: line.replace(/^#\s/, ""), heading: HeadingLevel.HEADING_1 });
@@ -49,6 +57,7 @@ export async function exportToPdf(title: string, content: string): Promise<void>
   const { jsPDF } = await import("jspdf");
 
   const date = frDate();
+  const clean = stripMarkdown(content);
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
   const pageW = doc.internal.pageSize.getWidth();
@@ -86,7 +95,7 @@ export async function exportToPdf(title: string, content: string): Promise<void>
   doc.setFontSize(11);
   doc.setTextColor(26, 26, 26);
 
-  for (const line of content.split("\n")) {
+  for (const line of clean.split("\n")) {
     if (line.trim() === "") { y += 3; continue; }
     if (/^#{1,3}\s/.test(line)) {
       check(9);

@@ -209,20 +209,21 @@ ${input}
 ---
 ${typeInstruction}`;
 
+    const chatStream = await mistral.chat.stream({
+      model: "mistral-small-latest",
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: userMessage },
+      ],
+    });
+
     const encoder = new TextEncoder();
 
     const stream = new ReadableStream({
       async start(controller) {
         try {
-          const chatStream = await mistral.chat.stream({
-            model: "mistral-small-latest",
-            messages: [
-              { role: "system", content: SYSTEM_PROMPT },
-              { role: "user", content: userMessage },
-            ],
-          });
           for await (const chunk of chatStream) {
-            const raw = chunk.data.choices[0]?.delta?.content;
+            const raw = chunk.data?.choices[0]?.delta?.content;
             const delta = typeof raw === "string"
               ? raw
               : Array.isArray(raw)
@@ -230,10 +231,9 @@ ${typeInstruction}`;
                 : "";
             if (delta) controller.enqueue(encoder.encode(delta));
           }
+          controller.close();
         } catch (err) {
           controller.error(err);
-        } finally {
-          controller.close();
         }
       },
     });

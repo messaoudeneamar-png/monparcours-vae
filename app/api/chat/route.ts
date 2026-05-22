@@ -92,20 +92,21 @@ export async function POST(req: NextRequest) {
       .filter((m) => m.role === "user" || m.role === "assistant")
       .map((m) => ({ role: m.role as "user" | "assistant", content: String(m.content) }));
 
+    const chatStream = await mistral.chat.stream({
+      model: "mistral-small-latest",
+      messages: [
+        { role: "system", content: systemPrompt },
+        ...validMessages,
+      ],
+    });
+
     const encoder = new TextEncoder();
 
     const stream = new ReadableStream({
       async start(controller) {
         try {
-          const chatStream = await mistral.chat.stream({
-            model: "mistral-small-latest",
-            messages: [
-              { role: "system", content: systemPrompt },
-              ...validMessages,
-            ],
-          });
           for await (const chunk of chatStream) {
-            const raw = chunk.data.choices[0]?.delta?.content;
+            const raw = chunk.data?.choices[0]?.delta?.content;
             const delta = typeof raw === "string"
               ? raw
               : Array.isArray(raw)
@@ -113,10 +114,9 @@ export async function POST(req: NextRequest) {
                 : "";
             if (delta) controller.enqueue(encoder.encode(delta));
           }
+          controller.close();
         } catch (err) {
           controller.error(err);
-        } finally {
-          controller.close();
         }
       },
     });

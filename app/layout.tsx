@@ -29,6 +29,9 @@ export const viewport: Viewport = {
 /* Anti-flash: apply saved theme before React hydrates */
 const themeScript = `try{var t=localStorage.getItem('vae_theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}`;
 
+/* PWA startup: always open on "/" when launched from home screen */
+const pwaStartScript = `try{var sa=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;if(sa){var s=sessionStorage.getItem('_vae_s');if(!s){sessionStorage.setItem('_vae_s','1');if(window.location.pathname!=='/')window.location.replace('/');}}}catch(e){}`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,6 +41,7 @@ export default function RootLayout({
     <html lang="fr" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: pwaStartScript }} />
       </head>
       <body className={inter.className}>
         <ThemeProvider>
